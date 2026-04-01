@@ -71,8 +71,14 @@ export async function voteRoutes(app: FastifyInstance) {
         proposalId
       )
 
-      // Submit to chain via relayer
-      const txHash = await submitVote(proposalId, proof)
+      // Submit to chain via relayer (convert string types to bigint)
+      const txHash = await submitVote(proposalId, {
+        merkleTreeDepth: proof.merkleTreeDepth,
+        merkleTreeRoot: BigInt(proof.merkleTreeRoot),
+        nullifier: BigInt(proof.nullifier),
+        message: BigInt(proof.message),
+        points: proof.points.map(BigInt),
+      })
 
       // Store vote (anonymous — no user reference) with txHash
       await db.insert(votes).values({

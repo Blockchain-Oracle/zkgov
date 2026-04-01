@@ -1,4 +1,4 @@
-import { publicClient, getWalletClient } from "../plugins/chain.js"
+import { publicClient, getWalletClient, hashkeyTestnet } from "../plugins/chain.js"
 import { env } from "../config/env.js"
 import { db } from "../db/index.js"
 import { relayerTransactions } from "../db/schema.js"
@@ -63,17 +63,19 @@ export async function submitVote(
   const hash = await wallet.writeContract({
     address: env.ZK_GOVERNANCE_ADDRESS,
     abi: ZK_GOVERNANCE_ABI,
-    functionName: "castVote",
+    functionName: "castVote" as const,
     args: [
       BigInt(proposalId),
       BigInt(proof.merkleTreeDepth),
       proof.merkleTreeRoot,
       proof.nullifier,
       proof.message,
-      proof.points as unknown as readonly [bigint, bigint, bigint, bigint, bigint, bigint, bigint, bigint],
+      proof.points,
     ],
+    chain: hashkeyTestnet,
+    account: wallet.account!,
     nonce,
-  })
+  } as any)
 
   await db.insert(relayerTransactions).values({
     txHash: hash,
@@ -101,7 +103,7 @@ export async function submitCreateProposal(
   const hash = await wallet.writeContract({
     address: env.ZK_GOVERNANCE_ADDRESS,
     abi: ZK_GOVERNANCE_ABI,
-    functionName: "createProposal",
+    functionName: "createProposal" as const,
     args: [
       contentHash,
       metadataURI,
@@ -109,8 +111,10 @@ export async function submitCreateProposal(
       BigInt(quorum),
       voterGroup,
     ],
+    chain: hashkeyTestnet,
+    account: wallet.account!,
     nonce,
-  })
+  } as any)
 
   await db.insert(relayerTransactions).values({
     txHash: hash,
