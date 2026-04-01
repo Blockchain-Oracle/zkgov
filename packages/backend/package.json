@@ -1,0 +1,32 @@
+{
+  "name": "@zkgov/backend",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "db:generate": "drizzle-kit generate",
+    "db:push": "drizzle-kit push"
+  },
+  "dependencies": {
+    "@zkgov/shared": "workspace:*",
+    "fastify": "^5",
+    "@fastify/cors": "^10",
+    "@fastify/jwt": "^9",
+    "drizzle-orm": "^0.38",
+    "postgres": "^3.4",
+    "viem": "^2",
+    "@semaphore-protocol/core": "^4.9.0",
+    "@semaphore-protocol/data": "^4.9.0",
+    "bcryptjs": "^2.4",
+    "dotenv": "^16"
+  },
+  "devDependencies": {
+    "typescript": "^5.5",
+    "tsx": "^4",
+    "drizzle-kit": "^0.30",
+    "@types/bcryptjs": "^2"
+  }
+}
