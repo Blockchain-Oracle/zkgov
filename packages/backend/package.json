@@ -11,22 +11,23 @@
     "db:push": "drizzle-kit push"
   },
   "dependencies": {
-    "@zkgov/shared": "workspace:*",
-    "fastify": "^5",
     "@fastify/cors": "^10",
     "@fastify/jwt": "^9",
-    "drizzle-orm": "^0.38",
-    "postgres": "^3.4",
-    "viem": "^2",
     "@semaphore-protocol/core": "^4.9.0",
     "@semaphore-protocol/data": "^4.9.0",
+    "@zkgov/shared": "workspace:*",
     "bcryptjs": "^2.4",
-    "dotenv": "^16"
+    "dotenv": "^16",
+    "drizzle-orm": "^0.38",
+    "fastify": "^5",
+    "fastify-plugin": "^5.1.0",
+    "postgres": "^3.4",
+    "viem": "^2"
   },
   "devDependencies": {
-    "typescript": "^5.5",
-    "tsx": "^4",
+    "@types/bcryptjs": "^2",
     "drizzle-kit": "^0.30",
-    "@types/bcryptjs": "^2"
+    "tsx": "^4",
+    "typescript": "^5.5"
   }
 }
