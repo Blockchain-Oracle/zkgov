@@ -1,0 +1,30 @@
+{
+  "name": "@zkgov/contracts",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "build": "hardhat compile",
+    "test": "hardhat test",
+    "deploy:local": "hardhat run deploy/deploy.ts --network localhost",
+    "deploy:hashkey": "hardhat run deploy/deploy.ts --network hashkey",
+    "clean": "hardhat clean"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-ethers": "^3.0.0",
+    "@nomicfoundation/hardhat-chai-matchers": "^2.0.0",
+    "@semaphore-protocol/contracts": "^4.9.0",
+    "@semaphore-protocol/hardhat": "^4.9.0",
+    "@semaphore-protocol/core": "^4.9.0",
+    "@semaphore-protocol/data": "^4.9.0",
+    "@typechain/ethers-v6": "^0.5.0",
+    "@typechain/hardhat": "^9.0.0",
+    "chai": "^4.3.0",
+    "dotenv": "^16.0.0",
+    "ethers": "^6.0.0",
+    "hardhat": "^2.22.0",
+    "typechain": "^8.0.0",
+    "typescript": "^5.5",
+    "ts-node": "^10.9.0",
+    "@types/chai": "^4.3.0"
+  }
+}
