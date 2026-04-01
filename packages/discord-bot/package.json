@@ -1,0 +1,20 @@
+{
+  "name": "@zkgov/discord-bot",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "deploy-commands": "tsx src/deploy-commands.ts"
+  },
+  "dependencies": {
+    "discord.js": "^14",
+    "@zkgov/shared": "workspace:*",
+    "dotenv": "^16"
+  },
+  "devDependencies": {
+    "typescript": "^5.5",
+    "tsx": "^4"
+  }
+}
