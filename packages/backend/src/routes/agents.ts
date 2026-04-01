@@ -43,12 +43,30 @@ export async function agentRoutes(app: FastifyInstance) {
       })
       .returning()
 
+    // Note: On-chain registration (agentRegistry.registerAgent + kycGate.registerAgent)
+    // must be called from the owner's wallet since contracts check msg.sender.
+    // The frontend handles this — same pattern as human KYC registration.
+
     return reply.status(201).send({
       agent: {
         id: agent.id,
         name: agent.name,
         apiKey, // Shown ONCE
         identityCommitment: agent.identityCommitment,
+        onChainRegistration: onChainAddress ? {
+          step1: {
+            contract: "AgentRegistry",
+            function: "registerAgent(address)",
+            args: [onChainAddress],
+            note: "Call from owner wallet to register agent address",
+          },
+          step2: {
+            contract: "KycGate",
+            function: "registerAgent(address, uint256)",
+            args: [onChainAddress, identity.commitment],
+            note: "Call from owner wallet to add agent to Semaphore group",
+          },
+        } : null,
       },
     })
   })

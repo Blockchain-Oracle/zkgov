@@ -1,9 +1,10 @@
 import type { FastifyInstance } from "fastify"
 import { db } from "../db/index.js"
-import { votes, proposals, users, agents } from "../db/schema.js"
+import { votes, proposals } from "../db/schema.js"
 import { eq } from "drizzle-orm"
 import { generateVoteProof } from "../services/semaphore.js"
 import { submitVote } from "../services/relayer.js"
+import { broadcastToProposal } from "./sse.js"
 import { env } from "../config/env.js"
 import type { VoteChoice } from "@zkgov/shared"
 
@@ -70,7 +71,10 @@ export async function voteRoutes(app: FastifyInstance) {
         proposalId
       )
 
-      // Store vote (anonymous — no user reference)
+      // Submit to chain via relayer
+      const txHash = await submitVote(proposalId, proof)
+
+      // Store vote (anonymous — no user reference) with txHash
       await db.insert(votes).values({
         proposalId,
         nullifierHash: proof.nullifier.toString(),
@@ -82,12 +86,16 @@ export async function voteRoutes(app: FastifyInstance) {
           message: proof.message.toString(),
           points: proof.points.map(String),
         },
-        txStatus: "pending",
+        txHash,
+        txStatus: "submitted",
         submittedVia: platform,
       })
 
-      // Submit to chain via relayer
-      const txHash = await submitVote(proposalId, proof)
+      // Broadcast real-time update
+      broadcastToProposal(proposalId, "vote_cast", {
+        proposalId,
+        submittedVia: platform,
+      })
 
       return reply.status(202).send({
         status: "submitted",

@@ -1,7 +1,7 @@
 import type { FastifyInstance } from "fastify"
 import { createHmac } from "node:crypto"
 import { db } from "../db/index.js"
-import { users } from "../db/schema.js"
+import { users, agents } from "../db/schema.js"
 import { eq } from "drizzle-orm"
 import { verifyMessage } from "viem"
 import { createIdentity } from "../services/semaphore.js"
@@ -85,7 +85,7 @@ export async function authRoutes(app: FastifyInstance) {
   app.get("/me", { preHandler: [(app as any).authenticate] }, async (request) => {
     const user = (request as any).user
     const userAgents = await db.query.agents.findMany({
-      where: eq(users.id, user.id),
+      where: eq(agents.ownerId, user.id),
     })
 
     return {
@@ -121,10 +121,19 @@ export async function authRoutes(app: FastifyInstance) {
       .set({ kycVerified: true, kycLevel: levelNames[level] || "BASIC" })
       .where(eq(users.id, user.id))
 
+    // Return the data needed for the frontend to register on-chain
+    // The user's wallet must call kycGate.registerHuman(commitment) directly
+    // because the contract checks msg.sender for KYC ownership
     return {
       kycVerified: true,
       kycLevel: levelNames[level] || "BASIC",
-      message: "KYC verified. You are now eligible to register as a voter.",
+      identityCommitment: user.identityCommitment,
+      registration: {
+        contractAddress: (await import("../config/env.js")).env.KYC_GATE_ADDRESS,
+        functionName: "registerHuman",
+        args: [user.identityCommitment],
+        message: "Call kycGate.registerHuman() from your wallet to join the voter group.",
+      },
     }
   })
 

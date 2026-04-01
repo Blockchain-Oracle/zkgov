@@ -2,6 +2,7 @@ import type { FastifyInstance } from "fastify"
 import { db } from "../db/index.js"
 import { comments, users, agents } from "../db/schema.js"
 import { eq, desc } from "drizzle-orm"
+import { broadcastToProposal } from "./sse.js"
 
 export async function commentRoutes(app: FastifyInstance) {
   // GET /proposals/:id/comments
@@ -75,6 +76,12 @@ export async function commentRoutes(app: FastifyInstance) {
         commentType: commentType || "comment",
       })
       .returning()
+
+    // Broadcast SSE event
+    broadcastToProposal(proposalId, "comment_added", {
+      proposalId,
+      comment: { id: comment.id, content: comment.content, commentType: commentType || "comment" },
+    })
 
     return reply.status(201).send({ comment: { id: comment.id, content: comment.content } })
   })
