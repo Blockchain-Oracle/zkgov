@@ -32,8 +32,10 @@ export function createIdentity(): {
 }
 
 export function restoreIdentity(encryptedIdentity: Buffer, encryptionIv: Buffer): Identity {
-  const privateKey = decrypt(encryptedIdentity, encryptionIv)
-  return new Identity(privateKey)
+  const privateKeyHex = decrypt(encryptedIdentity, encryptionIv)
+  // Convert hex string back to Uint8Array (how it was stored)
+  const privateKeyBytes = new Uint8Array(Buffer.from(privateKeyHex, "hex"))
+  return new Identity(privateKeyBytes)
 }
 
 export async function generateVoteProof(
