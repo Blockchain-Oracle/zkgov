@@ -1,5 +1,16 @@
 import "dotenv/config"
 
+// Startup security warnings
+if (!process.env.JWT_SECRET) {
+  console.warn("WARNING: Using default JWT_SECRET. Set a real secret in .env for production.")
+}
+if (!process.env.IDENTITY_ENCRYPTION_KEY) {
+  console.warn("WARNING: Using default IDENTITY_ENCRYPTION_KEY. Generate one with: openssl rand -hex 32")
+}
+if (!process.env.RELAYER_PRIVATE_KEY) {
+  console.warn("WARNING: RELAYER_PRIVATE_KEY not set. On-chain transactions will fail.")
+}
+
 export const env = {
   PORT: parseInt(process.env.PORT || "3001"),
   DATABASE_URL: process.env.DATABASE_URL || "postgresql://apple@localhost:5433/zkgov",
