@@ -1,0 +1,73 @@
+'use client'
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useAuth } from "@/hooks/useAuth";
+import { useAccount } from "wagmi";
+import { NAVIGATION_ITEMS, APP_NAME } from "@/lib/constants";
+import { cn } from "@/lib/utils";
+
+export function NavContent() {
+  const pathname = usePathname();
+  const { user, login, isSigning, isLoading } = useAuth();
+  const { isConnected, address } = useAccount();
+
+  return (
+    <header className="sticky top-0 z-50 w-full bg-[#0a0a0a]/80 backdrop-blur-md border-b border-white/[0.06]">
+      <nav className="max-w-[1400px] mx-auto h-16 px-6 flex items-center justify-between">
+        <div className="flex items-center gap-8">
+          <Link href="/" className="flex items-center gap-3 group">
+            <div className="w-8 h-8 flex items-center justify-center bg-white rounded-sm transition-transform group-hover:scale-95">
+              <span className="text-black font-bold text-lg select-none">Z</span>
+            </div>
+            <span className="font-bold text-lg tracking-[-0.03em] select-none">
+              {APP_NAME}
+            </span>
+          </Link>
+
+          <div className="hidden md:flex items-center gap-1">
+            {NAVIGATION_ITEMS.map((item) => (
+              <Link
+                key={item.label}
+                href={item.href}
+                className={cn(
+                  "nav-pill text-zinc-400 hover:text-white transition-colors uppercase",
+                  (pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href))) && "active text-white"
+                )}
+              >
+                {item.label}
+              </Link>
+
+            ))}
+          </div>
+        </div>
+
+        <div className="flex items-center gap-4">
+          {isConnected ? (
+            user ? (
+              <Link 
+                href="/profile"
+                className="flex items-center gap-3 px-4 py-2 bg-white/[0.05] border border-white/[0.1] rounded-sm hover:bg-white/[0.08] transition-colors"
+              >
+                <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
+                <span className="text-[11px] font-bold tracking-tight uppercase">
+                  {address?.slice(0, 6)}...{address?.slice(-4)}
+                </span>
+              </Link>
+            ) : (
+              <button 
+                onClick={login}
+                disabled={isSigning}
+                className="px-5 py-2 bg-indigo-500 text-white font-bold text-[11px] tracking-[0.1em] rounded-sm hover:bg-indigo-600 transition-colors uppercase disabled:opacity-50"
+              >
+                {isSigning ? "SIGNING..." : "SIGN IN TO GOVERN"}
+              </button>
+            )
+          ) : (
+            <appkit-button />
+          )}
+        </div>
+      </nav>
+    </header>
+  );
+}
