@@ -37,7 +37,7 @@ export function NavContent() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-[#0a0a0a]/80 dark:bg-[#0a0a0a]/80 backdrop-blur-md border-b border-white/[0.06]">
+    <header className="sticky top-0 z-50 w-full bg-white/80 dark:bg-[#0a0a0a]/80 backdrop-blur-md border-b border-zinc-200 dark:border-white/[0.06] transition-colors duration-300">
       <nav className="max-w-[1400px] mx-auto h-16 px-6 flex items-center justify-between">
         <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center gap-3 group">
@@ -55,8 +55,8 @@ export function NavContent() {
                 key={item.label}
                 href={item.href}
                 className={cn(
-                  "nav-pill text-zinc-400 hover:text-white transition-colors uppercase",
-                  (pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href))) && "active text-white"
+                  "nav-pill text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors uppercase",
+                  (pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href))) && "active text-zinc-900 dark:text-white"
                 )}
               >
                 {item.label}
@@ -69,7 +69,7 @@ export function NavContent() {
         <div className="flex items-center gap-4">
           <button
             onClick={toggleTheme}
-            className="w-9 h-9 flex items-center justify-center rounded-sm border border-white/[0.08] hover:border-white/20 transition-colors text-zinc-500 hover:text-white"
+            className="w-9 h-9 flex items-center justify-center rounded-sm border border-zinc-200 dark:border-white/[0.08] hover:border-zinc-400 dark:hover:border-white/20 transition-colors text-zinc-500 hover:text-zinc-900 dark:hover:text-white"
             aria-label="Toggle theme"
           >
             {isDark ? <Sun size={16} /> : <Moon size={16} />}
@@ -78,7 +78,7 @@ export function NavContent() {
             user ? (
               <Link 
                 href="/profile"
-                className="flex items-center gap-3 px-4 py-2 bg-white/[0.05] border border-white/[0.1] rounded-sm hover:bg-white/[0.08] transition-colors"
+                className="flex items-center gap-3 px-4 py-2 bg-zinc-100 dark:bg-white/[0.05] border border-zinc-200 dark:border-white/[0.1] rounded-sm hover:bg-zinc-200 dark:hover:bg-white/[0.08] transition-colors"
               >
                 <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
                 <span className="text-[11px] font-bold tracking-tight uppercase">
