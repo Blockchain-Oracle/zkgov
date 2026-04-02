@@ -41,7 +41,7 @@ export default function ProposalsPage() {
         
         <Link 
           href="/proposals/new"
-          className="flex items-center gap-2 px-6 py-2.5 bg-indigo-500 text-white font-bold text-[11px] tracking-[0.1em] rounded-sm hover:bg-indigo-600 transition-colors uppercase"
+          className="flex items-center gap-2 px-6 py-2.5 bg-indigo-500 text-zinc-900 dark:text-white font-bold text-[11px] tracking-[0.1em] rounded-sm hover:bg-indigo-600 transition-colors uppercase"
         >
           <Plus size={14} />
           Create Proposal
@@ -49,7 +49,7 @@ export default function ProposalsPage() {
       </div>
 
       {/* Stats Bar (Frames pattern) */}
-      <section className="w-full border-y border-white/[0.04] py-8 grid grid-cols-2 md:grid-cols-4 gap-12 animate-in">
+      <section className="w-full border-y border-black/[0.04] dark:border-white/[0.04] py-8 grid grid-cols-2 md:grid-cols-4 gap-12 animate-in">
         {[
           { label: STATS_LABELS.PROPOSALS, value: proposals.length.toString() },
           { label: "PARTICIPATION", value: "84%" },
@@ -70,11 +70,11 @@ export default function ProposalsPage() {
           <input 
             type="text" 
             placeholder="SEARCH PROPOSALS..." 
-            className="w-full bg-[#111] border border-white/[0.06] rounded-sm py-2.5 pl-10 pr-4 text-[11px] font-medium tracking-wider text-white focus:outline-none focus:border-white/20 transition-colors"
+            className="w-full bg-[#EBE8E1] dark:bg-[#111] border border-black/[0.06] dark:border-white/[0.06] rounded-sm py-2.5 pl-10 pr-4 text-[11px] font-medium tracking-wider text-zinc-900 dark:text-white focus:outline-none focus:border-white/20 transition-colors"
           />
         </div>
 
-        <div className="flex items-center gap-2 bg-[#111] border border-white/[0.06] rounded-sm p-1">
+        <div className="flex items-center gap-2 bg-[#EBE8E1] dark:bg-[#111] border border-black/[0.06] dark:border-white/[0.06] rounded-sm p-1">
           {['active', 'succeeded', 'defeated', 'all'].map((f) => (
             <button
               key={f}
@@ -82,7 +82,7 @@ export default function ProposalsPage() {
               className={`px-4 py-1.5 text-[10px] font-bold tracking-[0.15em] rounded-sm transition-all uppercase ${
                 filter === f 
                   ? 'bg-white text-black' 
-                  : 'text-zinc-500 hover:text-white'
+                  : 'text-zinc-500 hover:text-zinc-900 dark:hover:text-white'
               }`}
             >
               {f}
@@ -95,14 +95,14 @@ export default function ProposalsPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 animate-in delay-1">
         {loading ? (
           Array.from({ length: 4 }).map((_, i) => (
-            <div key={i} className="h-64 bg-[#111] border border-white/[0.06] rounded-sm animate-pulse"></div>
+            <div key={i} className="h-64 bg-[#EBE8E1] dark:bg-[#111] border border-black/[0.06] dark:border-white/[0.06] rounded-sm animate-pulse"></div>
           ))
         ) : proposals.length > 0 ? (
           proposals.map((proposal) => (
             <ProposalCard key={proposal.id} proposal={proposal} />
           ))
         ) : (
-          <div className="col-span-full h-64 border border-dashed border-white/[0.06] rounded-sm flex flex-col items-center justify-center gap-4">
+          <div className="col-span-full h-64 border border-dashed border-black/[0.06] dark:border-white/[0.06] rounded-sm flex flex-col items-center justify-center gap-4">
             <span className="text-zinc-500 font-medium tracking-widest uppercase">No proposals found</span>
             <button className="text-xs text-indigo-400 font-bold uppercase tracking-widest hover:text-indigo-300">
               Create the first one →

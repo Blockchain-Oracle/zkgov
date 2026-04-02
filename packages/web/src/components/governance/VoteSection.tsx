@@ -100,7 +100,7 @@ export function VoteSection({ proposal, onVoteSuccess }: VoteSectionProps) {
   // 1. Not connected
   if (!isConnected) {
     return (
-      <Card className="p-6 bg-[#111] border-white/[0.06] flex flex-col gap-4 text-center">
+      <Card className="p-6 bg-[#EBE8E1] dark:bg-[#111] border-black/[0.06] dark:border-white/[0.06] flex flex-col gap-4 text-center">
         <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center mx-auto mb-2 text-zinc-500">
           <Shield size={24} />
         </div>
@@ -114,7 +114,7 @@ export function VoteSection({ proposal, onVoteSuccess }: VoteSectionProps) {
   // 2. Connected but not signed in (no ZK identity)
   if (!user) {
     return (
-      <Card className="p-6 bg-[#111] border-white/[0.06] flex flex-col gap-4">
+      <Card className="p-6 bg-[#EBE8E1] dark:bg-[#111] border-black/[0.06] dark:border-white/[0.06] flex flex-col gap-4">
         <h3 className="text-sm font-bold tracking-tight uppercase">Identity Required</h3>
         <p className="text-xs text-zinc-500">Create your anonymous voter identity to cast private votes.</p>
         <Button 
@@ -134,7 +134,7 @@ export function VoteSection({ proposal, onVoteSuccess }: VoteSectionProps) {
   // But we also need the user to be added to the Semaphore group on-chain.
   if (!user.kycVerified) {
     return (
-      <Card className="p-6 bg-[#111] border-white/[0.06] flex flex-col gap-4">
+      <Card className="p-6 bg-[#EBE8E1] dark:bg-[#111] border-black/[0.06] dark:border-white/[0.06] flex flex-col gap-4">
         <div className="flex items-center gap-2 text-amber-400">
           <AlertCircle size={16} />
           <h3 className="text-xs font-bold tracking-widest uppercase">KYC Verification Needed</h3>
@@ -159,7 +159,7 @@ export function VoteSection({ proposal, onVoteSuccess }: VoteSectionProps) {
 
   // 4. Ready to vote (or success)
   return (
-    <Card className="p-6 bg-[#111] border-white/[0.06] flex flex-col gap-6">
+    <Card className="p-6 bg-[#EBE8E1] dark:bg-[#111] border-black/[0.06] dark:border-white/[0.06] flex flex-col gap-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2 text-indigo-400">
           <Shield size={16} />
@@ -177,7 +177,7 @@ export function VoteSection({ proposal, onVoteSuccess }: VoteSectionProps) {
             <CheckCircle2 size={24} />
           </div>
           <div className="text-center">
-            <p className="text-sm font-bold text-white uppercase tracking-tight">Vote Submitted</p>
+            <p className="text-sm font-bold text-zinc-900 dark:text-white uppercase tracking-tight">Vote Submitted</p>
             <p className="text-[11px] text-zinc-500 mt-1">Your ZK-verified ballot has been cast.</p>
           </div>
           <a 
@@ -205,7 +205,7 @@ export function VoteSection({ proposal, onVoteSuccess }: VoteSectionProps) {
                 onClick={() => handleVote(choice.value as VoteChoice)}
                 disabled={votingState !== 'idle'}
                 className={cn(
-                  "w-full py-3 bg-[#0a0a0a] border border-white/[0.08] text-white font-bold text-[11px] tracking-[0.2em] rounded-sm transition-all flex items-center justify-center uppercase",
+                  "w-full py-3 bg-[#F5F2EB] dark:bg-[#0a0a0a] border border-black/[0.08] dark:border-white/[0.08] text-zinc-900 dark:text-white font-bold text-[11px] tracking-[0.2em] rounded-sm transition-all flex items-center justify-center uppercase",
                   votingState === 'idle' ? choice.color : 'opacity-50 cursor-not-allowed'
                 )}
               >
@@ -230,7 +230,7 @@ export function VoteSection({ proposal, onVoteSuccess }: VoteSectionProps) {
         </div>
       )}
 
-      <div className="flex items-start gap-3 p-3 bg-white/[0.02] border border-white/[0.04] rounded-sm">
+      <div className="flex items-start gap-3 p-3 bg-white/[0.02] border border-black/[0.04] dark:border-white/[0.04] rounded-sm">
         <Info className="text-zinc-500 shrink-0 mt-0.5" size={14} />
         <p className="text-[10px] text-zinc-500 leading-relaxed">
           The ZKGov relayer handles gas costs for all votes. Your transaction is indistinguishable from others in the voter group.

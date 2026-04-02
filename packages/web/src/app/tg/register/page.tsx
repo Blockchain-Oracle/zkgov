@@ -55,11 +55,11 @@ export default function TelegramRegisterPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] flex flex-col items-center justify-center p-6 text-center">
+    <div className="min-h-screen bg-[#F5F2EB] dark:bg-[#0a0a0a] flex flex-col items-center justify-center p-6 text-center">
       {step === 'connect' && (
         <>
           <Shield className="w-16 h-16 text-indigo-400 mb-6" />
-          <h1 className="text-xl font-bold text-white mb-2">
+          <h1 className="text-xl font-bold text-zinc-900 dark:text-white mb-2">
             Welcome to ZKGov
           </h1>
           <p className="text-zinc-500 text-sm mb-8 max-w-[280px]">
@@ -67,7 +67,7 @@ export default function TelegramRegisterPage() {
           </p>
           <button
             onClick={startRegistration}
-            className="w-full max-w-[280px] py-4 rounded-sm bg-indigo-500 text-white font-bold text-sm tracking-wider uppercase transition-all active:scale-[0.97] hover:bg-indigo-600 flex items-center justify-center gap-2"
+            className="w-full max-w-[280px] py-4 rounded-sm bg-indigo-500 text-zinc-900 dark:text-white font-bold text-sm tracking-wider uppercase transition-all active:scale-[0.97] hover:bg-indigo-600 flex items-center justify-center gap-2"
           >
             <Wallet size={16} />
             Connect Wallet
@@ -81,7 +81,7 @@ export default function TelegramRegisterPage() {
       {step === 'verifying' && (
         <>
           <Loader2 className="w-12 h-12 text-indigo-400 animate-spin mb-4" />
-          <h1 className="text-lg font-bold text-white mb-2">Checking KYC Status</h1>
+          <h1 className="text-lg font-bold text-zinc-900 dark:text-white mb-2">Checking KYC Status</h1>
           <p className="text-zinc-500 text-sm">
             Verifying your identity on HashKey Chain...
           </p>
@@ -94,7 +94,7 @@ export default function TelegramRegisterPage() {
             <Shield className="w-12 h-12 text-indigo-400" />
             <Loader2 className="w-5 h-5 text-emerald-400 animate-spin absolute -bottom-1 -right-1" />
           </div>
-          <h1 className="text-lg font-bold text-white mb-2">Creating Voter Identity</h1>
+          <h1 className="text-lg font-bold text-zinc-900 dark:text-white mb-2">Creating Voter Identity</h1>
           <p className="text-zinc-500 text-sm max-w-[280px]">
             Generating your anonymous Semaphore identity. This only happens once.
           </p>
@@ -104,7 +104,7 @@ export default function TelegramRegisterPage() {
       {step === 'done' && (
         <>
           <CheckCircle2 className="w-16 h-16 text-emerald-400 mb-4" />
-          <h1 className="text-xl font-bold text-white mb-2">You&apos;re Registered</h1>
+          <h1 className="text-xl font-bold text-zinc-900 dark:text-white mb-2">You&apos;re Registered</h1>
           <p className="text-zinc-500 text-sm max-w-[280px]">
             Your votes are now private and verified. Close this and tap Vote Now in the group.
           </p>
@@ -114,11 +114,11 @@ export default function TelegramRegisterPage() {
       {step === 'error' && (
         <>
           <AlertCircle className="w-12 h-12 text-rose-400 mb-4" />
-          <h1 className="text-lg font-bold text-white mb-2">Registration Failed</h1>
+          <h1 className="text-lg font-bold text-zinc-900 dark:text-white mb-2">Registration Failed</h1>
           <p className="text-rose-400/80 text-sm mb-6">{error}</p>
           <button
             onClick={() => { setStep('connect'); setError(''); }}
-            className="px-6 py-3 rounded-sm border border-white/10 text-white text-sm font-bold tracking-wider uppercase"
+            className="px-6 py-3 rounded-sm border border-black/10 dark:border-white/10 text-zinc-900 dark:text-white text-sm font-bold tracking-wider uppercase"
           >
             Try Again
           </button>

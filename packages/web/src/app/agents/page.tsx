@@ -72,7 +72,7 @@ export default function AgentHubPage() {
         </div>
         
         <div className="flex items-center gap-2">
-          <div className="px-4 py-2 bg-white/[0.03] border border-white/[0.08] rounded-sm flex flex-col items-end">
+          <div className="px-4 py-2 bg-black/[0.03] dark:bg-white/[0.03] border border-black/[0.08] dark:border-white/[0.08] rounded-sm flex flex-col items-end">
             <span className="text-[9px] font-bold text-zinc-600 uppercase tracking-widest">Total Active Agents</span>
             <span className="text-xl font-bold tracking-tight">{agents.length}</span>
           </div>
@@ -86,13 +86,13 @@ export default function AgentHubPage() {
           <input 
             type="text" 
             placeholder="FILTER AGENTS BY NAME OR ADDR..." 
-            className="w-full bg-[#111] border border-white/[0.06] rounded-sm py-2.5 pl-10 pr-4 text-[11px] font-medium tracking-wider text-white focus:outline-none focus:border-white/20 transition-colors uppercase"
+            className="w-full bg-[#EBE8E1] dark:bg-[#111] border border-black/[0.06] dark:border-white/[0.06] rounded-sm py-2.5 pl-10 pr-4 text-[11px] font-medium tracking-wider text-zinc-900 dark:text-white focus:outline-none focus:border-white/20 transition-colors uppercase"
           />
         </div>
 
         <div className="flex items-center gap-2">
           <span className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest mr-2">Sort by:</span>
-          <select className="bg-[#111] border border-white/[0.06] rounded-sm px-4 py-2 text-[10px] font-bold uppercase tracking-widest outline-none text-zinc-400">
+          <select className="bg-[#EBE8E1] dark:bg-[#111] border border-black/[0.06] dark:border-white/[0.06] rounded-sm px-4 py-2 text-[10px] font-bold uppercase tracking-widest outline-none text-zinc-400">
             <option>ACTIVITY COUNT</option>
             <option>NEWEST JOINED</option>
           </select>
@@ -103,10 +103,10 @@ export default function AgentHubPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-in delay-1">
         {loading ? (
           Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="h-48 bg-[#111] border border-white/[0.06] rounded-sm animate-pulse"></div>
+            <div key={i} className="h-48 bg-[#EBE8E1] dark:bg-[#111] border border-black/[0.06] dark:border-white/[0.06] rounded-sm animate-pulse"></div>
           ))
         ) : agents.map((agent) => (
-          <Card key={agent.id} className="bg-[#111] border-white/[0.06] p-6 hover:border-white/[0.15] transition-all group overflow-hidden relative">
+          <Card key={agent.id} className="bg-[#EBE8E1] dark:bg-[#111] border-black/[0.06] dark:border-white/[0.06] p-6 hover:border-black/[0.15] dark:hover:border-white/[0.15] transition-all group overflow-hidden relative">
             {/* Background Glow */}
             <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/5 blur-3xl rounded-full translate-x-16 -translate-y-16 group-hover:bg-indigo-500/10 transition-colors"></div>
             
@@ -121,7 +121,7 @@ export default function AgentHubPage() {
               </div>
 
               <div className="flex flex-col gap-1">
-                <h3 className="text-lg font-bold tracking-tight text-white group-hover:text-indigo-100 transition-colors">
+                <h3 className="text-lg font-bold tracking-tight text-zinc-900 dark:text-white group-hover:text-indigo-100 transition-colors">
                   {agent.name}
                 </h3>
                 <div className="flex items-center gap-2">
@@ -131,7 +131,7 @@ export default function AgentHubPage() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4 border-t border-white/[0.04] pt-4 mt-2">
+              <div className="grid grid-cols-2 gap-4 border-t border-black/[0.04] dark:border-white/[0.04] pt-4 mt-2">
                 <div className="flex flex-col gap-0.5">
                   <span className="text-[9px] font-bold text-zinc-600 uppercase tracking-widest flex items-center gap-1">
                     <BarChart3 size={10} />
@@ -148,7 +148,7 @@ export default function AgentHubPage() {
                 </div>
               </div>
 
-              <div className="flex items-center justify-between mt-2 pt-4 border-t border-white/[0.04]">
+              <div className="flex items-center justify-between mt-2 pt-4 border-t border-black/[0.04] dark:border-white/[0.04]">
                  <span className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest">
                   JOINED {new Date(agent.joinedAt).getFullYear()}
                 </span>
@@ -164,12 +164,12 @@ export default function AgentHubPage() {
       </div>
 
       {/* Info Footer */}
-      <div className="p-8 bg-[#111] border border-white/[0.06] rounded-sm flex flex-col md:flex-row items-center gap-8 animate-in delay-2">
-        <div className="w-14 h-14 rounded-full bg-white/[0.03] border border-white/[0.06] flex items-center justify-center text-zinc-500 shrink-0">
+      <div className="p-8 bg-[#EBE8E1] dark:bg-[#111] border border-black/[0.06] dark:border-white/[0.06] rounded-sm flex flex-col md:flex-row items-center gap-8 animate-in delay-2">
+        <div className="w-14 h-14 rounded-full bg-black/[0.03] dark:bg-white/[0.03] border border-black/[0.06] dark:border-white/[0.06] flex items-center justify-center text-zinc-500 shrink-0">
           <ShieldCheck size={28} strokeWidth={1} />
         </div>
         <div className="flex flex-col gap-2">
-          <h4 className="text-xs font-bold uppercase tracking-[0.2em] text-white">The Agent Verification Standard</h4>
+          <h4 className="text-xs font-bold uppercase tracking-[0.2em] text-zinc-900 dark:text-white">The Agent Verification Standard</h4>
           <p className="text-sm text-zinc-500 leading-relaxed font-mono max-w-3xl">
             In ZKGov, agents are not separate entities. They are cryptographically linked to a human owner who has passed KYC. 
             All agent actions are attributable to their owner's ZK-identity while maintaining on-chain privacy.

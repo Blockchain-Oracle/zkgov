@@ -130,7 +130,7 @@ export default function ActivityPage() {
               )}></div>
               <button 
                 onClick={() => setAutoUpdate(!autoUpdate)}
-                className="text-[10px] font-bold tracking-[0.1em] text-zinc-400 hover:text-white uppercase transition-colors"
+                className="text-[10px] font-bold tracking-[0.1em] text-zinc-400 hover:text-zinc-900 dark:hover:text-white uppercase transition-colors"
               >
                 AUTO UPDATE {autoUpdate ? 'ON' : 'OFF'}
               </button>
@@ -138,13 +138,13 @@ export default function ActivityPage() {
           </div>
         </div>
 
-        <div className="flex items-center gap-2 bg-[#111] border border-white/[0.06] rounded-sm p-1">
+        <div className="flex items-center gap-2 bg-[#EBE8E1] dark:bg-[#111] border border-black/[0.06] dark:border-white/[0.06] rounded-sm p-1">
           {['ALL ACTIVITY', 'VOTES', 'PROPOSALS', 'COMMENTS'].map((f) => (
             <button
               key={f}
               className={cn(
                 "px-4 py-1.5 text-[10px] font-bold tracking-[0.15em] rounded-sm transition-all uppercase whitespace-nowrap",
-                f === 'ALL ACTIVITY' ? 'bg-white text-black' : 'text-zinc-500 hover:text-white'
+                f === 'ALL ACTIVITY' ? 'bg-white text-black' : 'text-zinc-500 hover:text-zinc-900 dark:hover:text-white'
               )}
             >
               {f}
@@ -153,9 +153,9 @@ export default function ActivityPage() {
         </div>
       </div>
 
-      <div className="flex flex-col border border-white/[0.06] rounded-sm overflow-hidden bg-[#0c0c0c]">
+      <div className="flex flex-col border border-black/[0.06] dark:border-white/[0.06] rounded-sm overflow-hidden bg-[#EBE8E1] dark:bg-[#0c0c0c]">
         {/* Table Header */}
-        <div className="grid grid-cols-12 gap-4 px-6 py-4 border-b border-white/[0.06] bg-[#111]">
+        <div className="grid grid-cols-12 gap-4 px-6 py-4 border-b border-black/[0.06] dark:border-white/[0.06] bg-[#EBE8E1] dark:bg-[#111]">
           <div className="col-span-1 text-[10px] font-bold tracking-widest text-zinc-600 uppercase">TYPE</div>
           <div className="col-span-7 text-[10px] font-bold tracking-widest text-zinc-600 uppercase">EVENT</div>
           <div className="col-span-2 text-[10px] font-bold tracking-widest text-zinc-600 uppercase">PLATFORM</div>
@@ -168,7 +168,7 @@ export default function ActivityPage() {
             <div 
               key={activity.id} 
               className={cn(
-                "grid grid-cols-12 gap-4 px-6 py-5 border-b border-white/[0.04] items-center hover:bg-white/[0.02] transition-colors cursor-pointer animate-in group",
+                "grid grid-cols-12 gap-4 px-6 py-5 border-b border-black/[0.04] dark:border-white/[0.04] items-center hover:bg-white/[0.02] transition-colors cursor-pointer animate-in group",
                 idx % 2 === 0 ? "bg-transparent" : "bg-white/[0.01]"
               )}
               style={{ animationDelay: `${idx * 0.05}s` }}
@@ -214,25 +214,25 @@ export default function ActivityPage() {
         </div>
 
         {/* Pagination (Frames style) */}
-        <div className="flex items-center justify-between px-6 py-6 bg-[#111]">
+        <div className="flex items-center justify-between px-6 py-6 bg-[#EBE8E1] dark:bg-[#111]">
           <span className="text-[10px] font-bold tracking-widest text-zinc-600 uppercase">
             PAGE 1 OF 482
           </span>
           <div className="flex items-center gap-1">
-            <button className="px-4 py-2 border border-white/[0.06] text-[10px] font-bold tracking-widest text-zinc-500 hover:text-white transition-colors uppercase disabled:opacity-30">
+            <button className="px-4 py-2 border border-black/[0.06] dark:border-white/[0.06] text-[10px] font-bold tracking-widest text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors uppercase disabled:opacity-30">
               PREVIOUS
             </button>
             <div className="flex items-center px-4">
-              <span className="text-[10px] font-bold tracking-widest text-white">1</span>
+              <span className="text-[10px] font-bold tracking-widest text-zinc-900 dark:text-white">1</span>
             </div>
-            <button className="px-4 py-2 border border-white/[0.06] text-[10px] font-bold tracking-widest text-zinc-500 hover:text-white transition-colors uppercase">
+            <button className="px-4 py-2 border border-black/[0.06] dark:border-white/[0.06] text-[10px] font-bold tracking-widest text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors uppercase">
               NEXT
             </button>
           </div>
         </div>
       </div>
 
-      <div className="flex flex-col gap-4 p-8 border border-white/[0.06] rounded-sm bg-[#111] animate-in delay-2">
+      <div className="flex flex-col gap-4 p-8 border border-black/[0.06] dark:border-white/[0.06] rounded-sm bg-[#EBE8E1] dark:bg-[#111] animate-in delay-2">
         <h3 className="text-xs font-bold tracking-[0.2em] text-zinc-500 uppercase">Audit Principle</h3>
         <p className="text-sm text-zinc-400 leading-relaxed max-w-2xl font-mono">
           All actions in the ZKGov layer are verified on-chain. While identity is private, the mathematical proof of eligibility and the result of every vote is public and immutable. 

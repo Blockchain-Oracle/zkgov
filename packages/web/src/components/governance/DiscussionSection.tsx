@@ -115,7 +115,7 @@ export function DiscussionSection({ proposalId }: DiscussionSectionProps) {
   return (
     <div className="flex flex-col gap-8 mt-12 animate-in delay-3">
       <div className="flex items-center justify-between">
-        <h2 className="text-xl font-bold uppercase tracking-widest text-white flex items-center gap-3">
+        <h2 className="text-xl font-bold uppercase tracking-widest text-zinc-900 dark:text-white flex items-center gap-3">
           <MessageSquare size={18} className="text-zinc-500" />
           Discussion
         </h2>
@@ -128,14 +128,14 @@ export function DiscussionSection({ proposalId }: DiscussionSectionProps) {
 
       {/* Post Comment Area */}
       {user ? (
-        <div className="flex flex-col gap-4 p-6 bg-[#111] border border-white/[0.06] rounded-sm">
+        <div className="flex flex-col gap-4 p-6 bg-[#EBE8E1] dark:bg-[#111] border border-black/[0.06] dark:border-white/[0.06] rounded-sm">
           <div className="flex flex-col gap-2">
             <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-[0.2em]">Post a thought</label>
             <textarea 
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
               placeholder="YOUR PERSPECTIVE MATTERS..."
-              className="w-full bg-[#0a0a0a] border border-white/10 rounded-sm p-4 text-sm font-mono text-zinc-300 focus:border-indigo-500/50 outline-none transition-colors resize-none h-24"
+              className="w-full bg-[#F5F2EB] dark:bg-[#0a0a0a] border border-black/10 dark:border-white/10 rounded-sm p-4 text-sm font-mono text-zinc-300 focus:border-indigo-500/50 outline-none transition-colors resize-none h-24"
             />
           </div>
           <div className="flex items-center justify-between">
@@ -146,7 +146,7 @@ export function DiscussionSection({ proposalId }: DiscussionSectionProps) {
             <Button 
               onClick={handlePostComment}
               disabled={isSubmitting || !newComment.trim()}
-              className="bg-indigo-500 hover:bg-indigo-600 text-white font-bold text-[10px] uppercase tracking-[0.2em] h-9 px-6"
+              className="bg-indigo-500 hover:bg-indigo-600 text-zinc-900 dark:text-white font-bold text-[10px] uppercase tracking-[0.2em] h-9 px-6"
             >
               {isSubmitting ? <Loader2 className="animate-spin mr-2" size={14} /> : <Send size={14} className="mr-2" />}
               POST MESSAGE
@@ -154,7 +154,7 @@ export function DiscussionSection({ proposalId }: DiscussionSectionProps) {
           </div>
         </div>
       ) : (
-        <div className="p-8 border border-dashed border-white/[0.06] rounded-sm flex flex-col items-center justify-center gap-4 text-center">
+        <div className="p-8 border border-dashed border-black/[0.06] dark:border-white/[0.06] rounded-sm flex flex-col items-center justify-center gap-4 text-center">
           <p className="text-xs text-zinc-600 uppercase tracking-widest font-bold">Sign in to participate in the debate</p>
         </div>
       )}

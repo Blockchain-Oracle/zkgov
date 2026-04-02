@@ -36,7 +36,7 @@ export function ProposalCard({ proposal }: ProposalCardProps) {
   return (
     <Link 
       href={`/proposals/${id}`}
-      className="block group relative bg-[#111] border border-white/[0.06] rounded-sm p-6 card-hover overflow-hidden"
+      className="block group relative bg-[#EBE8E1] dark:bg-[#111] border border-black/[0.06] dark:border-white/[0.06] rounded-sm p-6 card-hover overflow-hidden"
     >
       {/* Background Glow Effect */}
       <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
@@ -53,7 +53,7 @@ export function ProposalCard({ proposal }: ProposalCardProps) {
         </div>
 
         {/* Title */}
-        <h3 className="text-lg font-bold tracking-tight text-white leading-tight group-hover:text-indigo-100 transition-colors">
+        <h3 className="text-lg font-bold tracking-tight text-zinc-900 dark:text-white leading-tight group-hover:text-indigo-100 transition-colors">
           {title}
         </h3>
 
@@ -97,7 +97,7 @@ export function ProposalCard({ proposal }: ProposalCardProps) {
         </div>
 
         {/* Footer: Metadata (Frames Pattern) */}
-        <div className="flex items-center gap-6 border-t border-white/[0.04] pt-4">
+        <div className="flex items-center gap-6 border-t border-black/[0.04] dark:border-white/[0.04] pt-4">
           <div className="flex flex-col gap-0.5">
             <span className="text-[9px] font-bold text-zinc-600 uppercase tracking-widest">Time Remaining</span>
             <span className="text-[11px] font-medium text-zinc-400">{timeRemaining || 'Ended'}</span>

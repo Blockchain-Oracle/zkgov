@@ -28,10 +28,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased dark`}>
-      <body className="min-h-full flex flex-col font-mono bg-white dark:bg-[#0a0a0a] text-zinc-900 dark:text-[#fafafa] transition-colors duration-300">
+      <body className="min-h-full flex flex-col font-mono bg-[#F5F2EB] dark:bg-[#0a0a0a] text-[#1a1a1a] dark:text-[#fafafa] transition-colors duration-300">
         <AppProviders>
           {/* Top Announcement Bar */}
-          <div className="w-full bg-zinc-100 dark:bg-[#111] border-b border-zinc-200 dark:border-white/[0.04] py-1.5 px-6 flex items-center justify-between">
+          <div className="w-full bg-[#EBE8E1] dark:bg-[#111] border-b border-black/[0.06] dark:border-white/[0.04] py-1.5 px-6 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-pulse"></span>
               <span className="text-[10px] font-medium tracking-[0.15em] text-zinc-500 uppercase">
@@ -61,7 +61,7 @@ export default function RootLayout({
                   <a
                     key={social}
                     href="#"
-                    className="text-[11px] font-medium tracking-[0.15em] text-zinc-400 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors"
+                    className="text-[11px] font-medium tracking-[0.15em] text-zinc-400 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-900 dark:hover:text-white transition-colors"
                   >
                     {social}
                   </a>

@@ -73,7 +73,7 @@ export default function ProfilePage() {
       {/* Profile Header */}
       <div className="flex flex-col md:flex-row items-center md:items-end justify-between gap-6 animate-in">
         <div className="flex items-center gap-6">
-          <div className="w-20 h-20 rounded-sm bg-white/[0.03] border border-white/[0.06] flex items-center justify-center text-zinc-500">
+          <div className="w-20 h-20 rounded-sm bg-black/[0.03] dark:bg-white/[0.03] border border-black/[0.06] dark:border-white/[0.06] flex items-center justify-center text-zinc-500">
             <User size={40} strokeWidth={1} />
           </div>
           <div className="flex flex-col gap-1">
@@ -82,7 +82,7 @@ export default function ProfilePage() {
               <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest">
                 {address?.slice(0, 10)}...{address?.slice(-8)}
               </span>
-              <Badge variant="outline" className="text-[9px] border-white/10 text-zinc-400 rounded-sm">
+              <Badge variant="outline" className="text-[9px] border-black/10 dark:border-white/10 text-zinc-400 rounded-sm">
                 REGISTERED {new Date(user.createdAt).getFullYear()}
               </Badge>
             </div>
@@ -109,7 +109,7 @@ export default function ProfilePage() {
           <section className="flex flex-col gap-4 animate-in delay-1">
             <h3 className="text-[10px] font-bold tracking-[0.2em] text-zinc-600 uppercase">Platform Links</h3>
             <div className="flex flex-col gap-2">
-              <button className="flex items-center justify-between p-4 bg-[#111] border border-white/[0.06] rounded-sm hover:border-white/[0.15] transition-colors group">
+              <button className="flex items-center justify-between p-4 bg-[#EBE8E1] dark:bg-[#111] border border-black/[0.06] dark:border-white/[0.06] rounded-sm hover:border-black/[0.15] dark:hover:border-white/[0.15] transition-colors group">
                 <div className="flex items-center gap-3">
                   <Send size={16} className={cn(user.telegramLinked ? "text-[#24A1DE]" : "text-zinc-600")} />
                   <span className="text-[11px] font-bold uppercase tracking-widest">Telegram</span>
@@ -117,11 +117,11 @@ export default function ProfilePage() {
                 {user.telegramLinked ? (
                   <CheckCircle2 size={14} className="text-emerald-500" />
                 ) : (
-                  <span className="text-[10px] font-bold text-zinc-500 group-hover:text-white uppercase">Link</span>
+                  <span className="text-[10px] font-bold text-zinc-500 group-hover:text-zinc-900 dark:hover:text-white uppercase">Link</span>
                 )}
               </button>
 
-              <button className="flex items-center justify-between p-4 bg-[#111] border border-white/[0.06] rounded-sm hover:border-white/[0.15] transition-colors group">
+              <button className="flex items-center justify-between p-4 bg-[#EBE8E1] dark:bg-[#111] border border-black/[0.06] dark:border-white/[0.06] rounded-sm hover:border-black/[0.15] dark:hover:border-white/[0.15] transition-colors group">
                 <div className="flex items-center gap-3">
                   <DiscordIcon size={16} className={cn(user.discordLinked ? "text-[#5865F2]" : "text-zinc-600")} />
                   <span className="text-[11px] font-bold uppercase tracking-widest">Discord</span>
@@ -129,7 +129,7 @@ export default function ProfilePage() {
                 {user.discordLinked ? (
                   <CheckCircle2 size={14} className="text-emerald-500" />
                 ) : (
-                  <span className="text-[10px] font-bold text-zinc-500 group-hover:text-white uppercase">Link</span>
+                  <span className="text-[10px] font-bold text-zinc-500 group-hover:text-zinc-900 dark:hover:text-white uppercase">Link</span>
                 )}
               </button>
             </div>
@@ -138,11 +138,11 @@ export default function ProfilePage() {
           <section className="flex flex-col gap-4 animate-in delay-2">
             <h3 className="text-[10px] font-bold tracking-[0.2em] text-zinc-600 uppercase">Voting Statistics</h3>
             <div className="grid grid-cols-2 gap-4">
-              <div className="p-4 bg-[#111] border border-white/[0.06] rounded-sm flex flex-col gap-1">
+              <div className="p-4 bg-[#EBE8E1] dark:bg-[#111] border border-black/[0.06] dark:border-white/[0.06] rounded-sm flex flex-col gap-1">
                 <span className="text-[9px] font-bold text-zinc-600 uppercase">Voted</span>
                 <span className="text-xl font-bold tracking-tighter">12</span>
               </div>
-              <div className="p-4 bg-[#111] border border-white/[0.06] rounded-sm flex flex-col gap-1">
+              <div className="p-4 bg-[#EBE8E1] dark:bg-[#111] border border-black/[0.06] dark:border-white/[0.06] rounded-sm flex flex-col gap-1">
                 <span className="text-[9px] font-bold text-zinc-600 uppercase">Quorum Hit</span>
                 <span className="text-xl font-bold tracking-tighter">84%</span>
               </div>
@@ -158,14 +158,14 @@ export default function ProfilePage() {
               variant="outline" 
               size="sm" 
               onClick={() => setIsRegisteringAgent(true)}
-              className="h-8 border-white/10 text-[10px] font-bold tracking-widest uppercase"
+              className="h-8 border-black/10 dark:border-white/10 text-[10px] font-bold tracking-widest uppercase"
             >
               <Plus size={14} className="mr-1" /> Register Agent
             </Button>
           </div>
 
           {isRegisteringAgent && (
-            <Card className="p-6 bg-[#111] border-indigo-500/30 flex flex-col gap-4 animate-in">
+            <Card className="p-6 bg-[#EBE8E1] dark:bg-[#111] border-indigo-500/30 flex flex-col gap-4 animate-in">
               <div className="flex flex-col gap-2">
                 <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Agent Name</label>
                 <input 
@@ -173,7 +173,7 @@ export default function ProfilePage() {
                   value={newAgentName}
                   onChange={(e) => setNewAgentName(e.target.value)}
                   placeholder="E.G. TREASURY_ANALYZER_V1"
-                  className="bg-[#0a0a0a] border border-white/10 rounded-sm py-2 px-3 text-xs font-mono focus:border-indigo-500 outline-none transition-colors"
+                  className="bg-[#F5F2EB] dark:bg-[#0a0a0a] border border-black/10 dark:border-white/10 rounded-sm py-2 px-3 text-xs font-mono focus:border-indigo-500 outline-none transition-colors"
                 />
               </div>
               <div className="flex items-center gap-2">
@@ -203,13 +203,13 @@ export default function ProfilePage() {
               <p className="text-[11px] text-zinc-400">
                 Copy this key now. It will not be shown again. Use it to authorize your agent via the ZKGov API.
               </p>
-              <div className="flex items-center gap-2 bg-[#0a0a0a] border border-white/10 rounded-sm p-3">
+              <div className="flex items-center gap-2 bg-[#F5F2EB] dark:bg-[#0a0a0a] border border-black/10 dark:border-white/10 rounded-sm p-3">
                 <code className="flex-1 text-[11px] font-mono text-zinc-300 overflow-hidden text-ellipsis whitespace-nowrap">
                   {apiKey}
                 </code>
                 <button 
                   onClick={() => copyToClipboard(apiKey)}
-                  className="p-2 hover:bg-white/5 rounded-sm transition-colors text-zinc-500 hover:text-white"
+                  className="p-2 hover:bg-white/5 rounded-sm transition-colors text-zinc-500 hover:text-zinc-900 dark:hover:text-white"
                 >
                   {copied ? <CheckCircle2 size={16} className="text-emerald-500" /> : <Copy size={16} />}
                 </button>
@@ -220,13 +220,13 @@ export default function ProfilePage() {
           <div className="flex flex-col gap-3">
             {user.agents.length > 0 ? (
               user.agents.map((agent: { id: string; name: string; isActive: boolean }) => (
-                <div key={agent.id} className="flex items-center justify-between p-5 bg-[#111] border border-white/[0.06] rounded-sm group hover:border-white/[0.15] transition-all">
+                <div key={agent.id} className="flex items-center justify-between p-5 bg-[#EBE8E1] dark:bg-[#111] border border-black/[0.06] dark:border-white/[0.06] rounded-sm group hover:border-black/[0.15] dark:hover:border-white/[0.15] transition-all">
                   <div className="flex items-center gap-4">
                     <div className="w-10 h-10 rounded-sm bg-indigo-500/10 flex items-center justify-center text-indigo-400">
                       <Cpu size={20} strokeWidth={1.5} />
                     </div>
                     <div className="flex flex-col gap-0.5">
-                      <span className="text-sm font-bold tracking-tight text-white">{agent.name}</span>
+                      <span className="text-sm font-bold tracking-tight text-zinc-900 dark:text-white">{agent.name}</span>
                       <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest">
                         ID: {agent.id.slice(0, 8)}...
                       </span>
@@ -244,7 +244,7 @@ export default function ProfilePage() {
                 </div>
               ))
             ) : (
-              <div className="h-48 border border-dashed border-white/[0.06] rounded-sm flex flex-col items-center justify-center gap-4 text-center">
+              <div className="h-48 border border-dashed border-black/[0.06] dark:border-white/[0.06] rounded-sm flex flex-col items-center justify-center gap-4 text-center">
                 <span className="text-zinc-600 text-[11px] font-bold uppercase tracking-[0.2em]">No Agents Authorized</span>
                 <p className="text-[10px] text-zinc-700 max-w-xs text-center leading-relaxed">
                   Register an AI agent to allow it to participate in governance on your behalf.

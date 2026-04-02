@@ -87,7 +87,7 @@ export default function TelegramVotePage({ params }: { params: Promise<{ id: str
   // Loading
   if (!proposal && !error) {
     return (
-      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
+      <div className="min-h-screen bg-[#F5F2EB] dark:bg-[#0a0a0a] flex items-center justify-center">
         <Loader2 className="w-6 h-6 text-indigo-400 animate-spin" />
       </div>
     );
@@ -96,9 +96,9 @@ export default function TelegramVotePage({ params }: { params: Promise<{ id: str
   // Success state
   if (voteState === 'success') {
     return (
-      <div className="min-h-screen bg-[#0a0a0a] flex flex-col items-center justify-center p-6 text-center">
+      <div className="min-h-screen bg-[#F5F2EB] dark:bg-[#0a0a0a] flex flex-col items-center justify-center p-6 text-center">
         <CheckCircle2 className="w-16 h-16 text-emerald-400 mb-4" />
-        <h1 className="text-xl font-bold text-white mb-2">Vote Cast</h1>
+        <h1 className="text-xl font-bold text-zinc-900 dark:text-white mb-2">Vote Cast</h1>
         <p className="text-zinc-500 text-sm">
           Your anonymous vote has been submitted. Closing...
         </p>
@@ -109,12 +109,12 @@ export default function TelegramVotePage({ params }: { params: Promise<{ id: str
   // Voting in progress
   if (voteState === 'voting') {
     return (
-      <div className="min-h-screen bg-[#0a0a0a] flex flex-col items-center justify-center p-6 text-center">
+      <div className="min-h-screen bg-[#F5F2EB] dark:bg-[#0a0a0a] flex flex-col items-center justify-center p-6 text-center">
         <div className="relative mb-4">
           <Shield className="w-16 h-16 text-indigo-400" />
           <Loader2 className="w-6 h-6 text-indigo-400 animate-spin absolute -bottom-1 -right-1" />
         </div>
-        <h1 className="text-xl font-bold text-white mb-2">Generating ZK Proof</h1>
+        <h1 className="text-xl font-bold text-zinc-900 dark:text-white mb-2">Generating ZK Proof</h1>
         <p className="text-zinc-500 text-sm">
           Verifying your eligibility without revealing your identity...
         </p>
@@ -123,13 +123,13 @@ export default function TelegramVotePage({ params }: { params: Promise<{ id: str
   }
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] flex flex-col p-5">
+    <div className="min-h-screen bg-[#F5F2EB] dark:bg-[#0a0a0a] flex flex-col p-5">
       {/* Header */}
       <div className="mb-6">
         <p className="text-[10px] font-bold tracking-[0.15em] text-zinc-600 uppercase mb-2">
           Proposal #{id.padStart(3, '0')}
         </p>
-        <h1 className="text-lg font-bold text-white leading-tight">
+        <h1 className="text-lg font-bold text-zinc-900 dark:text-white leading-tight">
           {proposal?.title}
         </h1>
       </div>

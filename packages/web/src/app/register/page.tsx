@@ -124,7 +124,7 @@ export default function RegisterPage() {
           <button
             onClick={login}
             disabled={isSigning}
-            className="px-8 py-3 bg-indigo-500 text-white font-bold text-sm tracking-wider uppercase rounded-sm hover:bg-indigo-600 transition-colors disabled:opacity-50"
+            className="px-8 py-3 bg-indigo-500 text-zinc-900 dark:text-white font-bold text-sm tracking-wider uppercase rounded-sm hover:bg-indigo-600 transition-colors disabled:opacity-50"
           >
             {isSigning ? 'SIGNING...' : 'SIGN MESSAGE'}
           </button>
@@ -141,7 +141,7 @@ export default function RegisterPage() {
           <button
             onClick={verifyKyc}
             disabled={isLoading}
-            className="px-8 py-3 bg-indigo-500 text-white font-bold text-sm tracking-wider uppercase rounded-sm hover:bg-indigo-600 transition-colors disabled:opacity-50 flex items-center gap-2 mx-auto"
+            className="px-8 py-3 bg-indigo-500 text-zinc-900 dark:text-white font-bold text-sm tracking-wider uppercase rounded-sm hover:bg-indigo-600 transition-colors disabled:opacity-50 flex items-center gap-2 mx-auto"
           >
             {isLoading ? <Loader2 size={16} className="animate-spin" /> : <Shield size={16} />}
             {isLoading ? 'CHECKING...' : 'VERIFY KYC'}

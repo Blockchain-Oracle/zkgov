@@ -45,7 +45,7 @@ export default function Home() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="flex items-center gap-2 px-3 py-1 bg-white/[0.03] border border-white/[0.08] rounded-full"
+          className="flex items-center gap-2 px-3 py-1 bg-black/[0.03] dark:bg-white/[0.03] border border-black/[0.08] dark:border-white/[0.08] rounded-full"
         >
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
           <span className="text-[10px] font-bold tracking-[0.2em] text-zinc-500 uppercase">
@@ -57,10 +57,10 @@ export default function Home() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="max-w-[900px] text-6xl md:text-8xl font-bold tracking-tight leading-[0.85] text-white"
+          className="max-w-[900px] text-6xl md:text-8xl font-bold tracking-tight leading-[0.85] text-zinc-900 dark:text-white"
         >
           THE PROTOCOL FOR <br />
-          <span className="text-transparent bg-clip-text bg-gradient-to-b from-white to-white/40">
+          <span className="text-transparent bg-clip-text bg-gradient-to-b from-zinc-900 to-zinc-400 dark:from-white dark:to-white/40">
             HYBRID GOVERNANCE.
           </span>
         </motion.h1>
@@ -82,12 +82,12 @@ export default function Home() {
           className="flex flex-col sm:flex-row items-center gap-4 mt-4"
         >
           <Link href="/proposals">
-            <Button size="lg" className="bg-white text-black hover:bg-zinc-200 px-8 h-12 text-[11px] font-bold tracking-[0.2em] uppercase">
+            <Button size="lg" className="bg-zinc-900 dark:bg-white text-white dark:text-black hover:bg-zinc-800 dark:hover:bg-zinc-200 px-8 h-12 text-[11px] font-bold tracking-[0.2em] uppercase">
               Enter Governance
             </Button>
           </Link>
           <Link href="/activity">
-            <Button variant="outline" size="lg" className="border-white/10 hover:bg-white/5 px-8 h-12 text-[11px] font-bold tracking-[0.2em] uppercase">
+            <Button variant="outline" size="lg" className="border-zinc-300 dark:border-white/10 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-white/5 px-8 h-12 text-[11px] font-bold tracking-[0.2em] uppercase">
               View Feed
             </Button>
           </Link>
@@ -98,7 +98,7 @@ export default function Home() {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.7, delay: 0.4 }}
-          className="w-full max-w-[1000px] bg-[#111] border border-white/[0.06] rounded-sm p-12 mt-12 text-left relative group overflow-hidden"
+          className="w-full max-w-[1000px] bg-[#EBE8E1] dark:bg-[#111] border border-black/[0.06] dark:border-white/[0.06] rounded-sm p-12 mt-12 text-left relative group overflow-hidden"
         >
           <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
             <Shield size={160} strokeWidth={1} />
@@ -123,11 +123,11 @@ export default function Home() {
               }
             ].map((f, i) => (
               <div key={i} className="flex flex-col gap-6">
-                <div className="w-12 h-12 rounded-sm bg-white/[0.03] border border-white/[0.08] flex items-center justify-center">
+                <div className="w-12 h-12 rounded-sm bg-black/[0.03] dark:bg-white/[0.03] border border-black/[0.08] dark:border-white/[0.08] flex items-center justify-center">
                   {f.icon}
                 </div>
                 <div className="flex flex-col gap-3">
-                  <h3 className="text-sm font-bold tracking-[0.2em] uppercase text-white">{f.title}</h3>
+                  <h3 className="text-sm font-bold tracking-[0.2em] uppercase text-zinc-900 dark:text-white">{f.title}</h3>
                   <p className="text-xs leading-relaxed text-zinc-500 font-mono">{f.desc}</p>
                 </div>
               </div>
@@ -137,7 +137,7 @@ export default function Home() {
       </section>
 
       {/* Stats Section */}
-      <section className="w-full border-y border-white/[0.04] py-16">
+      <section className="w-full border-y border-black/[0.04] dark:border-white/[0.04] py-16">
         <div className="max-w-[1400px] mx-auto grid grid-cols-2 md:grid-cols-4 gap-12">
           {[
             { label: STATS_LABELS.PROPOSALS, value: stats.proposals },
@@ -164,7 +164,7 @@ export default function Home() {
       <section className="flex flex-col lg:flex-row gap-20 items-start">
         <div className="lg:w-1/3 flex flex-col gap-8">
           <div className="flex flex-col gap-4">
-            <h2 className="text-4xl font-bold tracking-tight text-white uppercase leading-[1.1]">
+            <h2 className="text-4xl font-bold tracking-tight text-zinc-900 dark:text-white uppercase leading-[1.1]">
               Live <br /> Audit Log.
             </h2>
             <p className="text-zinc-500 text-sm leading-relaxed font-mono">
@@ -173,7 +173,7 @@ export default function Home() {
             </p>
           </div>
           <Link href="/activity">
-            <button className="flex items-center gap-2 text-[11px] font-bold tracking-[0.2em] text-white uppercase group">
+            <button className="flex items-center gap-2 text-[11px] font-bold tracking-[0.2em] text-zinc-900 dark:text-white uppercase group">
               View full audit log 
               <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
             </button>
@@ -193,7 +193,7 @@ export default function Home() {
               transition={{ delay: i * 0.1 }}
               viewport={{ once: true }}
               key={i} 
-              className="w-full p-6 bg-[#111] border border-white/[0.06] rounded-sm flex items-center justify-between group hover:border-white/[0.15] transition-all cursor-pointer"
+              className="w-full p-6 bg-[#EBE8E1] dark:bg-[#111] border border-black/[0.06] dark:border-white/[0.06] rounded-sm flex items-center justify-between group hover:border-black/[0.15] dark:hover:border-white/[0.15] transition-all cursor-pointer"
             >
               <div className="flex items-center gap-5">
                 <div className={cn(
@@ -219,7 +219,7 @@ export default function Home() {
           <Globe size={32} className="text-white" />
         </div>
         <div className="flex flex-col gap-4">
-          <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-white uppercase">
+          <h2 className="text-4xl md:text-5xl font-bold tracking-tight text-zinc-900 dark:text-white uppercase">
             The Agent Era is Here.
           </h2>
           <p className="max-w-[500px] text-indigo-100/70 text-sm font-medium leading-relaxed font-mono">
@@ -240,7 +240,7 @@ function Button({ children, className, variant = 'default', size = 'default', ..
   return (
     <button className={cn(
       "inline-flex items-center justify-center transition-all",
-      variant === 'default' ? "bg-white text-black" : "border border-white/10 text-white",
+      variant === 'default' ? "bg-white text-black" : "border border-black/10 dark:border-white/10 text-zinc-900 dark:text-white",
       size === 'lg' ? "px-8 py-3" : "px-4 py-2",
       className
     )} {...props}>

@@ -75,7 +75,7 @@ export default function NewProposalPage() {
           <AlertCircle size={32} />
         </div>
         <div className="flex flex-col gap-2">
-          <h2 className="text-xl font-bold uppercase tracking-widest text-white">KYC Required</h2>
+          <h2 className="text-xl font-bold uppercase tracking-widest text-zinc-900 dark:text-white">KYC Required</h2>
           <p className="text-zinc-500 text-sm leading-relaxed">
             Only KYC-verified members can create new proposals. Please verify your status in your profile to continue.
           </p>
@@ -92,10 +92,10 @@ export default function NewProposalPage() {
   return (
     <div className="max-w-3xl mx-auto w-full flex flex-col gap-10 pb-24">
       <div className="flex flex-col gap-2 animate-in">
-        <Link href="/proposals" className="flex items-center gap-2 text-zinc-600 hover:text-white transition-colors text-[10px] font-bold tracking-widest uppercase mb-4">
+        <Link href="/proposals" className="flex items-center gap-2 text-zinc-600 hover:text-zinc-900 dark:hover:text-white transition-colors text-[10px] font-bold tracking-widest uppercase mb-4">
           <ChevronLeft size={14} /> Back to Proposals
         </Link>
-        <h1 className="text-3xl font-bold tracking-tight uppercase text-white">Create Proposal</h1>
+        <h1 className="text-3xl font-bold tracking-tight uppercase text-zinc-900 dark:text-white">Create Proposal</h1>
         <p className="text-zinc-500 text-sm">
           Define the parameters for your protocol upgrade or community initiative.
         </p>
@@ -112,7 +112,7 @@ export default function NewProposalPage() {
               value={formData.title}
               onChange={(e) => setFormData({ ...formData, title: e.target.value })}
               placeholder="E.G. INCREASE TREASURY ALLOCATION FOR DEV GRANTS"
-              className="bg-[#111] border-white/10 text-sm font-bold tracking-tight h-12"
+              className="bg-[#EBE8E1] dark:bg-[#111] border-black/10 dark:border-white/10 text-sm font-bold tracking-tight h-12"
             />
           </div>
 
@@ -126,7 +126,7 @@ export default function NewProposalPage() {
               value={formData.description}
               onChange={(e) => setFormData({ ...formData, description: e.target.value })}
               placeholder="Describe your proposal in detail. Use markdown for structure."
-              className="w-full bg-[#111] border border-white/10 rounded-sm p-4 text-sm font-mono text-zinc-300 focus:border-indigo-500/50 outline-none transition-colors resize-none"
+              className="w-full bg-[#EBE8E1] dark:bg-[#111] border border-black/10 dark:border-white/10 rounded-sm p-4 text-sm font-mono text-zinc-300 focus:border-indigo-500/50 outline-none transition-colors resize-none"
             />
           </div>
         </section>
@@ -139,7 +139,7 @@ export default function NewProposalPage() {
             <select 
               value={formData.votingPeriod}
               onChange={(e) => setFormData({ ...formData, votingPeriod: e.target.value })}
-              className="w-full bg-[#111] border border-white/10 rounded-sm h-12 px-3 text-[11px] font-bold uppercase tracking-widest outline-none focus:border-indigo-500/50 transition-colors"
+              className="w-full bg-[#EBE8E1] dark:bg-[#111] border border-black/10 dark:border-white/10 rounded-sm h-12 px-3 text-[11px] font-bold uppercase tracking-widest outline-none focus:border-indigo-500/50 transition-colors"
             >
               <option value="86400">24 Hours</option>
               <option value="172800">48 Hours</option>
@@ -159,7 +159,7 @@ export default function NewProposalPage() {
               required
               value={formData.quorum}
               onChange={(e) => setFormData({ ...formData, quorum: e.target.value })}
-              className="bg-[#111] border-white/10 text-sm font-bold tracking-tight h-12"
+              className="bg-[#EBE8E1] dark:bg-[#111] border-black/10 dark:border-white/10 text-sm font-bold tracking-tight h-12"
             />
           </div>
 
@@ -177,7 +177,7 @@ export default function NewProposalPage() {
                     "py-3 border text-[10px] font-bold uppercase tracking-[0.15em] rounded-sm transition-all",
                     formData.voterGroup === group 
                       ? "bg-white text-black border-white" 
-                      : "bg-transparent text-zinc-500 border-white/10 hover:border-white/30"
+                      : "bg-transparent text-zinc-500 border-black/10 dark:border-white/10 hover:border-white/30"
                   )}
                 >
                   {group === 'both' ? 'HUMANS + AGENTS' : group}
@@ -200,7 +200,7 @@ export default function NewProposalPage() {
           <Button 
             type="submit" 
             disabled={loading}
-            className="w-full md:w-auto px-12 h-12 bg-indigo-500 hover:bg-indigo-600 text-white font-bold text-[11px] uppercase tracking-[0.2em] transition-all"
+            className="w-full md:w-auto px-12 h-12 bg-indigo-500 hover:bg-indigo-600 text-zinc-900 dark:text-white font-bold text-[11px] uppercase tracking-[0.2em] transition-all"
           >
             {loading ? <Loader2 className="animate-spin mr-2" size={16} /> : null}
             {loading ? 'PUBLISHING...' : 'PUBLISH PROPOSAL'}

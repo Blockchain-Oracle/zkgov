@@ -37,7 +37,7 @@ export function NavContent() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-white/80 dark:bg-[#0a0a0a]/80 backdrop-blur-md border-b border-zinc-200 dark:border-white/[0.06] transition-colors duration-300">
+    <header className="sticky top-0 z-50 w-full bg-[#F5F2EB]/80 dark:bg-[#0a0a0a]/80 backdrop-blur-md border-b border-black/[0.06] dark:border-white/[0.06] transition-colors duration-300">
       <nav className="max-w-[1400px] mx-auto h-16 px-6 flex items-center justify-between">
         <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center gap-3 group">
@@ -55,7 +55,7 @@ export function NavContent() {
                 key={item.label}
                 href={item.href}
                 className={cn(
-                  "nav-pill text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors uppercase",
+                  "nav-pill text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-900 dark:hover:text-white transition-colors uppercase",
                   (pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href))) && "active text-zinc-900 dark:text-white"
                 )}
               >
@@ -69,7 +69,7 @@ export function NavContent() {
         <div className="flex items-center gap-4">
           <button
             onClick={toggleTheme}
-            className="w-9 h-9 flex items-center justify-center rounded-sm border border-zinc-200 dark:border-white/[0.08] hover:border-zinc-400 dark:hover:border-white/20 transition-colors text-zinc-500 hover:text-zinc-900 dark:hover:text-white"
+            className="w-9 h-9 flex items-center justify-center rounded-sm border border-zinc-200 dark:border-white/[0.08] hover:border-zinc-400 dark:hover:border-white/20 transition-colors text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-900 dark:hover:text-white"
             aria-label="Toggle theme"
           >
             {isDark ? <Sun size={16} /> : <Moon size={16} />}
@@ -89,7 +89,7 @@ export function NavContent() {
               <button 
                 onClick={login}
                 disabled={isSigning}
-                className="px-5 py-2 bg-indigo-500 text-white font-bold text-[11px] tracking-[0.1em] rounded-sm hover:bg-indigo-600 transition-colors uppercase disabled:opacity-50"
+                className="px-5 py-2 bg-indigo-500 text-zinc-900 dark:text-white font-bold text-[11px] tracking-[0.1em] rounded-sm hover:bg-indigo-600 transition-colors uppercase disabled:opacity-50"
               >
                 {isSigning ? "SIGNING..." : "SIGN IN TO GOVERN"}
               </button>

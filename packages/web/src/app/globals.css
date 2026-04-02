@@ -18,10 +18,10 @@
 
 @layer base {
   :root {
-    --bg: #ffffff;
-    --text: #18181b;
-    --border: rgba(0, 0, 0, 0.08);
-    --accent: #6366f1;
+    --bg: #F5F2EB;
+    --text: #1a1a1a;
+    --border: rgba(0, 0, 0, 0.1);
+    --accent: #4f46e5;
   }
 
   .dark {

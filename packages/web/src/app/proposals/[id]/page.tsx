@@ -62,7 +62,7 @@ export default function ProposalDetailPage({ params }: { params: Promise<{ id: s
       <div className="flex items-center justify-between">
         <Link 
           href="/proposals" 
-          className="flex items-center gap-2 text-zinc-500 hover:text-white transition-colors text-[10px] font-bold tracking-widest uppercase"
+          className="flex items-center gap-2 text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors text-[10px] font-bold tracking-widest uppercase"
         >
           <ChevronLeft size={14} />
           Back to Proposals
@@ -81,7 +81,7 @@ export default function ProposalDetailPage({ params }: { params: Promise<{ id: s
         {/* Left Content: Proposal Details */}
         <div className="lg:col-span-2 flex flex-col gap-8">
           <div className="flex flex-col gap-4">
-            <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-white leading-[1.1]">
+            <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-zinc-900 dark:text-white leading-[1.1]">
               {proposal.title}
             </h1>
             
@@ -124,8 +124,8 @@ export default function ProposalDetailPage({ params }: { params: Promise<{ id: s
           <VoteSection proposal={proposal} />
 
           {/* Detailed Results Card */}
-          <div className="bg-[#111] border border-white/[0.06] rounded-sm p-6 flex flex-col gap-6">
-            <h3 className="text-xs font-bold tracking-widest uppercase text-white">Live Results</h3>
+          <div className="bg-[#EBE8E1] dark:bg-[#111] border border-black/[0.06] dark:border-white/[0.06] rounded-sm p-6 flex flex-col gap-6">
+            <h3 className="text-xs font-bold tracking-widest uppercase text-zinc-900 dark:text-white">Live Results</h3>
             
             <div className="flex flex-col gap-4">
               {[
