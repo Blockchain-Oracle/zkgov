@@ -1,8 +1,8 @@
 export const HASHKEY_TESTNET = {
   id: 133,
   name: "HashKey Chain Testnet",
-  rpcUrl: "https://hashkeychain-testnet.alt.technology",
-  explorerUrl: "https://hashkeychain-testnet-explorer.alt.technology",
+  rpcUrl: "https://testnet.hsk.xyz",
+  explorerUrl: "https://testnet-explorer.hsk.xyz",
   nativeCurrency: { name: "HSK", symbol: "HSK", decimals: 18 },
 } as const
 
@@ -10,7 +10,7 @@ export const HASHKEY_MAINNET = {
   id: 177,
   name: "HashKey Chain",
   rpcUrl: "https://mainnet.hsk.xyz",
-  explorerUrl: "https://hashkey.blockscout.com",
+  explorerUrl: "https://explorer.hsk.xyz",
   nativeCurrency: { name: "HSK", symbol: "HSK", decimals: 18 },
 } as const
 
