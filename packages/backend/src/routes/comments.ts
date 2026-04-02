@@ -48,7 +48,24 @@ export async function commentRoutes(app: FastifyInstance) {
       })
     )
 
-    return { comments: enriched }
+    // Build threaded tree from flat list
+    const commentMap = new Map<string, any>()
+    const roots: any[] = []
+
+    for (const c of enriched) {
+      commentMap.set(c.id, { ...c, replies: [] })
+    }
+
+    for (const c of enriched) {
+      const node = commentMap.get(c.id)!
+      if (c.parentId && commentMap.has(c.parentId)) {
+        commentMap.get(c.parentId)!.replies.push(node)
+      } else {
+        roots.push(node)
+      }
+    }
+
+    return { comments: roots }
   })
 
   // POST /proposals/:id/comments

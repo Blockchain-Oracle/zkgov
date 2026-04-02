@@ -1,19 +1,43 @@
 'use client'
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { useAccount } from "wagmi";
 import { NAVIGATION_ITEMS, APP_NAME } from "@/lib/constants";
 import { cn } from "@/lib/utils";
+import { Sun, Moon } from "lucide-react";
 
 export function NavContent() {
   const pathname = usePathname();
   const { user, login, isSigning, isLoading } = useAuth();
   const { isConnected, address } = useAccount();
 
+  const [isDark, setIsDark] = useState(true);
+
+  useEffect(() => {
+    const saved = localStorage.getItem("zkgov-theme");
+    if (saved === "light") {
+      document.documentElement.classList.remove("dark");
+      setIsDark(false);
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    const next = !isDark;
+    setIsDark(next);
+    if (next) {
+      document.documentElement.classList.add("dark");
+      localStorage.setItem("zkgov-theme", "dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+      localStorage.setItem("zkgov-theme", "light");
+    }
+  };
+
   return (
-    <header className="sticky top-0 z-50 w-full bg-[#0a0a0a]/80 backdrop-blur-md border-b border-white/[0.06]">
+    <header className="sticky top-0 z-50 w-full bg-[#0a0a0a]/80 dark:bg-[#0a0a0a]/80 backdrop-blur-md border-b border-white/[0.06]">
       <nav className="max-w-[1400px] mx-auto h-16 px-6 flex items-center justify-between">
         <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center gap-3 group">
@@ -43,6 +67,13 @@ export function NavContent() {
         </div>
 
         <div className="flex items-center gap-4">
+          <button
+            onClick={toggleTheme}
+            className="w-9 h-9 flex items-center justify-center rounded-sm border border-white/[0.08] hover:border-white/20 transition-colors text-zinc-500 hover:text-white"
+            aria-label="Toggle theme"
+          >
+            {isDark ? <Sun size={16} /> : <Moon size={16} />}
+          </button>
           {isConnected ? (
             user ? (
               <Link 

@@ -1,20 +1,39 @@
 'use client';
 
-import { STATS_LABELS } from "@/lib/constants";
+import { useState, useEffect } from "react";
+import { STATS_LABELS, API_URL } from "@/lib/constants";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { 
-  Shield, 
-  Cpu, 
-  Globe, 
-  ArrowRight, 
-  CheckCircle2, 
+import {
+  Shield,
+  Cpu,
+  Globe,
+  ArrowRight,
+  CheckCircle2,
   Lock,
   ChevronRight
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default function Home() {
+  const [stats, setStats] = useState({ proposals: "—", votes: "—", voters: "—", agents: "—" });
+
+  useEffect(() => {
+    fetch(`${API_URL}/api/proposals?limit=1`)
+      .then(r => r.json())
+      .then(data => {
+        setStats(prev => ({ ...prev, proposals: String(data.pagination?.total || 0) }));
+      })
+      .catch(() => {});
+
+    fetch(`${API_URL}/api/agents`)
+      .then(r => r.json())
+      .then(data => {
+        setStats(prev => ({ ...prev, agents: String(data.agents?.length || 0) }));
+      })
+      .catch(() => {});
+  }, []);
+
   return (
     <div className="flex flex-col gap-32 pb-32">
       {/* Hero Section */}
@@ -121,10 +140,10 @@ export default function Home() {
       <section className="w-full border-y border-white/[0.04] py-16">
         <div className="max-w-[1400px] mx-auto grid grid-cols-2 md:grid-cols-4 gap-12">
           {[
-            { label: STATS_LABELS.PROPOSALS, value: "14" },
-            { label: STATS_LABELS.VOTES, value: "1,247" },
-            { label: STATS_LABELS.VOTERS, value: "342" },
-            { label: STATS_LABELS.AGENTS, value: "23" },
+            { label: STATS_LABELS.PROPOSALS, value: stats.proposals },
+            { label: STATS_LABELS.VOTES, value: stats.votes },
+            { label: STATS_LABELS.VOTERS, value: stats.voters },
+            { label: STATS_LABELS.AGENTS, value: stats.agents },
           ].map((stat, i) => (
             <motion.div 
               initial={{ opacity: 0 }}
