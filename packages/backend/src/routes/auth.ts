@@ -3,7 +3,7 @@ import { createHmac } from "node:crypto"
 import { db } from "../db/index.js"
 import { users, agents } from "../db/schema.js"
 import { eq } from "drizzle-orm"
-import { verifyMessage } from "viem"
+import { verifyMessage, getAddress } from "viem"
 import { createIdentity } from "../services/semaphore.js"
 import { env } from "../config/env.js"
 
@@ -18,12 +18,18 @@ export async function authRoutes(app: FastifyInstance) {
       return reply.status(400).send({ error: "walletAddress, signature, and nonce are required" })
     }
 
-    const address = walletAddress.toLowerCase() as `0x${string}`
+    // Use checksummed address for signature verification (viem recovers checksummed)
+    let address: `0x${string}`
+    try {
+      address = getAddress(walletAddress) as `0x${string}`
+    } catch {
+      return reply.status(400).send({ error: "Invalid wallet address" })
+    }
 
     // Verify signature
     const message = `Sign in to ZKGov: ${nonce}`
     const isValid = await verifyMessage({
-      address: address as `0x${string}`,
+      address,
       message,
       signature: signature as `0x${string}`,
     })

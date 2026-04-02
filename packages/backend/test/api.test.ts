@@ -74,7 +74,7 @@ describe("API Routes", () => {
         },
       })
 
-      expect(res.statusCode).toBe(500) // viem throws InvalidAddressError
+      expect(res.statusCode).toBe(400) // Invalid wallet address
     })
   })
 

@@ -71,8 +71,25 @@ export async function agentRoutes(app: FastifyInstance) {
     })
   })
 
-  // GET /agents — list my agents
-  app.get("/agents", { preHandler: [(app as any).authenticate] }, async (request) => {
+  // GET /agents — public listing of all active agents
+  app.get("/agents", async () => {
+    const allAgents = await db.query.agents.findMany({
+      where: eq(agents.isActive, true),
+    })
+
+    return {
+      agents: allAgents.map((a) => ({
+        id: a.id,
+        name: a.name,
+        isActive: a.isActive,
+        onChainAddress: a.onChainAddress,
+        createdAt: a.createdAt?.toISOString(),
+      })),
+    }
+  })
+
+  // GET /agents/mine — list my agents (authenticated)
+  app.get("/agents/mine", { preHandler: [(app as any).authenticate] }, async (request) => {
     const user = (request as any).user
 
     const myAgents = await db.query.agents.findMany({

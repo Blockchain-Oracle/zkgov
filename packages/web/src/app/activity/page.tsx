@@ -43,12 +43,44 @@ export default function ActivityPage() {
     // Setup SSE for real-time global feed
     const eventSource = new EventSource(`${API_URL}/api/sse/feed`);
     
-    eventSource.onmessage = (event) => {
+    eventSource.addEventListener('vote_cast', (event) => {
       if (!autoUpdate) return;
       const data = JSON.parse(event.data);
-      // Transform incoming SSE events to Activity items
-      // (This logic would be refined based on the specific backend SSE structure)
-    };
+      setActivities(prev => [{
+        id: Date.now().toString(),
+        type: 'vote',
+        platform: data.submittedVia || 'web',
+        text: `Anonymous vote cast on #${String(data.proposalId).padStart(3, '0')}`,
+        time: 'JUST NOW',
+        proposalId: data.proposalId,
+      }, ...prev]);
+    });
+
+    eventSource.addEventListener('new_proposal', (event) => {
+      if (!autoUpdate) return;
+      const data = JSON.parse(event.data);
+      setActivities(prev => [{
+        id: Date.now().toString(),
+        type: 'proposal',
+        platform: 'web',
+        text: `Proposal #${String(data.id).padStart(3, '0')} created: "${data.title}"`,
+        time: 'JUST NOW',
+        proposalId: data.id,
+      }, ...prev]);
+    });
+
+    eventSource.addEventListener('comment_added', (event) => {
+      if (!autoUpdate) return;
+      const data = JSON.parse(event.data);
+      setActivities(prev => [{
+        id: Date.now().toString(),
+        type: 'comment',
+        platform: 'api',
+        text: `Comment posted on #${String(data.proposalId).padStart(3, '0')}`,
+        time: 'JUST NOW',
+        proposalId: data.proposalId,
+      }, ...prev]);
+    });
 
     return () => eventSource.close();
   }, [autoUpdate]);

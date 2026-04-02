@@ -75,7 +75,7 @@ export default function ProposalsPage() {
         </div>
 
         <div className="flex items-center gap-2 bg-[#111] border border-white/[0.06] rounded-sm p-1">
-          {['active', 'passed', 'failed', 'all'].map((f) => (
+          {['active', 'succeeded', 'defeated', 'all'].map((f) => (
             <button
               key={f}
               onClick={() => setFilter(f)}

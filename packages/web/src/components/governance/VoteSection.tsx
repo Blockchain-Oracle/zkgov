@@ -48,7 +48,7 @@ export function VoteSection({ proposal, onVoteSuccess }: VoteSectionProps) {
         abi: [{
           name: 'registerHuman',
           type: 'function',
-          stateMutability: 'external',
+          stateMutability: 'nonpayable',
           inputs: [{ name: 'identityCommitment', type: 'uint256' }],
           outputs: []
         }],
