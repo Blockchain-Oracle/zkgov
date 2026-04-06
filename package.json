@@ -7,7 +7,14 @@
     "start": "turbo run start",
     "lint": "turbo run lint",
     "clean": "turbo run clean",
-    "test": "turbo run test"
+    "test": "turbo run test",
+    "seed:kyc": "npx tsx scripts/seed-kyc.ts",
+    "seed:proposals": "npx tsx scripts/seed-proposals.ts",
+    "seed:comments": "npx tsx scripts/seed-comments.ts",
+    "seed:all": "npx tsx scripts/seed-proposals.ts && npx tsx scripts/seed-comments.ts",
+    "check:contracts": "npx tsx scripts/check-contracts.ts",
+    "check:backend": "npx tsx scripts/check-backend.ts",
+    "view:proposals": "npx tsx scripts/view-proposals.ts"
   },
   "devDependencies": {
     "turbo": "^2"

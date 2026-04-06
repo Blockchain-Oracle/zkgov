@@ -173,6 +173,51 @@ export async function authRoutes(app: FastifyInstance) {
       telegramUsername: parsed.username,
     }
   })
+  // POST /telegram/login — unauthenticated Telegram login via initData
+  // This is what the Mini App calls to get a JWT without needing wallet connection first
+  app.post<{
+    Body: { initData: string }
+  }>("/telegram/login", async (request, reply) => {
+    const { initData } = request.body
+
+    if (!initData) {
+      return reply.status(400).send({ error: "initData is required" })
+    }
+
+    const parsed = parseInitData(initData)
+    if (!parsed || !validateInitData(initData)) {
+      return reply.status(401).send({ error: "Invalid Telegram initData" })
+    }
+
+    const telegramId = BigInt(parsed.userId)
+
+    // Check if this Telegram user is already linked to an account
+    const existingUser = await db.query.users.findFirst({
+      where: eq(users.telegramId, telegramId),
+    })
+
+    if (existingUser) {
+      // User exists — return JWT
+      const token = app.jwt.sign({ userId: existingUser.id }, { expiresIn: "24h" })
+      return {
+        linked: true,
+        token,
+        user: {
+          id: existingUser.id,
+          walletAddress: existingUser.walletAddress,
+          kycVerified: existingUser.kycVerified,
+          identityCommitment: existingUser.identityCommitment,
+        },
+      }
+    }
+
+    // User not linked — return Telegram info so Mini App shows registration
+    return {
+      linked: false,
+      telegramUser: { id: parsed.userId, username: parsed.username },
+      message: "Connect your wallet to start voting.",
+    }
+  })
 }
 
 // Telegram initData helpers

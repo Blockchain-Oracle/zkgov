@@ -22,19 +22,23 @@ export default function TelegramVotePage({ params }: { params: Promise<{ id: str
       tg.ready();
       tg.expand();
 
-      // Validate initData with backend to get JWT
+      // Authenticate via Telegram initData (unauthenticated endpoint)
       const initData = tg.initData;
       if (initData) {
-        fetch(`${API_URL}/api/auth/link/telegram`, {
+        fetch(`${API_URL}/api/auth/telegram/login`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ initData }),
         })
           .then(res => res.json())
           .then(data => {
-            if (data.token) setToken(data.token);
+            if (data.linked && data.token) {
+              setToken(data.token);
+            } else {
+              setError('Not registered. Please set up your account first.');
+            }
           })
-          .catch(() => {});
+          .catch(() => setError('Connection failed.'));
       }
     }
 
