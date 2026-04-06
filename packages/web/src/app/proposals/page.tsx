@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { STATS_LABELS } from '@/lib/constants';
 import { ProposalCard } from '@/components/governance/ProposalCard';
 import type { ProposalResponse } from '@zkgov/shared';
-import { Search, SlidersHorizontal, Plus } from 'lucide-react';
+import { Search, Plus } from 'lucide-react';
 import Link from 'next/link';
 import { useProposals } from '@/hooks/use-proposals';
 

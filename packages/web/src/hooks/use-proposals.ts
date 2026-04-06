@@ -20,13 +20,8 @@ export function useProposals(status?: string, page = 1) {
   });
 }
 
-export function useProposalDetail(id: string | number) {
-  return useQuery({
-    queryKey: ['proposal', String(id)],
-    queryFn: () => fetchProposal(id),
-    enabled: !!id,
-  });
-}
+// Note: useProposal (single proposal detail with SSE) lives in useProposal.ts
+// Don't duplicate it here — that hook has real-time updates via EventSource.
 
 export function useCreateProposal() {
   const queryClient = useQueryClient();

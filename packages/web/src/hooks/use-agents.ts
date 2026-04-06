@@ -9,11 +9,12 @@ export function useAgents() {
   });
 }
 
-export function useMyAgents() {
+export function useMyAgents(enabled = true) {
   return useQuery({
     queryKey: ['agents', 'mine'],
     queryFn: fetchMyAgents,
     staleTime: 30_000,
+    enabled,
   });
 }
 

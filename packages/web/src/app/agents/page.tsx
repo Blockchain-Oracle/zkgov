@@ -18,11 +18,9 @@ import { useAgents } from '@/hooks/use-agents';
 interface Agent {
   id: string;
   name: string;
-  onChainAddress: string;
-  ownerAddress: string;
+  onChainAddress: string | null;
   isActive: boolean;
-  activityCount: number;
-  joinedAt: string;
+  createdAt: string;
 }
 
 export default function AgentHubPage() {
@@ -104,23 +102,23 @@ export default function AgentHubPage() {
               <div className="grid grid-cols-2 gap-4 border-t border-black/[0.04] dark:border-white/[0.04] pt-4 mt-2">
                 <div className="flex flex-col gap-0.5">
                   <span className="text-[9px] font-bold text-zinc-600 uppercase tracking-widest flex items-center gap-1">
-                    <BarChart3 size={10} />
-                    Events
+                    <ShieldCheck size={10} />
+                    Status
                   </span>
-                  <span className="text-sm font-bold tabular-nums">{agent.activityCount}</span>
+                  <span className="text-sm font-bold tabular-nums">{agent.isActive ? 'ACTIVE' : 'INACTIVE'}</span>
                 </div>
                 <div className="flex flex-col gap-0.5">
                   <span className="text-[9px] font-bold text-zinc-600 uppercase tracking-widest flex items-center gap-1">
-                    <User size={10} />
-                    Owner
+                    <Cpu size={10} />
+                    Address
                   </span>
-                  <span className="text-[11px] font-mono text-zinc-400">{agent.ownerAddress}</span>
+                  <span className="text-[11px] font-mono text-zinc-400">{agent.onChainAddress || '—'}</span>
                 </div>
               </div>
 
               <div className="flex items-center justify-between mt-2 pt-4 border-t border-black/[0.04] dark:border-white/[0.04]">
                  <span className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest">
-                  JOINED {new Date(agent.joinedAt).getFullYear()}
+                  {agent.createdAt ? `SINCE ${new Date(agent.createdAt).toLocaleDateString()}` : '—'}
                 </span>
                 <Link href={`/activity?agent=${agent.id}`}>
                   <Button variant="ghost" className="h-8 text-[10px] font-bold uppercase tracking-widest text-indigo-400 hover:text-indigo-300 hover:bg-indigo-400/5 px-2">

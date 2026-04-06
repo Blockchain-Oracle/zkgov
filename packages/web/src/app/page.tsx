@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { STATS_LABELS, API_URL } from "@/lib/constants";
+import { fetchProposals, fetchAgents } from "@/lib/api";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import {
@@ -17,18 +18,16 @@ import { cn } from "@/lib/utils";
 
 export default function Home() {
   const [stats, setStats] = useState({ proposals: "—", votes: "—", voters: "—", agents: "—" });
-  const [recentActivity, setRecentActivity] = useState<{ type: string; platform: string; text: string; time: string }[]>([]);
+  const [recentActivity, setRecentActivity] = useState<{ id: string; type: string; platform: string; text: string; time: string }[]>([]);
 
   useEffect(() => {
-    fetch(`${API_URL}/api/proposals?limit=1`)
-      .then(r => r.json())
+    fetchProposals({ limit: 1 })
       .then(data => {
         setStats(prev => ({ ...prev, proposals: String(data.pagination?.total || 0) }));
       })
       .catch(() => {});
 
-    fetch(`${API_URL}/api/agents`)
-      .then(r => r.json())
+    fetchAgents()
       .then(data => {
         setStats(prev => ({ ...prev, agents: String(data.agents?.length || 0) }));
       })
@@ -38,12 +37,13 @@ export default function Home() {
     const es = new EventSource(`${API_URL}/api/sse/feed`);
     es.addEventListener('vote_cast', (e) => {
       const d = JSON.parse(e.data);
-      setRecentActivity(prev => [{ type: 'vote', platform: d.submittedVia || 'web', text: `Anonymous vote cast on #${String(d.proposalId).padStart(3, '0')}`, time: 'JUST NOW' }, ...prev].slice(0, 4));
+      setRecentActivity(prev => [{ id: `v-${Date.now()}`, type: 'vote', platform: d.submittedVia || 'web', text: `Anonymous vote cast on #${String(d.proposalId).padStart(3, '0')}`, time: 'JUST NOW' }, ...prev].slice(0, 4));
     });
     es.addEventListener('new_proposal', (e) => {
       const d = JSON.parse(e.data);
-      setRecentActivity(prev => [{ type: 'proposal', platform: 'web', text: `Proposal #${String(d.id).padStart(3, '0')} created`, time: 'JUST NOW' }, ...prev].slice(0, 4));
+      setRecentActivity(prev => [{ id: `p-${Date.now()}`, type: 'proposal', platform: 'web', text: `Proposal #${String(d.id).padStart(3, '0')} created`, time: 'JUST NOW' }, ...prev].slice(0, 4));
     });
+    es.onerror = () => { es.close(); };
     return () => es.close();
   }, []);
 
@@ -205,7 +205,7 @@ export default function Home() {
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ delay: i * 0.1 }}
               viewport={{ once: true }}
-              key={i} 
+              key={activity.id}
               className="w-full p-6 bg-[#EBE8E1] dark:bg-[#111] border border-black/[0.06] dark:border-white/[0.06] rounded-sm flex items-center justify-between group hover:border-black/[0.15] dark:hover:border-white/[0.15] transition-all cursor-pointer"
             >
               <div className="flex items-center gap-5">
