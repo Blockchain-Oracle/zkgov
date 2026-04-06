@@ -218,6 +218,37 @@ export async function authRoutes(app: FastifyInstance) {
       message: "Connect your wallet to start voting.",
     }
   })
+
+  // POST /discord/lookup — find user by discord_id and return JWT
+  // Used by the Discord bot to authenticate users for voting
+  app.post<{
+    Body: { discordId: string }
+  }>("/discord/lookup", async (request, reply) => {
+    const { discordId } = request.body
+
+    if (!discordId) {
+      return reply.status(400).send({ error: "discordId is required" })
+    }
+
+    const user = await db.query.users.findFirst({
+      where: eq(users.discordId, discordId),
+    })
+
+    if (!user) {
+      return reply.status(404).send({ error: "Discord account not linked" })
+    }
+
+    const token = app.jwt.sign({ userId: user.id }, { expiresIn: "1h" })
+
+    return {
+      token,
+      user: {
+        id: user.id,
+        walletAddress: user.walletAddress,
+        kycVerified: user.kycVerified,
+      },
+    }
+  })
 }
 
 // Telegram initData helpers

@@ -1,6 +1,7 @@
 'use client';
 
 import { use, useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { API_URL } from '@/lib/constants';
 import { Shield, CheckCircle2, Loader2, XCircle } from 'lucide-react';
@@ -14,6 +15,7 @@ export default function TelegramVotePage({ params }: { params: Promise<{ id: str
   const [voteState, setVoteState] = useState<VoteState>('idle');
   const [error, setError] = useState('');
   const [token, setToken] = useState<string | null>(null);
+  const router = useRouter();
 
   // Get Telegram WebApp and authenticate
   useEffect(() => {
@@ -35,7 +37,8 @@ export default function TelegramVotePage({ params }: { params: Promise<{ id: str
             if (data.linked && data.token) {
               setToken(data.token);
             } else {
-              setError('Not registered. Please set up your account first.');
+              // Not registered — redirect to registration with return URL
+              router.push(`/tg/register?returnTo=/tg/vote/${id}`);
             }
           })
           .catch(() => setError('Connection failed.'));
