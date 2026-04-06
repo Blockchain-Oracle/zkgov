@@ -12,17 +12,17 @@ export const hashkeyTestnet = defineChain({
   name: 'HashKey Chain Testnet',
   nativeCurrency: { name: 'HSK', symbol: 'HSK', decimals: 18 },
   rpcUrls: {
-    default: { http: ['https://hashkeychain-testnet.alt.technology'] },
+    default: { http: ['https://testnet.hsk.xyz'] },
   },
   blockExplorers: {
-    default: { name: 'Explorer', url: 'https://hashkeychain-testnet-explorer.alt.technology' },
+    default: { name: 'Explorer', url: 'https://testnet-explorer.hsk.xyz' },
   },
 })
 
 // 3. Create Wagmi Adapter
 export const wagmiAdapter = new WagmiAdapter({
   projectId,
-  networks: [hashkeyTestnet],
+  networks: [hashkeyTestnet] as any,
   transports: {
     [hashkeyTestnet.id]: http(),
   },
@@ -31,7 +31,7 @@ export const wagmiAdapter = new WagmiAdapter({
 // 4. Create AppKit
 createAppKit({
   adapters: [wagmiAdapter],
-  networks: [hashkeyTestnet],
+  networks: [hashkeyTestnet] as any,
   projectId,
   features: {
     analytics: true,

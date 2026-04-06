@@ -1,32 +1,17 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { API_URL, STATS_LABELS } from '@/lib/constants';
+import { useState } from 'react';
+import { STATS_LABELS } from '@/lib/constants';
 import { ProposalCard } from '@/components/governance/ProposalCard';
 import type { ProposalResponse } from '@zkgov/shared';
 import { Search, SlidersHorizontal, Plus } from 'lucide-react';
 import Link from 'next/link';
+import { useProposals } from '@/hooks/use-proposals';
 
 export default function ProposalsPage() {
-  const [proposals, setProposals] = useState<ProposalResponse[]>([]);
-  const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('active');
-
-  const fetchProposals = async () => {
-    try {
-      const res = await fetch(`${API_URL}/api/proposals?status=${filter === 'all' ? '' : filter}`);
-      const data = await res.json();
-      setProposals(data.proposals || []);
-    } catch (err) {
-      console.error('Failed to fetch proposals:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchProposals();
-  }, [filter]);
+  const { data, isLoading: loading } = useProposals(filter);
+  const proposals = (data?.proposals || []) as ProposalResponse[];
 
   return (
     <div className="flex flex-col gap-12">
@@ -52,8 +37,8 @@ export default function ProposalsPage() {
       <section className="w-full border-y border-black/[0.04] dark:border-white/[0.04] py-8 grid grid-cols-2 md:grid-cols-4 gap-12 animate-in">
         {[
           { label: STATS_LABELS.PROPOSALS, value: proposals.length.toString() },
-          { label: "PARTICIPATION", value: "84%" },
-          { label: "AVG. QUORUM", value: "112%" },
+          { label: "ACTIVE", value: proposals.filter(p => p.status === 'active').length.toString() },
+          { label: "PASSED", value: proposals.filter(p => p.status === 'succeeded').length.toString() },
           { label: "TOTAL VOTES", value: proposals.reduce((acc, p) => acc + p.totalVotes, 0).toLocaleString() },
         ].map((stat) => (
           <div key={stat.label} className="flex flex-col gap-1">
@@ -104,9 +89,9 @@ export default function ProposalsPage() {
         ) : (
           <div className="col-span-full h-64 border border-dashed border-black/[0.06] dark:border-white/[0.06] rounded-sm flex flex-col items-center justify-center gap-4">
             <span className="text-zinc-500 font-medium tracking-widest uppercase">No proposals found</span>
-            <button className="text-xs text-indigo-400 font-bold uppercase tracking-widest hover:text-indigo-300">
+            <Link href="/proposals/new" className="text-xs text-indigo-400 font-bold uppercase tracking-widest hover:text-indigo-300">
               Create the first one →
-            </button>
+            </Link>
           </div>
         )}
       </div>

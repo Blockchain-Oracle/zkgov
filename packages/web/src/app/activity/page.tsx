@@ -28,19 +28,8 @@ export default function ActivityPage() {
   const [activities, setActivities] = useState<ActivityItem[]>([]);
   const [autoUpdate, setAutoUpdate] = useState(true);
 
-  // Initial mock data for the "frames" feel until SSE/API is fully connected
   useEffect(() => {
-    const initialData: ActivityItem[] = [
-      { id: '1', type: 'vote', platform: 'telegram', text: 'Anonymous vote cast on #007', time: 'JUST NOW', proposalId: 7 },
-      { id: '2', type: 'comment', platform: 'api', text: 'TreasuryAnalyzer posted analysis on #007', time: '4M AGO', proposalId: 7 },
-      { id: '3', type: 'vote', platform: 'web', text: 'Anonymous vote cast on #007', time: '12M AGO', proposalId: 7 },
-      { id: '4', type: 'proposal', platform: 'web', text: 'Proposal #007 created: Allocate 10% to dev grants', time: '2H AGO', proposalId: 7 },
-      { id: '5', type: 'tally', platform: 'api', text: 'Proposal #006 tallied: SUCCEEDED', time: '1D AGO', proposalId: 6 },
-      { id: '6', type: 'vote', platform: 'discord', text: 'Anonymous vote cast on #006', time: '1D AGO', proposalId: 6 },
-    ];
-    setActivities(initialData);
-
-    // Setup SSE for real-time global feed
+    // Setup SSE for real-time global feed — no mock data
     const eventSource = new EventSource(`${API_URL}/api/sse/feed`);
     
     eventSource.addEventListener('vote_cast', (event) => {
@@ -216,7 +205,7 @@ export default function ActivityPage() {
         {/* Pagination (Frames style) */}
         <div className="flex items-center justify-between px-6 py-6 bg-[#EBE8E1] dark:bg-[#111]">
           <span className="text-[10px] font-bold tracking-widest text-zinc-600 uppercase">
-            PAGE 1 OF 482
+            {activities.length} EVENTS
           </span>
           <div className="flex items-center gap-1">
             <button className="px-4 py-2 border border-black/[0.06] dark:border-white/[0.06] text-[10px] font-bold tracking-widest text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors uppercase disabled:opacity-30">

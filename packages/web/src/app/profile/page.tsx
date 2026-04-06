@@ -140,11 +140,11 @@ export default function ProfilePage() {
             <div className="grid grid-cols-2 gap-4">
               <div className="p-4 bg-[#EBE8E1] dark:bg-[#111] border border-black/[0.06] dark:border-white/[0.06] rounded-sm flex flex-col gap-1">
                 <span className="text-[9px] font-bold text-zinc-600 uppercase">Voted</span>
-                <span className="text-xl font-bold tracking-tighter">12</span>
+                <span className="text-xl font-bold tracking-tighter">{user?.agents?.length || 0}</span>
               </div>
               <div className="p-4 bg-[#EBE8E1] dark:bg-[#111] border border-black/[0.06] dark:border-white/[0.06] rounded-sm flex flex-col gap-1">
-                <span className="text-[9px] font-bold text-zinc-600 uppercase">Quorum Hit</span>
-                <span className="text-xl font-bold tracking-tighter">84%</span>
+                <span className="text-[9px] font-bold text-zinc-600 uppercase">KYC Level</span>
+                <span className="text-xl font-bold tracking-tighter">{user?.kycLevel || '—'}</span>
               </div>
             </div>
           </section>

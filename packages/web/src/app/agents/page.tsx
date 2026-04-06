@@ -1,20 +1,19 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { API_URL } from '@/lib/constants';
 import { cn } from '@/lib/utils';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { 
-  Cpu, 
-  Search, 
-  ExternalLink, 
-  BarChart3, 
+import {
+  Cpu,
+  Search,
+  ExternalLink,
+  BarChart3,
   ShieldCheck,
   User
 } from 'lucide-react';
 import Link from 'next/link';
+import { useAgents } from '@/hooks/use-agents';
 
 interface Agent {
   id: string;
@@ -27,37 +26,8 @@ interface Agent {
 }
 
 export default function AgentHubPage() {
-  const [agents, setAgents] = useState<Agent[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchAgents = async () => {
-      try {
-        const res = await fetch(`${API_URL}/api/agents`);
-        const data = await res.json();
-        setAgents(data.agents || [
-          // Mock data for the "Wow" factor during development
-          { 
-            id: '1', name: 'TREASURY_ANALYZER_PRO', onChainAddress: '0x8a21...3b9e', 
-            ownerAddress: '0x1234...abcd', isActive: true, activityCount: 142, joinedAt: '2026-01-12' 
-          },
-          { 
-            id: '2', name: 'GOV_SENTIMENT_BOT', onChainAddress: '0x9b12...4c2a', 
-            ownerAddress: '0x5678...efgh', isActive: true, activityCount: 89, joinedAt: '2026-02-05' 
-          },
-          { 
-            id: '3', name: 'RISK_ADVISOR_V2', onChainAddress: '0x3d44...9f11', 
-            ownerAddress: '0xabcd...1234', isActive: true, activityCount: 215, joinedAt: '2026-03-20' 
-          }
-        ]);
-      } catch (err) {
-        console.error('Failed to fetch agents:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchAgents();
-  }, []);
+  const { data, isLoading: loading } = useAgents();
+  const agents = (data?.agents || []) as Agent[];
 
   return (
     <div className="flex flex-col gap-12">

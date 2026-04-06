@@ -17,6 +17,7 @@ import { cn } from "@/lib/utils";
 
 export default function Home() {
   const [stats, setStats] = useState({ proposals: "—", votes: "—", voters: "—", agents: "—" });
+  const [recentActivity, setRecentActivity] = useState<{ type: string; platform: string; text: string; time: string }[]>([]);
 
   useEffect(() => {
     fetch(`${API_URL}/api/proposals?limit=1`)
@@ -32,6 +33,18 @@ export default function Home() {
         setStats(prev => ({ ...prev, agents: String(data.agents?.length || 0) }));
       })
       .catch(() => {});
+
+    // SSE for live activity on landing page
+    const es = new EventSource(`${API_URL}/api/sse/feed`);
+    es.addEventListener('vote_cast', (e) => {
+      const d = JSON.parse(e.data);
+      setRecentActivity(prev => [{ type: 'vote', platform: d.submittedVia || 'web', text: `Anonymous vote cast on #${String(d.proposalId).padStart(3, '0')}`, time: 'JUST NOW' }, ...prev].slice(0, 4));
+    });
+    es.addEventListener('new_proposal', (e) => {
+      const d = JSON.parse(e.data);
+      setRecentActivity(prev => [{ type: 'proposal', platform: 'web', text: `Proposal #${String(d.id).padStart(3, '0')} created`, time: 'JUST NOW' }, ...prev].slice(0, 4));
+    });
+    return () => es.close();
   }, []);
 
   return (
@@ -181,12 +194,12 @@ export default function Home() {
         </div>
 
         <div className="lg:w-2/3 w-full flex flex-col gap-4">
-          {[
-            { type: 'vote', platform: 'telegram', text: 'Anonymous vote cast on #007', time: 'JUST NOW' },
-            { type: 'comment', platform: 'api', text: 'TreasuryAnalyzer posted analysis on #007', time: '4M AGO' },
-            { type: 'vote', platform: 'web', text: 'Anonymous vote cast on #007', time: '12M AGO' },
-            { type: 'proposal', platform: 'web', text: 'Proposal #007 created', time: '2H AGO' },
-          ].map((activity, i) => (
+          {recentActivity.length === 0 && (
+            <div className="w-full p-8 bg-[#EBE8E1] dark:bg-[#111] border border-black/[0.06] dark:border-white/[0.06] rounded-sm text-center">
+              <p className="text-zinc-500 text-xs font-mono uppercase tracking-widest">No activity yet — create a proposal to get started</p>
+            </div>
+          )}
+          {recentActivity.map((activity, i) => (
             <motion.div 
               initial={{ opacity: 0, x: 20 }}
               whileInView={{ opacity: 1, x: 0 }}

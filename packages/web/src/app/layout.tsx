@@ -57,13 +57,19 @@ export default function RootLayout({
                 {APP_NAME} — {TAGLINE}
               </div>
               <div className="flex items-center gap-8">
-                {["GITHUB", "TELEGRAM", "X"].map((social) => (
+                {[
+                  { label: "GITHUB", href: "https://github.com/zkgov" },
+                  { label: "TELEGRAM", href: "https://t.me/zkgov" },
+                  { label: "X", href: "https://x.com/zkgov" },
+                ].map((social) => (
                   <a
-                    key={social}
-                    href="#"
+                    key={social.label}
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="text-[11px] font-medium tracking-[0.15em] text-zinc-400 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-900 dark:hover:text-white transition-colors"
                   >
-                    {social}
+                    {social.label}
                   </a>
                 ))}
               </div>
