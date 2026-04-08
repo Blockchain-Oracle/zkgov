@@ -157,7 +157,7 @@ export async function proposalRoutes(app: FastifyInstance) {
     "/proposals",
     { preHandler: [(app as any).authenticate] },
     async (request, reply) => {
-      const { title, description, votingPeriod, quorum, voterGroup } = request.body
+      const { title, description, votingPeriod, quorum, voterGroup, proposalType } = request.body as any
       const user = (request as any).user
       const agent = (request as any).agent
 
@@ -193,6 +193,7 @@ export async function proposalRoutes(app: FastifyInstance) {
           creatorAgentId: agent?.id || null,
           title,
           description,
+          proposalType: proposalType || "verified",
           voterGroup: voterGroup || "both",
           votingStart: now,
           votingEnd,

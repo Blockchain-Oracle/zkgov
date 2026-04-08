@@ -33,7 +33,8 @@ export default function NewProposalPage() {
     description: '',
     votingPeriod: '172800', // 48 hours in seconds
     quorum: '10',
-    voterGroup: 'both'
+    voterGroup: 'both',
+    proposalType: 'verified' as 'verified' | 'open',
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -181,6 +182,33 @@ export default function NewProposalPage() {
                   )}
                 >
                   {group === 'both' ? 'HUMANS + AGENTS' : group}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-2 md:col-span-2">
+            <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-[0.2em] flex items-center gap-2">
+              <Shield size={12} /> Verification Requirement
+            </label>
+            <div className="grid grid-cols-2 gap-3">
+              {[
+                { value: 'verified', label: 'KYC VERIFIED ONLY', desc: 'Only KYC-verified voters can participate' },
+                { value: 'open', label: 'OPEN TO ALL', desc: 'Anyone with a wallet can vote' },
+              ].map((opt) => (
+                <button
+                  key={opt.value}
+                  type="button"
+                  onClick={() => setFormData({ ...formData, proposalType: opt.value as 'verified' | 'open' })}
+                  className={cn(
+                    "py-3 px-4 border text-left rounded-sm transition-all",
+                    formData.proposalType === opt.value
+                      ? "bg-indigo-500/10 text-indigo-400 border-indigo-500/30"
+                      : "bg-transparent text-zinc-500 border-black/10 dark:border-white/10 hover:border-white/30"
+                  )}
+                >
+                  <span className="text-[10px] font-bold uppercase tracking-[0.15em] block">{opt.label}</span>
+                  <span className="text-[9px] text-zinc-600 mt-1 block">{opt.desc}</span>
                 </button>
               ))}
             </div>

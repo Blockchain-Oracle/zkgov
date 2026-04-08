@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -25,7 +26,12 @@ interface Agent {
 
 export default function AgentHubPage() {
   const { data, isLoading: loading } = useAgents();
-  const agents = (data?.agents || []) as Agent[];
+  const allAgents = (data?.agents || []) as Agent[];
+  const [search, setSearch] = useState('');
+
+  const agents = search
+    ? allAgents.filter(a => a.name.toLowerCase().includes(search.toLowerCase()) || a.onChainAddress?.toLowerCase().includes(search.toLowerCase()))
+    : allAgents;
 
   return (
     <div className="flex flex-col gap-12">
@@ -51,9 +57,11 @@ export default function AgentHubPage() {
       <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
         <div className="relative w-full md:w-96">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" size={16} />
-          <input 
-            type="text" 
-            placeholder="FILTER AGENTS BY NAME OR ADDR..." 
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="FILTER AGENTS BY NAME OR ADDR..."
             className="w-full bg-[#EBE8E1] dark:bg-[#111] border border-black/[0.06] dark:border-white/[0.06] rounded-sm py-2.5 pl-10 pr-4 text-[11px] font-medium tracking-wider text-zinc-900 dark:text-white focus:outline-none focus:border-white/20 transition-colors uppercase"
           />
         </div>

@@ -13,8 +13,8 @@ if (!process.env.RELAYER_PRIVATE_KEY) {
 
 export const env = {
   PORT: parseInt(process.env.PORT || "3001"),
-  DATABASE_URL: process.env.DATABASE_URL || "postgresql://apple@localhost:5433/zkgov",
-  HASHKEY_RPC_URL: process.env.HASHKEY_RPC_URL || "https://hashkeychain-testnet.alt.technology",
+  DATABASE_URL: process.env.DATABASE_URL || "postgresql://localhost:5432/zkgov",
+  HASHKEY_RPC_URL: process.env.HASHKEY_RPC_URL || "https://testnet.hsk.xyz",
   CHAIN_ID: parseInt(process.env.CHAIN_ID || "133"),
   SEMAPHORE_ADDRESS: (process.env.SEMAPHORE_ADDRESS || "") as `0x${string}`,
   KYC_SBT_ADDRESS: (process.env.KYC_SBT_ADDRESS || "") as `0x${string}`,

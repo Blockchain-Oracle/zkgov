@@ -27,6 +27,7 @@ interface ActivityItem {
 export default function ActivityPage() {
   const [activities, setActivities] = useState<ActivityItem[]>([]);
   const [autoUpdate, setAutoUpdate] = useState(true);
+  const [typeFilter, setTypeFilter] = useState('ALL ACTIVITY');
 
   useEffect(() => {
     // Setup SSE for real-time global feed — no mock data
@@ -131,9 +132,10 @@ export default function ActivityPage() {
           {['ALL ACTIVITY', 'VOTES', 'PROPOSALS', 'COMMENTS'].map((f) => (
             <button
               key={f}
+              onClick={() => setTypeFilter(f)}
               className={cn(
                 "px-4 py-1.5 text-[10px] font-bold tracking-[0.15em] rounded-sm transition-all uppercase whitespace-nowrap",
-                f === 'ALL ACTIVITY' ? 'bg-white text-black' : 'text-zinc-500 hover:text-zinc-900 dark:hover:text-white'
+                typeFilter === f ? 'bg-zinc-900 dark:bg-white text-white dark:text-black' : 'text-zinc-500 hover:text-zinc-900 dark:hover:text-white'
               )}
             >
               {f}
@@ -153,7 +155,13 @@ export default function ActivityPage() {
 
         {/* Activity Rows */}
         <div className="flex flex-col">
-          {activities.map((activity, idx) => (
+          {activities.filter(a => {
+            if (typeFilter === 'ALL ACTIVITY') return true;
+            if (typeFilter === 'VOTES') return a.type === 'vote';
+            if (typeFilter === 'PROPOSALS') return a.type === 'proposal';
+            if (typeFilter === 'COMMENTS') return a.type === 'comment';
+            return true;
+          }).map((activity, idx) => (
             <div 
               key={activity.id} 
               className={cn(
