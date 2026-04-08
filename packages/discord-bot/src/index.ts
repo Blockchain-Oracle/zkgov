@@ -113,7 +113,7 @@ client.on("interactionCreate", async (interaction) => {
           })
 
           // Post public announcement in the channel
-          if (interaction.channel) {
+          if (interaction.channel && 'send' in interaction.channel) {
             await interaction.channel.send(
               `🗳️ An anonymous vote was cast on **Proposal #${proposalId}**`
             )
