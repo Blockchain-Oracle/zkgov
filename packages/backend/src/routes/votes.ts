@@ -8,6 +8,22 @@ import { broadcastToProposal } from "./sse.js"
 import { env } from "../config/env.js"
 import type { VoteChoice } from "@zkgov/shared"
 
+/**
+ * Vote Routes
+ *
+ * The voting flow is the core of ZKGov's privacy model:
+ *
+ * 1. User sends { proposalId, choice } — authenticated via JWT or API key
+ * 2. Backend looks up user's ENCRYPTED Semaphore identity (never stored in plaintext)
+ * 3. Backend decrypts it, generates a Groth16 ZK proof via snarkjs
+ * 4. The proof proves "I am a registered voter AND I vote X" without revealing WHO
+ * 5. Relayer submits the proof on-chain → Semaphore contract verifies it
+ * 6. On-chain: nullifier prevents double-voting, vote tally incremented
+ * 7. Database stores an ANONYMOUS record (no user_id) for API display
+ *
+ * The database vote record mirrors on-chain state for fast queries,
+ * but the ON-CHAIN tally is the source of truth for governance outcomes.
+ */
 export async function voteRoutes(app: FastifyInstance) {
   // POST /votes — cast an anonymous vote
   app.post<{

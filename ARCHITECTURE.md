@@ -1,5 +1,67 @@
 # ZK Governance Protocol — Architecture Document
 
+## Why Both On-Chain AND Off-Chain?
+
+ZKGov uses a **hybrid architecture** — ZK voting is fully on-chain, everything else is off-chain. This is the standard pattern for production ZK dApps (Tornado Cash, Semaphore, Snapshot all work this way).
+
+### What's On-Chain (Source of Truth for Voting)
+
+| Component | Contract | What It Proves |
+|-----------|----------|---------------|
+| Vote validity | `Semaphore.validateProof()` | Groth16 ZK proof — voter is an eligible group member |
+| Double-vote prevention | `Semaphore` nullifier tracking | `hash(identity, proposalId)` is unique per voter per proposal |
+| Vote tallies | `ZKGovernance.proposals[id]` | for/against/abstain counts — the actual governance result |
+| Voter eligibility | `KycGate.registerHuman()` | Checks KYC SBT ownership at registration time |
+| Agent authorization | `AgentRegistry.isVerifiedAgent()` | Verifies agent's owner is KYC'd |
+
+### What's Off-Chain (Convenience Layer)
+
+| Component | Storage | Why Not On-Chain |
+|-----------|---------|-----------------|
+| Proposal title/description | PostgreSQL | Text is too expensive for on-chain storage. A `contentHash` (keccak256) goes on-chain for integrity verification. |
+| User accounts | PostgreSQL | Links wallet ↔ Telegram ↔ Discord. Platform identity mapping has no on-chain equivalent. |
+| Encrypted Semaphore keys | PostgreSQL (AES-256-GCM) | Users voting from Telegram/Discord can't generate ZK proofs in a chat app. The backend holds their encrypted key and generates proofs on their behalf. |
+| Comments/discussion | PostgreSQL | Social layer — not governance-critical, no need for immutability. |
+| Relayer tracking | PostgreSQL | Monitors gasless transaction status. The relayer pays gas so voters don't (gas payment would leak identity). |
+
+### Privacy Guarantee
+
+The `votes` database table has **no user_id or agent_id column**. Votes are anonymous even in our own database. The `nullifier_hash` prevents double-voting but cannot be traced back to a specific voter — this is a mathematical property of Semaphore's ZK circuit, not a policy we enforce.
+
+### The Vote Flow (End to End)
+
+```
+User clicks "Vote For" on Proposal #3
+         │
+         ▼
+Backend decrypts user's Semaphore private key (AES-256-GCM)
+         │
+         ▼
+Backend reconstructs Semaphore group from on-chain events
+         │
+         ▼
+snarkjs generates Groth16 proof:
+  "I am a member of this group AND I vote YES on proposal 3"
+  (without revealing WHICH member I am)
+         │
+         ▼
+Relayer submits proof to ZKGovernance.castVote() on HashKey Chain
+         │
+         ▼
+Semaphore contract verifies the proof on-chain (≈250k gas)
+         │
+         ▼
+Contract checks nullifier hasn't been used (prevents double-voting)
+         │
+         ▼
+Contract increments votesFor counter
+         │
+         ▼
+Backend stores anonymous vote record (no user_id) + broadcasts SSE
+```
+
+---
+
 ## Tech Stack
 
 | Layer | Choice | Why |

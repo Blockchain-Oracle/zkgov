@@ -1,3 +1,24 @@
+/**
+ * Semaphore ZK Proof Service
+ *
+ * This is the core ZK layer. It handles:
+ *   1. Creating Semaphore identities (private key + public commitment)
+ *   2. Encrypting private keys at rest (AES-256-GCM)
+ *   3. Generating Groth16 zero-knowledge proofs for anonymous voting
+ *
+ * The proof generation flow:
+ *   - Decrypt user's Semaphore private key from database
+ *   - Reconstruct the Semaphore group from on-chain events
+ *   - Generate a ZK proof proving: "I am a member of this group AND I vote X"
+ *     without revealing WHICH member I am
+ *   - The proof includes a nullifier (hash of identity + proposalId)
+ *     that prevents double-voting without revealing identity
+ *
+ * Why server-side? Users voting from Telegram/Discord can't run snarkjs
+ * in a chat app. The backend holds their encrypted key and generates
+ * proofs on their behalf. For web users, this could also be done
+ * client-side in the browser via WASM.
+ */
 import { Identity, Group, generateProof } from "@semaphore-protocol/core"
 import { SemaphoreEthers } from "@semaphore-protocol/data"
 import { env } from "../config/env.js"

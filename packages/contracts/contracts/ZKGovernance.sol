@@ -5,6 +5,28 @@ import "@semaphore-protocol/contracts/interfaces/ISemaphore.sol";
 import "@semaphore-protocol/contracts/interfaces/ISemaphoreGroups.sol";
 import "./KycGate.sol";
 
+/**
+ * @title ZKGovernance
+ * @notice Anonymous governance voting verified by Groth16 zero-knowledge proofs.
+ *
+ * This is where the actual voting happens on-chain:
+ *   - Proposals are created with a contentHash, voting period, quorum, and voter group
+ *   - Votes are cast by submitting a Semaphore ZK proof (castVote)
+ *   - The Semaphore contract verifies the Groth16 proof on-chain
+ *   - Nullifiers prevent double-voting: hash(identity, proposalId) is unique per voter per proposal
+ *   - Vote tallies (for/against/abstain) are stored on-chain and are the source of truth
+ *
+ * Privacy model:
+ *   - The ZK proof proves "I am a member of group X" without revealing WHICH member
+ *   - The vote choice is public (it must be, for tallying) but the voter is anonymous
+ *   - Even the relayer submitting the transaction cannot determine who voted
+ *
+ * Off-chain complement (backend database):
+ *   - Stores proposal title/description (too expensive for on-chain storage)
+ *   - Manages user accounts and platform linking (Telegram/Discord)
+ *   - Generates ZK proofs server-side for bot/agent voters
+ *   - The database mirrors on-chain vote state for API queries but is NOT the source of truth
+ */
 contract ZKGovernance {
     ISemaphore public semaphore;
     KycGate public kycGate;
