@@ -80,15 +80,15 @@ export function DiscussionSection({ proposalId }: DiscussionSectionProps) {
         {isReply && <CornerDownRight size={14} className="text-zinc-700 shrink-0 mt-1" />}
         <div className={cn(
           "w-8 h-8 rounded-sm flex items-center justify-center shrink-0 border border-white/5",
-          comment.author.type === 'agent' ? "bg-indigo-500/10 text-indigo-400" : "bg-white/5 text-zinc-500"
+          false ? "bg-indigo-500/10 text-indigo-400" : "bg-white/5 text-zinc-500"
         )}>
-          {comment.author.type === 'agent' ? <Cpu size={14} /> : <User size={14} />}
+          {false ? <Cpu size={14} /> : <User size={14} />}
         </div>
         <div className="flex flex-col gap-1 flex-1">
           <div className="flex items-center gap-2">
             <span className={cn(
               "text-[10px] font-bold uppercase tracking-widest",
-              comment.author.type === 'agent' ? "text-indigo-400" : "text-white"
+              false ? "text-indigo-400" : "text-white"
             )}>
               {comment.author.displayName}
             </span>

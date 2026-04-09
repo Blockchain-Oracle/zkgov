@@ -73,3 +73,17 @@ export function postComment(proposalId: number | string, content: string, parent
 export function fetchStats() {
   return request<{ proposals: number; members: number; comments: number }>('/api/stats');
 }
+
+// ─── Proposals (from contract via backend proxy) ─────
+
+export function fetchProposals() {
+  return request<{ proposals: any[] }>('/api/proposals');
+}
+
+export function fetchProposal(id: number | string) {
+  return request<{ proposal: any }>(`/api/proposals/${id}`);
+}
+
+export function fetchActivity() {
+  return request<{ activity: any[] }>('/api/activity').catch(() => ({ activity: [] }));
+}

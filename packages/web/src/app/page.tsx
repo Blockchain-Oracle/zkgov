@@ -18,7 +18,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 
 export default function Home() {
-  const [stats, setStats] = useState({ proposals: "—", votes: "—", voters: "—", agents: "—" });
+  const [stats, setStats] = useState({ proposals: "—", members: "—", comments: "—" });
   const [recentActivity, setRecentActivity] = useState<{ id: string; type: string; platform: string; text: string; time: string }[]>([]);
 
   useEffect(() => {
@@ -26,9 +26,8 @@ export default function Home() {
       .then(data => {
         setStats({
           proposals: String(data.proposals),
-          votes: String(data.votes),
-          voters: String(data.voters),
-          agents: String(data.agents),
+          members: String(data.members),
+          comments: String(data.comments),
         });
       })
       .catch(() => {});
@@ -163,9 +162,8 @@ export default function Home() {
         <div className="max-w-[1400px] mx-auto grid grid-cols-2 md:grid-cols-4 gap-12">
           {[
             { label: STATS_LABELS.PROPOSALS, value: stats.proposals },
-            { label: STATS_LABELS.VOTES, value: stats.votes },
-            { label: STATS_LABELS.VOTERS, value: stats.voters },
-            { label: STATS_LABELS.AGENTS, value: stats.agents },
+            { label: STATS_LABELS.MEMBERS, value: stats.members },
+            { label: STATS_LABELS.COMMENTS, value: stats.comments },
           ].map((stat, i) => (
             <motion.div 
               initial={{ opacity: 0 }}

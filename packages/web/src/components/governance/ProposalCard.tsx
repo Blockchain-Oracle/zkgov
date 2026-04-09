@@ -1,9 +1,9 @@
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
-import type { ProposalResponse } from '@zkgov/shared';
+
 
 interface ProposalCardProps {
-  proposal: ProposalResponse;
+  proposal: any;
 }
 
 export function ProposalCard({ proposal }: ProposalCardProps) {
@@ -15,7 +15,6 @@ export function ProposalCard({ proposal }: ProposalCardProps) {
     totalVotes, 
     quorum, 
     timeRemaining, 
-    voterGroup,
     commentCount
   } = proposal;
 
@@ -120,7 +119,6 @@ export function ProposalCard({ proposal }: ProposalCardProps) {
         {/* Voter Group Requirement Badge */}
         <div className="absolute top-0 right-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity">
           <span className="text-[9px] font-bold text-indigo-400/50 uppercase tracking-[0.2em] [writing-mode:vertical-lr]">
-            {voterGroup === 'both' ? 'HUMANS + AGENTS' : voterGroup.toUpperCase()}
           </span>
         </div>
       </div>

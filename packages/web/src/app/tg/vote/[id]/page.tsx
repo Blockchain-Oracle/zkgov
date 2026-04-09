@@ -5,14 +5,14 @@ import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { API_URL } from '@/lib/constants';
 import { Shield, CheckCircle2, Loader2, XCircle } from 'lucide-react';
-import type { ProposalResponse } from '@zkgov/shared';
+import type { Proposal } from '@zkgov/shared';
 import { Button } from '@/components/ui/button';
 
 type VoteState = 'idle' | 'voting' | 'success' | 'error';
 
 export default function TelegramVotePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
-  const [proposal, setProposal] = useState<ProposalResponse | null>(null);
+  const [proposal, setProposal] = useState<Proposal | null>(null);
   const [voteState, setVoteState] = useState<VoteState>('idle');
   const [error, setError] = useState('');
   const [token, setToken] = useState<string | null>(null);
@@ -146,9 +146,9 @@ export default function TelegramVotePage({ params }: { params: Promise<{ id: str
       {proposal && (
         <div className="mb-6 space-y-2">
           {[
-            { label: 'For', count: proposal.votes.for, total: proposal.totalVotes, color: 'bg-emerald-500' },
-            { label: 'Against', count: proposal.votes.against, total: proposal.totalVotes, color: 'bg-rose-500' },
-            { label: 'Abstain', count: proposal.votes.abstain, total: proposal.totalVotes, color: 'bg-indigo-500' },
+            { label: 'For', count: proposal.votesFor, total: proposal.totalVotes, color: 'bg-emerald-500' },
+            { label: 'Against', count: proposal.votesAgainst, total: proposal.totalVotes, color: 'bg-rose-500' },
+            { label: 'Abstain', count: proposal.votesAbstain, total: proposal.totalVotes, color: 'bg-indigo-500' },
           ].map(v => (
             <div key={v.label} className="flex items-center gap-3">
               <span className="text-[10px] font-bold tracking-wider text-zinc-500 w-14 uppercase">{v.label}</span>
