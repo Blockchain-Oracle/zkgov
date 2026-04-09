@@ -23,16 +23,14 @@ export function VoteSection({ proposal, onVoteSuccess }: VoteSectionProps) {
   const [txHash, setTxHash] = useState<string | null>(null);
   const [hasVoted, setHasVoted] = useState(false);
 
-  // Check if user has already voted on this proposal
+  // Check if user has already voted on this proposal (stored in localStorage after vote)
   useEffect(() => {
-    if (!token || !proposal?.id) return;
-    fetch(`${API_URL}/api/votes/check/${proposal.id}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-      .then(r => r.json())
-      .then(data => { if (data.hasVoted) setHasVoted(true); })
-      .catch(() => {});
-  }, [token, proposal?.id]);
+    if (!user?.walletAddress || !proposal?.id) return;
+    const key = `zkgov-voted-${user.walletAddress}-${proposal.id}`;
+    if (typeof window !== 'undefined' && localStorage.getItem(key)) {
+      setHasVoted(true);
+    }
+  }, [user?.walletAddress, proposal?.id]);
 
   // KYC registration is handled by the backend (relayer calls setHuman on-chain)
 
@@ -84,6 +82,11 @@ export function VoteSection({ proposal, onVoteSuccess }: VoteSectionProps) {
 
       setTxHash(data.txHash);
       setVotingState('success');
+      setHasVoted(true);
+      // Remember this vote in localStorage so we don't show buttons again
+      if (typeof window !== 'undefined' && user?.walletAddress) {
+        localStorage.setItem(`zkgov-voted-${user.walletAddress}-${proposal.id}`, '1');
+      }
       onVoteSuccess?.();
     } catch (err: any) {
       setError(err.message);
