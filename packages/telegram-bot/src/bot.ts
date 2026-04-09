@@ -2,15 +2,22 @@ import { Bot, InlineKeyboard } from "grammy"
 
 const API_URL = process.env.API_URL || "http://localhost:3001"
 const WEB_URL = process.env.WEB_URL || "http://localhost:3000"
+const EXPLORER_URL = "https://testnet-explorer.hsk.xyz"
+const CONTRACT = "0xEa625841E031758786141c8b13dD1b1137C9776C"
 
 export function createBot(token: string) {
   const bot = new Bot(token)
 
+  // Error handler — log but don't crash
+  bot.catch((err) => {
+    console.error("Bot error:", err.message || err)
+  })
+
   bot.command("start", async (ctx) => {
     const keyboard = new InlineKeyboard()
-      .url("Open ZKGov", `${WEB_URL}`)
-      .row()
       .text("View Proposals", "list_proposals")
+      .row()
+      .url("View on Explorer", `${EXPLORER_URL}/address/${CONTRACT}`)
 
     await ctx.reply(
       "🗳️ *ZKGov — Private Governance*\n\n" +
@@ -18,7 +25,7 @@ export function createBot(token: string) {
       "• Your votes are private — nobody knows how you voted\n" +
       "• Votes are verified on-chain via ZK proofs\n" +
       "• You sign transactions directly with your wallet\n\n" +
-      "Open the app to register and start voting!",
+      "Use /proposals to see active proposals!",
       { parse_mode: "Markdown", reply_markup: keyboard }
     )
   })
@@ -57,19 +64,39 @@ async function sendProposalList(ctx: any) {
 
     for (const p of data.proposals.slice(0, 5)) {
       const keyboard = new InlineKeyboard()
-        .url("Vote 🗳️", `${WEB_URL}/proposals/${p.id}`)
-        .url("Explorer 🔍", `https://testnet-explorer.hsk.xyz/address/0xEa625841E031758786141c8b13dD1b1137C9776C`)
+        .url("Explorer 🔍", `${EXPLORER_URL}/address/${CONTRACT}`)
+
+      // Only add web link if WEB_URL is HTTPS (Telegram rejects http URLs)
+      if (WEB_URL.startsWith("https")) {
+        keyboard.url("Vote 🗳️", `${WEB_URL}/proposals/${p.id}`)
+      }
+
+      const choices = ["Against", "For", "Abstain"]
+      const votesFor = p.votes?.for ?? p.votesFor ?? 0
+      const votesAgainst = p.votes?.against ?? p.votesAgainst ?? 0
+      const votesAbstain = p.votes?.abstain ?? p.votesAbstain ?? 0
+      const totalVotes = p.totalVotes ?? (votesFor + votesAgainst + votesAbstain)
+      const quorum = p.quorum ?? 0
+
+      let status = "🟢 Active"
+      if (p.finalized) status = p.passed ? "✅ Passed" : "❌ Defeated"
+      else if (p.isActive === false) status = "⏰ Ended"
 
       await ctx.reply(
-        `📋 *Proposal #${p.id}*\n\n` +
-        `${p.title}\n\n` +
-        `📊 ${p.votes?.for || 0} for / ${p.votes?.against || 0} against / ${p.votes?.abstain || 0} abstain\n` +
-        `⏰ ${p.timeRemaining ? `Ends in ${p.timeRemaining}` : "Voting ended"}\n` +
-        `🎯 Quorum: ${p.totalVotes || 0}/${p.quorum}`,
-        { parse_mode: "Markdown", reply_markup: keyboard }
+        `📋 *Proposal \\#${p.id}*\n\n` +
+        `*${escapeMarkdown(p.title)}*\n\n` +
+        `📊 ${votesFor} for / ${votesAgainst} against / ${votesAbstain} abstain\n` +
+        `🎯 Quorum: ${totalVotes}/${quorum}\n` +
+        `${status}`,
+        { parse_mode: "MarkdownV2", reply_markup: keyboard }
       )
     }
-  } catch {
+  } catch (e: any) {
+    console.error("Failed to fetch proposals:", e.message)
     await ctx.reply("Failed to fetch proposals. Is the backend running?")
   }
+}
+
+function escapeMarkdown(text: string): string {
+  return text.replace(/[_*[\]()~`>#+\-=|{}.!]/g, "\\$&")
 }

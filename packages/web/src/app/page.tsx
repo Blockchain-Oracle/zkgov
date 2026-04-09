@@ -19,7 +19,7 @@ import { Button } from "@/components/ui/button";
 
 export default function Home() {
   const [stats, setStats] = useState({ proposals: "—", members: "—", comments: "—" });
-  const [recentActivity, setRecentActivity] = useState<{ id: string; type: string; platform: string; text: string; time: string }[]>([]);
+  const [recentActivity, setRecentActivity] = useState<{ id: string; type: string; platform: string; text: string; time: string; proposalId?: number }[]>([]);
 
   useEffect(() => {
     fetchStats()
@@ -35,11 +35,12 @@ export default function Home() {
     // Load historical activity for the audit log section
     fetchActivity()
       .then(data => {
-        setRecentActivity(data.activity.slice(0, 4).map(a => ({
+        setRecentActivity(data.activity.slice(0, 4).map((a: any) => ({
           id: a.id,
           type: a.type,
           platform: a.platform,
           text: a.text,
+          proposalId: a.proposalId || undefined,
           time: formatTime(a.time),
         })));
       })
@@ -49,11 +50,11 @@ export default function Home() {
     const es = new EventSource(`${API_URL}/api/sse/feed`);
     es.addEventListener('vote_cast', (e) => {
       const d = JSON.parse(e.data);
-      setRecentActivity(prev => [{ id: `v-${Date.now()}`, type: 'vote', platform: d.submittedVia || 'web', text: `Anonymous vote cast on #${String(d.proposalId).padStart(3, '0')}`, time: 'JUST NOW' }, ...prev].slice(0, 4));
+      setRecentActivity(prev => [{ id: `v-${Date.now()}`, type: 'vote', platform: d.submittedVia || 'web', text: `Anonymous vote cast on #${String(d.proposalId).padStart(3, '0')}`, proposalId: d.proposalId, time: 'JUST NOW' }, ...prev].slice(0, 4));
     });
     es.addEventListener('new_proposal', (e) => {
       const d = JSON.parse(e.data);
-      setRecentActivity(prev => [{ id: `p-${Date.now()}`, type: 'proposal', platform: 'web', text: `Proposal #${String(d.id).padStart(3, '0')} created`, time: 'JUST NOW' }, ...prev].slice(0, 4));
+      setRecentActivity(prev => [{ id: `p-${Date.now()}`, type: 'proposal', platform: 'web', text: `Proposal #${String(d.id).padStart(3, '0')} created`, proposalId: d.id, time: 'JUST NOW' }, ...prev].slice(0, 4));
     });
     es.onerror = () => { es.close(); };
     return () => es.close();
@@ -64,7 +65,7 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative flex flex-col items-center text-center gap-10 py-20 overflow-hidden">
         {/* Abstract Background Grid */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]"></div>
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none"></div>
 
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
@@ -96,8 +97,8 @@ export default function Home() {
           transition={{ duration: 0.5, delay: 0.2 }}
           className="max-w-[600px] text-zinc-500 text-lg md:text-xl font-medium tracking-tight leading-relaxed"
         >
-          Anonymous, KYC-gated governance where humans and AI agents participate as equals.
-          Powered by zero-knowledge proofs.
+          Anonymous governance powered by zero-knowledge proofs.
+          Your identity stays private. Your vote is verified on-chain.
         </motion.p>
 
         <motion.div 
@@ -132,10 +133,10 @@ export default function Home() {
                 title: "PRIVATE BALLOT", 
                 desc: "Your identity is never revealed. Semaphore ZK-proofs ensure only eligible members can vote without linking to a wallet."
               },
-              { 
-                icon: <Shield size={24} className="text-emerald-400" />, 
-                title: "KYC VERIFIED", 
-                desc: "Integrated with HashKey KYC SBT. One-person-one-vote enforced mathematically, not centrally."
+              {
+                icon: <Shield size={24} className="text-emerald-400" />,
+                title: "ON-CHAIN VERIFIED",
+                desc: "Every vote is a real transaction verified on HashKey Chain. Full transparency with zero-knowledge privacy."
               },
               { 
                 icon: <Cpu size={24} className="text-amber-400" />, 
@@ -205,28 +206,29 @@ export default function Home() {
             </div>
           )}
           {recentActivity.map((activity, i) => (
-            <motion.div 
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ delay: i * 0.1 }}
-              viewport={{ once: true }}
-              key={activity.id}
-              className="w-full p-6 bg-[#EBE8E1] dark:bg-[#111] border border-black/[0.06] dark:border-white/[0.06] rounded-sm flex items-center justify-between group hover:border-black/[0.15] dark:hover:border-white/[0.15] transition-all cursor-pointer"
-            >
-              <div className="flex items-center gap-5">
-                <div className={cn(
-                  "w-1.5 h-1.5 rounded-full bg-indigo-500",
-                  i === 0 && "animate-pulse"
-                )}></div>
-                <span className="text-[11px] font-bold tracking-tight text-zinc-300 uppercase">
-                  {activity.text.split(' ').map((w, j) => w.startsWith('#') ? <span key={j} className="text-white">{w} </span> : w + ' ')}
-                  VIA <span className="text-indigo-400">{activity.platform.toUpperCase()}</span>
+            <Link href={activity.proposalId ? `/proposals/${activity.proposalId}` : '/activity'} key={activity.id}>
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ delay: i * 0.1 }}
+                viewport={{ once: true }}
+                className="w-full p-6 bg-[#EBE8E1] dark:bg-[#111] border border-black/[0.06] dark:border-white/[0.06] rounded-sm flex items-center justify-between group hover:border-black/[0.15] dark:hover:border-white/[0.15] transition-all cursor-pointer"
+              >
+                <div className="flex items-center gap-5">
+                  <div className={cn(
+                    "w-1.5 h-1.5 rounded-full bg-indigo-500",
+                    i === 0 && "animate-pulse"
+                  )}></div>
+                  <span className="text-[11px] font-bold tracking-tight text-zinc-300 uppercase">
+                    {activity.text.split(' ').map((w, j) => w.startsWith('#') ? <span key={j} className="text-white">{w} </span> : w + ' ')}
+                    VIA <span className="text-indigo-400">{activity.platform.toUpperCase()}</span>
+                  </span>
+                </div>
+                <span className="text-[10px] font-mono text-zinc-600 uppercase">
+                  {activity.time}
                 </span>
-              </div>
-              <span className="text-[10px] font-mono text-zinc-600 uppercase">
-                {activity.time}
-              </span>
-            </motion.div>
+              </motion.div>
+            </Link>
           ))}
         </div>
       </section>

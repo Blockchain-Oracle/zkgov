@@ -5,26 +5,29 @@ import { API_URL } from '@/lib/constants';
 import { fetchActivity } from '@/lib/api';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
-  BarChart3, 
-  MessageSquare, 
-  PlusCircle, 
-  CheckCircle2, 
-  Globe, 
-  Send, 
-  MessageSquare as DiscordIcon, 
-  Cpu 
+  BarChart3,
+  MessageSquare,
+  PlusCircle,
+  CheckCircle2,
+  Globe,
+  Send,
+  MessageSquare as DiscordIcon,
+  Cpu,
+  UserPlus,
+  ExternalLink,
 } from 'lucide-react';
 
 interface ActivityItem {
   id: string;
-  type: 'vote' | 'proposal' | 'comment' | 'tally';
-  platform: 'web' | 'telegram' | 'discord' | 'api';
+  type: 'vote' | 'proposal' | 'comment' | 'registration' | 'tally';
+  platform: 'web' | 'on-chain' | 'telegram' | 'discord' | 'api';
   text: string;
   time: string;
   proposalId?: number;
+  txHash?: string | null;
+  explorerUrl?: string | null;
 }
 
 export default function ActivityPage() {
@@ -36,12 +39,14 @@ export default function ActivityPage() {
   useEffect(() => {
     fetchActivity()
       .then(data => {
-        setActivities(data.activity.map(a => ({
+        setActivities(data.activity.map((a: any) => ({
           id: a.id,
           type: a.type as ActivityItem['type'],
           platform: a.platform as ActivityItem['platform'],
           text: a.text,
           proposalId: a.proposalId,
+          txHash: a.txHash || null,
+          explorerUrl: a.explorerUrl || null,
           time: formatRelativeTime(a.time),
         })));
       })
@@ -98,6 +103,7 @@ export default function ActivityPage() {
     switch (platform) {
       case 'telegram': return <Send size={14} className="text-[#24A1DE]" />;
       case 'discord': return <DiscordIcon size={14} className="text-[#5865F2]" />;
+      case 'on-chain': return <Globe size={14} className="text-emerald-400" />;
       case 'api': return <Cpu size={14} className="text-amber-400" />;
       default: return <Globe size={14} className="text-indigo-400" />;
     }
@@ -108,6 +114,7 @@ export default function ActivityPage() {
       case 'vote': return <CheckCircle2 size={16} />;
       case 'proposal': return <PlusCircle size={16} />;
       case 'comment': return <MessageSquare size={16} />;
+      case 'registration': return <UserPlus size={16} />;
       case 'tally': return <BarChart3 size={16} />;
       default: return <Globe size={16} />;
     }
@@ -118,6 +125,7 @@ export default function ActivityPage() {
       case 'vote': return 'bg-emerald-500/10 text-emerald-400';
       case 'proposal': return 'bg-indigo-500/10 text-indigo-400';
       case 'comment': return 'bg-amber-500/10 text-amber-400';
+      case 'registration': return 'bg-cyan-500/10 text-cyan-400';
       case 'tally': return 'bg-purple-500/10 text-purple-400';
       default: return 'bg-zinc-500/10 text-zinc-400';
     }
@@ -149,7 +157,7 @@ export default function ActivityPage() {
         </div>
 
         <div className="flex items-center gap-2 bg-[#EBE8E1] dark:bg-[#111] border border-black/[0.06] dark:border-white/[0.06] rounded-sm p-1">
-          {['ALL ACTIVITY', 'VOTES', 'PROPOSALS', 'COMMENTS'].map((f) => (
+          {['ALL ACTIVITY', 'VOTES', 'PROPOSALS', 'REGISTRATIONS', 'COMMENTS'].map((f) => (
             <Button
               key={f}
               variant="ghost"
@@ -169,7 +177,8 @@ export default function ActivityPage() {
         {/* Table Header */}
         <div className="grid grid-cols-12 gap-4 px-6 py-4 border-b border-black/[0.06] dark:border-white/[0.06] bg-[#EBE8E1] dark:bg-[#111]">
           <div className="col-span-1 text-[10px] font-bold tracking-widest text-zinc-600 uppercase">TYPE</div>
-          <div className="col-span-7 text-[10px] font-bold tracking-widest text-zinc-600 uppercase">EVENT</div>
+          <div className="col-span-5 text-[10px] font-bold tracking-widest text-zinc-600 uppercase">EVENT</div>
+          <div className="col-span-2 text-[10px] font-bold tracking-widest text-zinc-600 uppercase">TX HASH</div>
           <div className="col-span-2 text-[10px] font-bold tracking-widest text-zinc-600 uppercase">PLATFORM</div>
           <div className="col-span-2 text-[10px] font-bold tracking-widest text-zinc-600 uppercase text-right">TIME</div>
         </div>
@@ -180,14 +189,14 @@ export default function ActivityPage() {
             if (typeFilter === 'ALL ACTIVITY') return true;
             if (typeFilter === 'VOTES') return a.type === 'vote';
             if (typeFilter === 'PROPOSALS') return a.type === 'proposal';
+            if (typeFilter === 'REGISTRATIONS') return a.type === 'registration';
             if (typeFilter === 'COMMENTS') return a.type === 'comment';
             return true;
           }).map((activity, idx) => (
-            <Link
-              href={activity.proposalId ? `/proposals/${activity.proposalId}` : '#'}
+            <div
               key={activity.id}
               className={cn(
-                "grid grid-cols-12 gap-4 px-6 py-5 border-b border-black/[0.04] dark:border-white/[0.04] items-center hover:bg-white/[0.02] transition-colors cursor-pointer animate-in group",
+                "grid grid-cols-12 gap-4 px-6 py-5 border-b border-black/[0.04] dark:border-white/[0.04] items-center animate-in",
                 idx % 2 === 0 ? "bg-transparent" : "bg-white/[0.01]"
               )}
               style={{ animationDelay: `${idx * 0.05}s` }}
@@ -197,18 +206,42 @@ export default function ActivityPage() {
                   {getTypeIcon(activity.type)}
                 </div>
               </div>
-              
-              <div className="col-span-7 flex flex-col gap-1">
-                <p className="text-sm font-medium tracking-tight text-zinc-300 leading-none">
-                  {activity.text.split(' ').map((word, i) => {
-                    if (word.startsWith('#')) return <span key={i} className="text-white font-bold">{word} </span>;
-                    if (activity.text.includes('POSTED') && i === 0) return <span key={i} className="text-indigo-400 font-bold">{word} </span>;
-                    return word + ' ';
-                  })}
-                </p>
-                <div className="flex items-center gap-2">
-                  <span className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest">VIEW PROPOSAL →</span>
-                </div>
+
+              <div className="col-span-5 flex flex-col gap-1">
+                {activity.proposalId ? (
+                  <Link href={`/proposals/${activity.proposalId}`} className="hover:underline">
+                    <p className="text-sm font-medium tracking-tight text-zinc-800 dark:text-zinc-300 leading-none">
+                      {activity.text}
+                    </p>
+                  </Link>
+                ) : (
+                  <p className="text-sm font-medium tracking-tight text-zinc-800 dark:text-zinc-300 leading-none">
+                    {activity.text}
+                  </p>
+                )}
+                <span className={cn(
+                  "text-[9px] font-bold uppercase tracking-widest w-fit",
+                  getTypeColor(activity.type).split(' ')[1]
+                )}>
+                  {activity.type}
+                </span>
+              </div>
+
+              <div className="col-span-2">
+                {activity.txHash && activity.explorerUrl ? (
+                  <a
+                    href={activity.explorerUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-1.5 text-[11px] font-mono text-indigo-400 hover:text-indigo-300 hover:underline transition-colors"
+                    onClick={e => e.stopPropagation()}
+                  >
+                    {activity.txHash.slice(0, 6)}...{activity.txHash.slice(-4)}
+                    <ExternalLink size={10} />
+                  </a>
+                ) : (
+                  <span className="text-[10px] text-zinc-600">—</span>
+                )}
               </div>
 
               <div className="col-span-2">
@@ -227,7 +260,7 @@ export default function ActivityPage() {
                   {activity.time}
                 </span>
               </div>
-            </Link>
+            </div>
           ))}
         </div>
 

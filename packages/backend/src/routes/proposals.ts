@@ -104,7 +104,9 @@ export async function proposalRoutes(app: FastifyInstance) {
       return {
         proposal: {
           id,
-          title, description, creator,
+          title, description,
+          creatorAddress: creator,
+          creator: { type: "human", displayName: creator.slice(0, 6) + "..." + creator.slice(-4) },
           votingStart: new Date(Number(votingStart) * 1000).toISOString(),
           votingEnd: new Date(Number(votingEnd) * 1000).toISOString(),
           quorum: Number(quorum),
@@ -112,7 +114,6 @@ export async function proposalRoutes(app: FastifyInstance) {
           totalVotes: Number(totalVotes),
           finalized, passed, isActive,
           status: finalized ? (passed ? "succeeded" : "defeated") : isActive ? "active" : "ended",
-          creator: { type: "human", displayName: creator.slice(0, 6) + "..." + creator.slice(-4) },
         },
       }
     } catch {

@@ -34,58 +34,82 @@ export async function statsRoutes(app: FastifyInstance) {
     }
   })
 
-  // GET /activity — recent activity from contract events + comments
+  // GET /activity — recent on-chain events + comments
   app.get("/activity", async () => {
-    // Get recent comments from DB
     const recentComments = await db.query.comments.findMany({
       orderBy: [desc(comments.createdAt)],
       limit: 20,
     })
 
-    // Read proposal events from contract
-    const ZK_VOTING_EVENTS_ABI = [
-      { name: "ProposalCreated", type: "event", inputs: [
-        { name: "proposalId", type: "uint256", indexed: true },
-        { name: "creator", type: "address", indexed: true },
-        { name: "title", type: "string" },
-        { name: "votingEnd", type: "uint256" },
-      ] },
-      { name: "VoteCast", type: "event", inputs: [
-        { name: "proposalId", type: "uint256", indexed: true },
-        { name: "nullifier", type: "uint256" },
-        { name: "choice", type: "uint8" },
-      ] },
-      { name: "MemberRegistered", type: "event", inputs: [
-        { name: "member", type: "address", indexed: true },
-        { name: "commitment", type: "uint256" },
-      ] },
-    ] as const
-
+    // Parse on-chain events
     let onChainActivity: any[] = []
     try {
+      const { parseAbiItem, decodeEventLog } = await import("viem")
+
+      const proposalCreatedEvent = parseAbiItem('event ProposalCreated(uint256 indexed proposalId, address indexed creator, string title, uint256 votingEnd)')
+      const voteCastEvent = parseAbiItem('event VoteCast(uint256 indexed proposalId, uint256 nullifier, uint8 choice)')
+      const memberRegisteredEvent = parseAbiItem('event MemberRegistered(address indexed member, uint256 commitment)')
+
       const logs = await publicClient.getLogs({
         address: env.ZK_VOTING_ADDRESS,
         fromBlock: BigInt(env.DEPLOYMENT_BLOCK),
         toBlock: 'latest',
       })
 
-      onChainActivity = logs.map((log, i) => {
-        // Parse event type from topics
-        const proposalCreatedTopic = '0x' // simplified — just use index
-        return {
-          id: `chain-${i}`,
-          type: 'vote',
-          platform: 'web',
-          text: `On-chain event at block ${Number(log.blockNumber)}`,
-          proposalId: 0,
-          time: new Date().toISOString(),
-        }
-      }).slice(-10)
+      const explorerUrl = "https://testnet-explorer.hsk.xyz"
+
+      for (const log of logs.slice(-20)) {
+        const txHash = log.transactionHash
+        try {
+          const decoded = decodeEventLog({ abi: [proposalCreatedEvent], data: log.data, topics: log.topics })
+          onChainActivity.push({
+            id: `pc-${txHash}`,
+            type: 'proposal',
+            platform: 'on-chain',
+            text: `Proposal #${String((decoded.args as any).proposalId).padStart(3, '0')} created: ${(decoded.args as any).title}`,
+            proposalId: Number((decoded.args as any).proposalId),
+            txHash,
+            explorerUrl: `${explorerUrl}/tx/${txHash}`,
+            time: new Date().toISOString(),
+          })
+          continue
+        } catch {}
+
+        try {
+          const decoded = decodeEventLog({ abi: [voteCastEvent], data: log.data, topics: log.topics })
+          const choices = ['Against', 'For', 'Abstain']
+          onChainActivity.push({
+            id: `vc-${txHash}`,
+            type: 'vote',
+            platform: 'on-chain',
+            text: `Anonymous vote (${choices[(decoded.args as any).choice] || '?'}) on proposal #${String((decoded.args as any).proposalId).padStart(3, '0')}`,
+            proposalId: Number((decoded.args as any).proposalId),
+            txHash,
+            explorerUrl: `${explorerUrl}/tx/${txHash}`,
+            time: new Date().toISOString(),
+          })
+          continue
+        } catch {}
+
+        try {
+          const decoded = decodeEventLog({ abi: [memberRegisteredEvent], data: log.data, topics: log.topics })
+          const addr = (decoded.args as any).member as string
+          onChainActivity.push({
+            id: `mr-${txHash}`,
+            type: 'registration',
+            platform: 'on-chain',
+            text: `New voter registered: ${addr.slice(0, 6)}...${addr.slice(-4)}`,
+            proposalId: 0,
+            txHash,
+            explorerUrl: `${explorerUrl}/tx/${txHash}`,
+            time: new Date().toISOString(),
+          })
+        } catch {}
+      }
     } catch {
-      // RPC might be down — that's ok, just show comments
+      // RPC might be down
     }
 
-    // Combine comments + on-chain events
     const activity = [
       ...recentComments.map(c => ({
         id: c.id,
@@ -93,6 +117,8 @@ export async function statsRoutes(app: FastifyInstance) {
         platform: 'web',
         text: `Comment on proposal #${String(c.proposalId).padStart(3, '0')}`,
         proposalId: c.proposalId,
+        txHash: null,
+        explorerUrl: null,
         time: c.createdAt?.toISOString() || new Date().toISOString(),
       })),
       ...onChainActivity,
