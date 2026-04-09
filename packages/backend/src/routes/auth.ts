@@ -97,6 +97,7 @@ export async function authRoutes(app: FastifyInstance) {
     return {
       id: user.id,
       walletAddress: user.walletAddress,
+      identityCommitment: user.identityCommitment,
       kycVerified: user.kycVerified,
       kycLevel: user.kycLevel,
       telegramLinked: !!user.telegramId,

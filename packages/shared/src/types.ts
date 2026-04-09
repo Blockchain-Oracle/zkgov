@@ -48,6 +48,7 @@ export interface CommentResponse {
 export interface UserResponse {
   id: string
   walletAddress: string
+  identityCommitment: string
   kycVerified: boolean
   kycLevel: string | null
   telegramLinked: boolean

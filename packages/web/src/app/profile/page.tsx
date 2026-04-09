@@ -124,6 +124,37 @@ export default function ProfilePage() {
         </div>
       </div>
 
+      {/* ZK Voter Identity Card */}
+      <Card className="p-6 bg-[#EBE8E1] dark:bg-[#111] border-black/[0.06] dark:border-white/[0.06] animate-in">
+        <div className="flex items-center gap-2 mb-4">
+          <Shield size={16} className="text-indigo-400" />
+          <h3 className="text-[10px] font-bold tracking-[0.2em] text-zinc-600 uppercase">ZK Voter Identity</h3>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="flex flex-col gap-1 p-3 bg-black/[0.03] dark:bg-white/[0.03] rounded-sm">
+            <span className="text-[9px] font-bold text-zinc-500 uppercase tracking-widest">Wallet Address</span>
+            <span className="text-xs font-mono text-zinc-900 dark:text-zinc-300 break-all">{user.walletAddress}</span>
+          </div>
+          <div className="flex flex-col gap-1 p-3 bg-black/[0.03] dark:bg-white/[0.03] rounded-sm">
+            <span className="text-[9px] font-bold text-zinc-500 uppercase tracking-widest">Semaphore Commitment</span>
+            <span className="text-[10px] font-mono text-zinc-600 dark:text-zinc-400 break-all">{user.identityCommitment || '—'}</span>
+          </div>
+          <div className="flex flex-col gap-1 p-3 bg-black/[0.03] dark:bg-white/[0.03] rounded-sm">
+            <span className="text-[9px] font-bold text-zinc-500 uppercase tracking-widest">KYC Level</span>
+            <span className={cn("text-xs font-bold uppercase", user.kycVerified ? "text-emerald-400" : "text-amber-400")}>
+              {user.kycVerified ? user.kycLevel : "Not Verified"}
+            </span>
+          </div>
+          <div className="flex flex-col gap-1 p-3 bg-black/[0.03] dark:bg-white/[0.03] rounded-sm">
+            <span className="text-[9px] font-bold text-zinc-500 uppercase tracking-widest">Registered Agents</span>
+            <span className="text-xs font-bold text-zinc-900 dark:text-zinc-300">{user.agents?.length || 0}</span>
+          </div>
+        </div>
+        <p className="text-[10px] text-zinc-500 mt-3 leading-relaxed">
+          Your Semaphore commitment is registered on-chain. When you vote, a ZK proof proves you're in the voter group without revealing your wallet address.
+        </p>
+      </Card>
+
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* Left Column: Account & Links */}
         <div className="flex flex-col gap-8">
