@@ -89,6 +89,12 @@ export function VoteSection({ proposal, onVoteSuccess }: VoteSectionProps) {
       }
       onVoteSuccess?.();
     } catch (err: any) {
+      if (err.message?.includes("already voted")) {
+        setHasVoted(true);
+        if (typeof window !== 'undefined' && user?.walletAddress) {
+          localStorage.setItem(`zkgov-voted-${user.walletAddress}-${proposal.id}`, '1');
+        }
+      }
       setError(err.message);
       setVotingState('idle');
     }
