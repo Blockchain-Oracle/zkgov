@@ -1,3 +1,12 @@
+/**
+ * ZKGov Shared Constants
+ *
+ * Contract addresses and chain config used across all packages.
+ * These are the DEPLOYED contract addresses on HashKey Chain Testnet.
+ */
+
+// ─── Chain Configuration ─────────────────────────────────────
+
 export const HASHKEY_TESTNET = {
   id: 133,
   name: "HashKey Chain Testnet",
@@ -14,19 +23,22 @@ export const HASHKEY_MAINNET = {
   nativeCurrency: { name: "HSK", symbol: "HSK", decimals: 18 },
 } as const
 
-// Contract addresses — populated after deployment
+// ─── Deployed Contract Addresses (HashKey Testnet) ───────────
+
 export const CONTRACTS = {
-  semaphore: "",
-  kycSBT: "",
-  agentRegistry: "",
-  kycGate: "",
-  zkGovernance: "",
+  semaphore: "0x39A5c71685d2B7c86fb051A29824010720AAB6E4",
+  kycSBT: "0x551110C2B722D42399702869A82ee6E8CE368256",
+  agentRegistry: "0x6D20F5797E72d24ceaB762EaD562e47618e34B74",
+  kycGate: "0xDDf582e45B9f120D5ae7E94BD4e0b12798729B5f",
+  zkGovernance: "0x38928DDE71a8993789BA86A910f898aD0E8271bf",
 } as const
 
 export const SEMAPHORE_GROUP_IDS = {
   human: 0,
-  agent: 0,
+  agent: 1,
 } as const
+
+// ─── Voting ──────────────────────────────────────────────────
 
 export const VOTE_CHOICES = {
   NO: 0 as const,
