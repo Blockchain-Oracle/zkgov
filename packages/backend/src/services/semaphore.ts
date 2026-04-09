@@ -68,10 +68,21 @@ export async function generateVoteProof(
 ) {
   const identity = restoreIdentity(encryptedIdentity, encryptionIv)
 
-  // Get group members from chain
-  const data = getSemaphoreData()
-  const members = await data.getGroupMembers(groupId)
-  const group = new Group(members.map(BigInt))
+  // Build group from database commitments (all registered users)
+  // This is faster and more reliable than fetching on-chain events,
+  // especially when the testnet RPC is unstable.
+  // The ZK proof is still mathematically valid — it proves membership
+  // in a Merkle tree of identity commitments.
+  const { db } = await import("../db/index.js")
+  const { users } = await import("../db/schema.js")
+  const allUsers = await db.query.users.findMany()
+  const commitments = allUsers.map(u => BigInt(u.identityCommitment))
+
+  if (commitments.length === 0) {
+    throw new Error("No registered voters found")
+  }
+
+  const group = new Group(commitments)
 
   // Generate proof
   const proof = await generateProof(

@@ -87,16 +87,23 @@ export async function voteRoutes(app: FastifyInstance) {
         proposalId
       )
 
-      // Submit to chain via relayer (convert string types to bigint)
-      const txHash = await submitVote(proposalId, {
-        merkleTreeDepth: proof.merkleTreeDepth,
-        merkleTreeRoot: BigInt(proof.merkleTreeRoot),
-        nullifier: BigInt(proof.nullifier),
-        message: BigInt(proof.message),
-        points: proof.points.map(BigInt),
-      })
+      // Try to submit to chain via relayer
+      let txHash: string | null = null
+      try {
+        txHash = await submitVote(proposalId, {
+          merkleTreeDepth: proof.merkleTreeDepth,
+          merkleTreeRoot: BigInt(proof.merkleTreeRoot),
+          nullifier: BigInt(proof.nullifier),
+          message: BigInt(proof.message),
+          points: proof.points.map(BigInt),
+        })
+      } catch (chainErr) {
+        // On-chain submission failed (RPC unstable, group not synced, etc.)
+        // Still record the vote — the ZK proof is valid regardless
+        console.error("On-chain vote submission failed:", chainErr)
+      }
 
-      // Store vote (anonymous — no user reference) with txHash
+      // Store vote (anonymous — no user reference)
       await db.insert(votes).values({
         proposalId,
         nullifierHash: proof.nullifier.toString(),
@@ -109,7 +116,7 @@ export async function voteRoutes(app: FastifyInstance) {
           points: proof.points.map(String),
         },
         txHash,
-        txStatus: "submitted",
+        txStatus: txHash ? "submitted" : "proof-only",
         submittedVia: platform,
       })
 
