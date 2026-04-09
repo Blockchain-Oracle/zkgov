@@ -21,6 +21,18 @@ export function VoteSection({ proposal, onVoteSuccess }: VoteSectionProps) {
   const [votingState, setVotingState] = useState<'idle' | 'registering' | 'proving' | 'submitting' | 'success'>('idle');
   const [error, setError] = useState<string | null>(null);
   const [txHash, setTxHash] = useState<string | null>(null);
+  const [hasVoted, setHasVoted] = useState(false);
+
+  // Check if user has already voted on this proposal
+  useEffect(() => {
+    if (!token || !proposal?.id) return;
+    fetch(`${API_URL}/api/votes/check/${proposal.id}`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then(r => r.json())
+      .then(data => { if (data.hasVoted) setHasVoted(true); })
+      .catch(() => {});
+  }, [token, proposal?.id]);
 
   // KYC registration is handled by the backend (relayer calls setHuman on-chain)
 
@@ -139,7 +151,20 @@ export function VoteSection({ proposal, onVoteSuccess }: VoteSectionProps) {
     );
   }
 
-  // 4. Ready to vote (or success)
+  // 4. Already voted
+  if (hasVoted && votingState !== 'success') {
+    return (
+      <Card className="p-6 bg-[#EBE8E1] dark:bg-[#111] border-black/[0.06] dark:border-white/[0.06] flex flex-col gap-4 text-center">
+        <CheckCircle2 size={32} className="text-emerald-400 mx-auto" />
+        <h3 className="text-sm font-bold tracking-tight uppercase">Vote Recorded</h3>
+        <p className="text-xs text-zinc-500">
+          You have already voted on this proposal. Your vote is anonymous and verified by a zero-knowledge proof.
+        </p>
+      </Card>
+    );
+  }
+
+  // 5. Ready to vote (or success)
   return (
     <Card className="p-6 bg-[#EBE8E1] dark:bg-[#111] border-black/[0.06] dark:border-white/[0.06] flex flex-col gap-6">
       <div className="flex items-center justify-between">

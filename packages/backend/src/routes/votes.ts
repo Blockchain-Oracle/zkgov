@@ -25,6 +25,40 @@ import type { VoteChoice } from "@zkgov/shared"
  * but the ON-CHAIN tally is the source of truth for governance outcomes.
  */
 export async function voteRoutes(app: FastifyInstance) {
+  // GET /votes/check/:proposalId — check if the current user has already voted
+  // Uses the Semaphore nullifier: hash(identity, proposalId) is deterministic
+  app.get<{ Params: { proposalId: string } }>(
+    "/votes/check/:proposalId",
+    { preHandler: [(app as any).authenticate] },
+    async (request) => {
+      const user = (request as any).user
+      const agent = (request as any).agent
+      const proposalId = parseInt(request.params.proposalId)
+
+      // Restore identity to compute what the nullifier WOULD be
+      const { restoreIdentity } = await import("../services/semaphore.js")
+      const { Identity, Group } = await import("@semaphore-protocol/core")
+
+      const encId = agent ? agent.encryptedIdentity : user.encryptedIdentity
+      const encIv = agent ? agent.encryptionIv : user.encryptionIv
+      const identity = restoreIdentity(encId, encIv)
+
+      // The nullifier is deterministic: hash(identitySecret, scope)
+      // We can check if this nullifier exists in our votes table
+      // Semaphore's nullifier = poseidon(identitySecret, scope)
+      // For now, just check by generating a proof with a dummy group and extracting nullifier
+      // Actually simpler: compute nullifier directly
+      const { poseidon2 } = await import("@semaphore-protocol/utils/poseidon")
+      const nullifier = poseidon2([identity.secretScalar, BigInt(proposalId)]).toString()
+
+      const existing = await db.query.votes.findFirst({
+        where: eq(votes.nullifierHash, nullifier),
+      })
+
+      return { hasVoted: !!existing, proposalId }
+    }
+  )
+
   // POST /votes — cast an anonymous vote
   app.post<{
     Body: { proposalId: number; choice: VoteChoice }
