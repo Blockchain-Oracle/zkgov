@@ -143,6 +143,27 @@ export async function authRoutes(app: FastifyInstance) {
     }
   })
 
+  // POST /demo-verify — hackathon demo: self-verify KYC without on-chain SBT
+  // In production, this would be removed and only verify-kyc (which checks on-chain) would exist
+  app.post("/demo-verify", { preHandler: [(app as any).authenticate] }, async (request, reply) => {
+    const user = (request as any).user
+
+    if (user.kycVerified) {
+      return { kycVerified: true, kycLevel: user.kycLevel, message: "Already verified." }
+    }
+
+    await db
+      .update(users)
+      .set({ kycVerified: true, kycLevel: "DEMO" })
+      .where(eq(users.id, user.id))
+
+    return {
+      kycVerified: true,
+      kycLevel: "DEMO",
+      message: "Demo KYC verification complete. You can now vote on verified proposals.",
+    }
+  })
+
   // POST /link/telegram — validate initData and link
   app.post<{
     Body: { initData: string }

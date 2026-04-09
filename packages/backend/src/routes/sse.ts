@@ -24,7 +24,7 @@ export function broadcastToProposal(proposalId: number, event: string, data: unk
 
 export async function sseRoutes(app: FastifyInstance) {
   // GET /sse/proposals/:id — per-proposal event stream
-  app.get<{ Params: { id: string } }>("/sse/proposals/:id", async (request, reply) => {
+  app.get<{ Params: { id: string } }>("/proposals/:id", async (request, reply) => {
     const proposalId = request.params.id
     const key = `proposal:${proposalId}`
 
@@ -54,7 +54,7 @@ export async function sseRoutes(app: FastifyInstance) {
   })
 
   // GET /sse/feed — global event stream
-  app.get("/sse/feed", async (request, reply) => {
+  app.get("/feed", async (request, reply) => {
     reply.raw.writeHead(200, {
       "Content-Type": "text/event-stream",
       "Cache-Control": "no-cache",

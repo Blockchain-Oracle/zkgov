@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useAccount } from 'wagmi';
 import { useWriteContract } from 'wagmi';
@@ -15,13 +15,16 @@ export default function RegisterPage() {
   const { user, token, login, isSigning } = useAuth();
   const { isConnected, address } = useAccount();
   const { writeContract } = useWriteContract();
-  const [step, setStep] = useState<Step>('connect');
+  const [step, setStep] = useState<Step>('kyc'); // Start at KYC — connect/sign handled by auto-advance
   const [error, setError] = useState('');
   const [kycLevel, setKycLevel] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
-  // Auto-advance steps based on state
-  const currentStep = !isConnected ? 'connect' : !user ? 'sign' : step;
+  useEffect(() => { setMounted(true); }, []);
+
+  // Auto-advance steps based on state (only after client mount to avoid hydration mismatch)
+  const currentStep = !mounted ? 'connect' : !isConnected ? 'connect' : !user ? 'sign' : step;
 
   const verifyKyc = async () => {
     if (!token) return;
@@ -138,14 +141,39 @@ export default function RegisterPage() {
           <p className="text-zinc-500 text-sm mb-8 leading-relaxed">
             We'll check if your wallet has a KYC SBT on HashKey Chain. This is required to vote on verified proposals.
           </p>
-          <button
-            onClick={verifyKyc}
-            disabled={isLoading}
-            className="px-8 py-3 bg-indigo-500 text-zinc-900 dark:text-white font-bold text-sm tracking-wider uppercase rounded-sm hover:bg-indigo-600 transition-colors disabled:opacity-50 flex items-center gap-2 mx-auto"
-          >
-            {isLoading ? <Loader2 size={16} className="animate-spin" /> : <Shield size={16} />}
-            {isLoading ? 'CHECKING...' : 'VERIFY KYC'}
-          </button>
+          <div className="flex flex-col gap-3 items-center">
+            <button
+              onClick={verifyKyc}
+              disabled={isLoading}
+              className="px-8 py-3 bg-indigo-500 text-zinc-900 dark:text-white font-bold text-sm tracking-wider uppercase rounded-sm hover:bg-indigo-600 transition-colors disabled:opacity-50 flex items-center gap-2"
+            >
+              {isLoading ? <Loader2 size={16} className="animate-spin" /> : <Shield size={16} />}
+              {isLoading ? 'CHECKING...' : 'VERIFY ON-CHAIN KYC'}
+            </button>
+            <span className="text-zinc-500 text-xs">or</span>
+            <button
+              onClick={async () => {
+                if (!token) return;
+                setIsLoading(true);
+                setError('');
+                try {
+                  const res = await fetch(`${API_URL}/api/auth/demo-verify`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                  });
+                  const data = await res.json();
+                  if (res.ok) { setKycLevel(data.kycLevel); setStep('done'); }
+                  else throw new Error(data.error);
+                } catch (err: any) { setError(err.message); }
+                finally { setIsLoading(false); }
+              }}
+              disabled={isLoading}
+              className="px-8 py-3 border border-zinc-300 dark:border-white/10 text-zinc-600 dark:text-zinc-400 font-bold text-sm tracking-wider uppercase rounded-sm hover:bg-zinc-100 dark:hover:bg-white/5 transition-colors disabled:opacity-50 flex items-center gap-2"
+            >
+              <CheckCircle2 size={16} />
+              DEMO VERIFY (HACKATHON)
+            </button>
+          </div>
           {error && (
             <div className="mt-6 flex items-center gap-2 text-rose-400 text-xs justify-center">
               <AlertCircle size={14} />

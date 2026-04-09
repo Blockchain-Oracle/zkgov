@@ -69,21 +69,23 @@ export default function NewProposalPage() {
     }
   };
 
-  if (!user?.kycVerified) {
+  // Any signed-in user can create proposals.
+  // The proposalType field (verified/open) determines who can VOTE, not who can create.
+  if (!user) {
     return (
       <div className="flex flex-col items-center justify-center py-24 gap-6 text-center max-w-md mx-auto">
         <div className="w-16 h-16 rounded-full bg-amber-500/10 text-amber-500 flex items-center justify-center">
           <AlertCircle size={32} />
         </div>
         <div className="flex flex-col gap-2">
-          <h2 className="text-xl font-bold uppercase tracking-widest text-zinc-900 dark:text-white">KYC Required</h2>
+          <h2 className="text-xl font-bold uppercase tracking-widest text-zinc-900 dark:text-white">Sign In Required</h2>
           <p className="text-zinc-500 text-sm leading-relaxed">
-            Only KYC-verified members can create new proposals. Please verify your status in your profile to continue.
+            Connect your wallet and sign in to create governance proposals.
           </p>
         </div>
-        <Link href="/profile">
-          <Button className="bg-white text-black hover:bg-zinc-200 text-[11px] font-bold uppercase tracking-widest px-8">
-            Go to Profile
+        <Link href="/register">
+          <Button className="bg-indigo-500 text-zinc-900 dark:text-white hover:bg-indigo-600 text-[11px] font-bold uppercase tracking-widest px-8">
+            Register
           </Button>
         </Link>
       </div>
