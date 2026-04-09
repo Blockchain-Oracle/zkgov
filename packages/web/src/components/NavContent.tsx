@@ -53,9 +53,7 @@ export function NavContent() {
       <nav className="max-w-[1400px] mx-auto h-16 px-6 flex items-center justify-between">
         <div className="flex items-center gap-8">
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-8 h-8 flex items-center justify-center bg-white rounded-sm transition-transform group-hover:scale-95">
-              <span className="text-black font-bold text-lg select-none">Z</span>
-            </div>
+            <img src="/logo.svg" alt="ZKGov" className="w-8 h-8 rounded-sm transition-transform group-hover:scale-95" />
             <span className="font-bold text-lg tracking-[-0.03em] select-none">
               {APP_NAME}
             </span>

@@ -1,0 +1,22 @@
+{
+  "name": "@zkgov/mcp",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "zkgov-mcp": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx src/index.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1",
+    "viem": "^2",
+    "zod": "^3"
+  },
+  "devDependencies": {
+    "typescript": "^5.5",
+    "tsx": "^4"
+  }
+}

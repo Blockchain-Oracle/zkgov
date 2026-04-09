@@ -9,7 +9,11 @@ import { NavContent } from "@/components/NavContent";
 
 export const metadata: Metadata = {
   title: `${APP_NAME} | ${TAGLINE}`,
-  description: "Anonymous, KYC-gated governance for humans and AI agents.",
+  description: "Anonymous governance powered by zero-knowledge proofs on HashKey Chain.",
+  icons: {
+    icon: "/favicon.ico",
+    apple: "/apple-touch-icon.png",
+  },
 };
 
 export default function RootLayout({
