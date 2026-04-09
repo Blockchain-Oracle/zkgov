@@ -10,11 +10,14 @@ import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { Proposal } from '@zkgov/shared';
 
+const PAGE_SIZE = 6;
+
 export default function ProposalsPage() {
   const [proposals, setProposals] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('active');
   const [search, setSearch] = useState('');
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
     fetchProposals()
@@ -22,9 +25,16 @@ export default function ProposalsPage() {
       .catch(() => setLoading(false));
   }, []);
 
+  // Reset page when filter/search changes
+  useEffect(() => { setPage(1); }, [filter, search]);
+
   const filtered = proposals
     .filter(p => filter === 'all' || p.status === filter)
     .filter(p => !search || p.title.toLowerCase().includes(search.toLowerCase()));
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const currentPage = Math.min(page, totalPages);
+  const paged = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
 
   return (
     <div className="flex flex-col gap-12">
@@ -82,8 +92,8 @@ export default function ProposalsPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {loading ? (
           Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-48 rounded-sm" />)
-        ) : filtered.length > 0 ? (
-          filtered.map((p) => <ProposalCard key={p.id} proposal={p} />)
+        ) : paged.length > 0 ? (
+          paged.map((p) => <ProposalCard key={p.id} proposal={p} />)
         ) : (
           <div className="col-span-full h-64 border border-dashed border-black/[0.06] dark:border-white/[0.06] rounded-sm flex flex-col items-center justify-center gap-4">
             <span className="text-zinc-500 font-medium tracking-widest uppercase">No proposals found</span>
@@ -93,6 +103,30 @@ export default function ProposalsPage() {
           </div>
         )}
       </div>
+
+      {/* Pagination */}
+      {!loading && filtered.length > PAGE_SIZE && (
+        <div className="flex items-center justify-between py-6 border-t border-black/[0.04] dark:border-white/[0.04]">
+          <span className="text-[10px] font-bold tracking-widest text-zinc-600 uppercase">
+            {filtered.length} PROPOSALS
+          </span>
+          <div className="flex items-center gap-1">
+            <Button variant="outline" disabled={currentPage <= 1}
+              onClick={() => setPage(p => Math.max(1, p - 1))}
+              className="px-4 py-2 border border-black/[0.06] dark:border-white/[0.06] text-[10px] font-bold tracking-widest text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors uppercase disabled:opacity-30">
+              PREVIOUS
+            </Button>
+            <div className="flex items-center px-4">
+              <span className="text-[10px] font-bold tracking-widest text-zinc-900 dark:text-white">{currentPage} / {totalPages}</span>
+            </div>
+            <Button variant="outline" disabled={currentPage >= totalPages}
+              onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+              className="px-4 py-2 border border-black/[0.06] dark:border-white/[0.06] text-[10px] font-bold tracking-widest text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors uppercase disabled:opacity-30">
+              NEXT
+            </Button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

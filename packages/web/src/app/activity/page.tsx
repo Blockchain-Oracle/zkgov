@@ -30,10 +30,13 @@ interface ActivityItem {
   explorerUrl?: string | null;
 }
 
+const PAGE_SIZE = 10;
+
 export default function ActivityPage() {
   const [activities, setActivities] = useState<ActivityItem[]>([]);
   const [autoUpdate, setAutoUpdate] = useState(true);
   const [typeFilter, setTypeFilter] = useState('ALL ACTIVITY');
+  const [page, setPage] = useState(1);
 
   // Load historical activity on mount
   useEffect(() => {
@@ -131,6 +134,21 @@ export default function ActivityPage() {
     }
   };
 
+  // Reset to page 1 when filter changes
+  useEffect(() => { setPage(1); }, [typeFilter]);
+
+  const filtered = activities.filter(a => {
+    if (typeFilter === 'ALL ACTIVITY') return true;
+    if (typeFilter === 'VOTES') return a.type === 'vote';
+    if (typeFilter === 'PROPOSALS') return a.type === 'proposal';
+    if (typeFilter === 'REGISTRATIONS') return a.type === 'registration';
+    if (typeFilter === 'COMMENTS') return a.type === 'comment';
+    return true;
+  });
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const currentPage = Math.min(page, totalPages);
+  const pagedActivities = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE);
+
   return (
     <div className="flex flex-col gap-10">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
@@ -185,14 +203,7 @@ export default function ActivityPage() {
 
         {/* Activity Rows */}
         <div className="flex flex-col">
-          {activities.filter(a => {
-            if (typeFilter === 'ALL ACTIVITY') return true;
-            if (typeFilter === 'VOTES') return a.type === 'vote';
-            if (typeFilter === 'PROPOSALS') return a.type === 'proposal';
-            if (typeFilter === 'REGISTRATIONS') return a.type === 'registration';
-            if (typeFilter === 'COMMENTS') return a.type === 'comment';
-            return true;
-          }).map((activity, idx) => (
+          {pagedActivities.map((activity, idx) => (
             <div
               key={activity.id}
               className={cn(
@@ -264,19 +275,23 @@ export default function ActivityPage() {
           ))}
         </div>
 
-        {/* Pagination (Frames style) */}
+        {/* Pagination */}
         <div className="flex items-center justify-between px-6 py-6 bg-[#EBE8E1] dark:bg-[#111]">
           <span className="text-[10px] font-bold tracking-widest text-zinc-600 uppercase">
-            {activities.length} EVENTS
+            {filtered.length} EVENTS
           </span>
           <div className="flex items-center gap-1">
-            <Button variant="outline" className="px-4 py-2 border border-black/[0.06] dark:border-white/[0.06] text-[10px] font-bold tracking-widest text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors uppercase disabled:opacity-30">
+            <Button variant="outline" disabled={currentPage <= 1}
+              onClick={() => setPage(p => Math.max(1, p - 1))}
+              className="px-4 py-2 border border-black/[0.06] dark:border-white/[0.06] text-[10px] font-bold tracking-widest text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors uppercase disabled:opacity-30">
               PREVIOUS
             </Button>
             <div className="flex items-center px-4">
-              <span className="text-[10px] font-bold tracking-widest text-zinc-900 dark:text-white">1</span>
+              <span className="text-[10px] font-bold tracking-widest text-zinc-900 dark:text-white">{currentPage} / {totalPages}</span>
             </div>
-            <Button variant="outline" className="px-4 py-2 border border-black/[0.06] dark:border-white/[0.06] text-[10px] font-bold tracking-widest text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors uppercase">
+            <Button variant="outline" disabled={currentPage >= totalPages}
+              onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+              className="px-4 py-2 border border-black/[0.06] dark:border-white/[0.06] text-[10px] font-bold tracking-widest text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors uppercase disabled:opacity-30">
               NEXT
             </Button>
           </div>
