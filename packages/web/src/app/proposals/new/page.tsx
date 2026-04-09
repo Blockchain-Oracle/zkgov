@@ -8,6 +8,8 @@ import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
 import { 
   FileText, 
@@ -123,7 +125,7 @@ export default function NewProposalPage() {
             <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-[0.2em] flex items-center gap-2">
               <Info size={12} /> Description (Markdown)
             </label>
-            <textarea 
+            <Textarea
               required
               rows={12}
               value={formData.description}
@@ -139,17 +141,18 @@ export default function NewProposalPage() {
             <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-[0.2em] flex items-center gap-2">
               <Clock size={12} /> Voting Period
             </label>
-            <select 
-              value={formData.votingPeriod}
-              onChange={(e) => setFormData({ ...formData, votingPeriod: e.target.value })}
-              className="w-full bg-[#EBE8E1] dark:bg-[#111] border border-black/10 dark:border-white/10 rounded-sm h-12 px-3 text-[11px] font-bold uppercase tracking-widest outline-none focus:border-indigo-500/50 transition-colors"
-            >
-              <option value="86400">24 Hours</option>
-              <option value="172800">48 Hours</option>
-              <option value="259200">72 Hours</option>
-              <option value="604800">1 Week</option>
-              <option value="1209600">2 Weeks</option>
-            </select>
+            <Select value={formData.votingPeriod} onValueChange={(v) => v && setFormData({ ...formData, votingPeriod: v })}>
+              <SelectTrigger className="w-full bg-[#EBE8E1] dark:bg-[#111] border-black/10 dark:border-white/10 h-12 text-[11px] font-bold uppercase tracking-widest">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="86400">24 Hours</SelectItem>
+                <SelectItem value="172800">48 Hours</SelectItem>
+                <SelectItem value="259200">72 Hours</SelectItem>
+                <SelectItem value="604800">1 Week</SelectItem>
+                <SelectItem value="1209600">2 Weeks</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="flex flex-col gap-2">

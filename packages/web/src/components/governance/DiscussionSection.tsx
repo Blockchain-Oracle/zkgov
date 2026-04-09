@@ -5,6 +5,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { API_URL } from '@/lib/constants';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
 import { Separator } from '@/components/ui/separator';
 import { 
   MessageSquare, 
@@ -131,7 +132,7 @@ export function DiscussionSection({ proposalId }: DiscussionSectionProps) {
         <div className="flex flex-col gap-4 p-6 bg-[#EBE8E1] dark:bg-[#111] border border-black/[0.06] dark:border-white/[0.06] rounded-sm">
           <div className="flex flex-col gap-2">
             <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-[0.2em]">Post a thought</label>
-            <textarea 
+            <Textarea
               value={newComment}
               onChange={(e) => setNewComment(e.target.value)}
               placeholder="YOUR PERSPECTIVE MATTERS..."

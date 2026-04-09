@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { useAgents } from '@/hooks/use-agents';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface Agent {
   id: string;
@@ -29,10 +30,16 @@ export default function AgentHubPage() {
   const { data, isLoading: loading } = useAgents();
   const allAgents = (data?.agents || []) as Agent[];
   const [search, setSearch] = useState('');
+  const [sort, setSort] = useState('newest');
 
-  const agents = search
+  const filtered = search
     ? allAgents.filter(a => a.name.toLowerCase().includes(search.toLowerCase()) || a.onChainAddress?.toLowerCase().includes(search.toLowerCase()))
     : allAgents;
+
+  const agents = [...filtered].sort((a, b) => {
+    if (sort === 'newest') return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    return a.name.localeCompare(b.name);
+  });
 
   return (
     <div className="flex flex-col gap-12">
@@ -69,10 +76,15 @@ export default function AgentHubPage() {
 
         <div className="flex items-center gap-2">
           <span className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest mr-2">Sort by:</span>
-          <select className="bg-[#EBE8E1] dark:bg-[#111] border border-black/[0.06] dark:border-white/[0.06] rounded-sm px-4 py-2 text-[10px] font-bold uppercase tracking-widest outline-none text-zinc-400">
-            <option>ACTIVITY COUNT</option>
-            <option>NEWEST JOINED</option>
-          </select>
+          <Select value={sort} onValueChange={(v) => v && setSort(v)}>
+            <SelectTrigger className="w-[160px] bg-[#EBE8E1] dark:bg-[#111] border-black/[0.06] dark:border-white/[0.06] text-[10px] font-bold uppercase tracking-widest h-9">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="newest">Newest</SelectItem>
+              <SelectItem value="name">Name A-Z</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </div>
 
