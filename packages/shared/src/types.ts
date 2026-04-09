@@ -1,43 +1,65 @@
-export type ProposalStatus = "active" | "succeeded" | "defeated" | "cancelled"
-export type VoterGroup = "humans" | "agents" | "both"
-export type ProposalType = "verified" | "open"
-export type VoteChoice = 0 | 1 | 2 // 0=No, 1=Yes, 2=Abstain
-export type SubmissionPlatform = "web" | "telegram" | "discord" | "api"
-export type CommentType = "comment" | "analysis"
-export type TxStatus = "pending" | "submitted" | "confirmed" | "failed"
+// ─── Vote Types ──────────────────────────────────────────
 
-export interface ProposalResponse {
-  id: number
-  onChainId: number | null
+export type VoteChoice = 0 | 1 | 2 // 0=Against, 1=For, 2=Abstain
+export type CommentType = "comment" | "analysis"
+
+// ─── Proposal (from contract view functions) ─────────────
+
+export interface ProposalContent {
   title: string
   description: string
-  proposalType: ProposalType
-  voterGroup: VoterGroup
-  votingStart: string
-  votingEnd: string
+  creator: string // address
+}
+
+export interface ProposalState {
+  votingStart: bigint
+  votingEnd: bigint
+  quorum: bigint
+  votesFor: bigint
+  votesAgainst: bigint
+  votesAbstain: bigint
+  totalVotes: bigint
+  finalized: boolean
+  passed: boolean
+  isActive: boolean
+}
+
+export interface Proposal {
+  id: number
+  title: string
+  description: string
+  creator: string
+  votingStart: number
+  votingEnd: number
   quorum: number
-  status: ProposalStatus
-  votes: { for: number; against: number; abstain: number }
+  votesFor: number
+  votesAgainst: number
+  votesAbstain: number
   totalVotes: number
-  quorumReached: boolean
-  timeRemaining: string | null
-  commentCount: number
-  creator: {
-    type: "human" | "agent"
-    displayName: string
-    id?: string
-  }
+  finalized: boolean
+  passed: boolean
+  isActive: boolean
+}
+
+// ─── User ────────────────────────────────────────────────
+
+export interface UserResponse {
+  id: string
+  walletAddress: string
+  telegramLinked: boolean
+  discordLinked: boolean
   createdAt: string
 }
+
+// ─── Comments ────────────────────────────────────────────
 
 export interface CommentResponse {
   id: string
   content: string
   commentType: CommentType
   author: {
-    type: "human" | "agent"
+    type: "human"
     displayName: string
-    name?: string
     id?: string
   }
   parentId: string | null
@@ -45,33 +67,9 @@ export interface CommentResponse {
   createdAt: string
 }
 
-export interface UserResponse {
-  id: string
-  walletAddress: string
-  identityCommitment: string
-  kycVerified: boolean
-  kycLevel: string | null
-  telegramLinked: boolean
-  discordLinked: boolean
-  agents: { id: string; name: string; isActive: boolean }[]
-  createdAt: string
-}
-
-export interface VoteRequest {
-  proposalId: number
-  choice: VoteChoice
-}
-
-export interface CreateProposalRequest {
-  title: string
-  description: string
-  votingPeriod: number
-  quorum: number
-  voterGroup: VoterGroup
-  proposalType: ProposalType
-}
+// ─── SSE Events ──────────────────────────────────────────
 
 export interface SSEEvent {
-  event: "vote_cast" | "comment_added" | "proposal_tallied" | "new_proposal"
+  event: "vote_cast" | "comment_added" | "proposal_created" | "proposal_finalized"
   data: Record<string, unknown>
 }
