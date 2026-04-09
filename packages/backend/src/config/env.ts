@@ -37,7 +37,7 @@ export const env = {
   AGENT_REGISTRY_ADDRESS: (process.env.AGENT_REGISTRY_ADDRESS || CONTRACTS.agentRegistry) as `0x${string}`,
   HUMAN_GROUP_ID: process.env.HUMAN_GROUP_ID || String(SEMAPHORE_GROUP_IDS.human),
   AGENT_GROUP_ID: process.env.AGENT_GROUP_ID || String(SEMAPHORE_GROUP_IDS.agent),
-  DEPLOYMENT_BLOCK: parseInt(process.env.DEPLOYMENT_BLOCK || "0"),
+  DEPLOYMENT_BLOCK: parseInt(process.env.DEPLOYMENT_BLOCK || "26256250"),
 
   // Relayer
   RELAYER_PRIVATE_KEY: (process.env.RELAYER_PRIVATE_KEY || "0x") as `0x${string}`,
