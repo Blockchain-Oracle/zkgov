@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAccount } from 'wagmi';
 import { Group, generateProof } from '@semaphore-protocol/core';
 import { SemaphoreEthers } from '@semaphore-protocol/data';
@@ -29,8 +29,23 @@ export function VoteSection({ proposal, onVoteSuccess }: VoteSectionProps) {
 
   const [proofState, setProofState] = useState<'idle' | 'generating'>('idle');
   const [error, setError] = useState<string | null>(null);
+  const [hasVoted, setHasVoted] = useState(false);
 
   const isRegistered = !!(voterData as any)?.[0];
+
+  // Detect vote success or "already voted" error
+  useEffect(() => {
+    if (voteSuccess) setHasVoted(true);
+  }, [voteSuccess]);
+
+  useEffect(() => {
+    if (voteError) {
+      const msg = (voteError as any)?.message || (voteError as any)?.shortMessage || '';
+      if (msg.includes('Nullifier') || msg.includes('nullifier') || msg.includes('already')) {
+        setHasVoted(true);
+      }
+    }
+  }, [voteError]);
 
   // 1. Not connected
   if (!isConnected) {
@@ -88,7 +103,18 @@ export function VoteSection({ proposal, onVoteSuccess }: VoteSectionProps) {
     );
   }
 
-  // 4. Vote success
+  // 4. Already voted
+  if (hasVoted) {
+    return (
+      <Card className="p-6 bg-[#EBE8E1] dark:bg-[#111] border-black/[0.06] dark:border-white/[0.06] flex flex-col gap-4 text-center">
+        <CheckCircle2 size={32} className="text-emerald-400 mx-auto" />
+        <h3 className="text-sm font-bold tracking-tight uppercase">Vote Recorded</h3>
+        <p className="text-xs text-zinc-500">You have already voted on this proposal. Your vote is anonymous and verified by a zero-knowledge proof.</p>
+      </Card>
+    );
+  }
+
+  // 5. Vote success
   if (voteSuccess) {
     return (
       <Card className="p-6 bg-[#EBE8E1] dark:bg-[#111] border-black/[0.06] dark:border-white/[0.06] flex flex-col gap-4 text-center">
