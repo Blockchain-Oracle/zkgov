@@ -3,7 +3,8 @@
  * Usage: npx tsx scripts/seed-kyc.ts [address1] [address2] ...
  * If no addresses provided, approves the deployer address.
  */
-import "dotenv/config"
+import { config } from "dotenv"
+config({ path: "packages/backend/.env" })
 import { createPublicClient, createWalletClient, http, defineChain } from "viem"
 import { privateKeyToAccount } from "viem/accounts"
 

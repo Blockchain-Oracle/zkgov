@@ -38,6 +38,7 @@ export default function RegisterPage() {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`,
         },
+        body: JSON.stringify({}),
       });
 
       const data = await res.json();
@@ -150,29 +151,9 @@ export default function RegisterPage() {
               {isLoading ? <Loader2 size={16} className="animate-spin" /> : <Shield size={16} />}
               {isLoading ? 'CHECKING...' : 'VERIFY ON-CHAIN KYC'}
             </button>
-            <span className="text-zinc-500 text-xs">or</span>
-            <button
-              onClick={async () => {
-                if (!token) return;
-                setIsLoading(true);
-                setError('');
-                try {
-                  const res = await fetch(`${API_URL}/api/auth/demo-verify`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-                  });
-                  const data = await res.json();
-                  if (res.ok) { setKycLevel(data.kycLevel); setStep('done'); }
-                  else throw new Error(data.error);
-                } catch (err: any) { setError(err.message); }
-                finally { setIsLoading(false); }
-              }}
-              disabled={isLoading}
-              className="px-8 py-3 border border-zinc-300 dark:border-white/10 text-zinc-600 dark:text-zinc-400 font-bold text-sm tracking-wider uppercase rounded-sm hover:bg-zinc-100 dark:hover:bg-white/5 transition-colors disabled:opacity-50 flex items-center gap-2"
-            >
-              <CheckCircle2 size={16} />
-              DEMO VERIFY (HACKATHON)
-            </button>
+            <p className="text-zinc-600 text-[10px] tracking-wider uppercase mt-2">
+              Checks your wallet for a KYC SBT on HashKey Chain
+            </p>
           </div>
           {error && (
             <div className="mt-6 flex items-center gap-2 text-rose-400 text-xs justify-center">

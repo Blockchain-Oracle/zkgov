@@ -90,16 +90,35 @@ export default function ProfilePage() {
         </div>
         
         <div className="flex items-center gap-4">
-          <div className={cn(
-            "px-4 py-2 border rounded-sm flex items-center gap-3",
-            user.kycVerified ? "border-emerald-500/20 bg-emerald-500/5 text-emerald-400" : "border-amber-500/20 bg-amber-500/5 text-amber-400"
-          )}>
-            {user.kycVerified ? <CheckCircle2 size={16} /> : <AlertCircle size={16} />}
-            <div className="flex flex-col">
-              <span className="text-[9px] font-bold uppercase tracking-widest">KYC Status</span>
-              <span className="text-[11px] font-bold uppercase">{user.kycVerified ? user.kycLevel : 'NOT VERIFIED'}</span>
+          {user.kycVerified ? (
+            <div className="px-4 py-2 border border-emerald-500/20 bg-emerald-500/5 text-emerald-400 rounded-sm flex items-center gap-3">
+              <CheckCircle2 size={16} />
+              <div className="flex flex-col">
+                <span className="text-[9px] font-bold uppercase tracking-widest">KYC Status</span>
+                <span className="text-[11px] font-bold uppercase">{user.kycLevel}</span>
+              </div>
             </div>
-          </div>
+          ) : (
+            <button
+              onClick={async () => {
+                try {
+                  const res = await fetch(`${API_URL}/api/auth/verify-kyc`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({}),
+                  });
+                  if (res.ok) refreshUser();
+                } catch {}
+              }}
+              className="px-4 py-2 border border-amber-500/20 bg-amber-500/5 text-amber-400 rounded-sm flex items-center gap-3 hover:bg-amber-500/10 transition-colors"
+            >
+              <AlertCircle size={16} />
+              <div className="flex flex-col text-left">
+                <span className="text-[9px] font-bold uppercase tracking-widest">KYC Status</span>
+                <span className="text-[11px] font-bold uppercase">Click to verify</span>
+              </div>
+            </button>
+          )}
         </div>
       </div>
 
@@ -109,7 +128,12 @@ export default function ProfilePage() {
           <section className="flex flex-col gap-4 animate-in delay-1">
             <h3 className="text-[10px] font-bold tracking-[0.2em] text-zinc-600 uppercase">Platform Links</h3>
             <div className="flex flex-col gap-2">
-              <button className="flex items-center justify-between p-4 bg-[#EBE8E1] dark:bg-[#111] border border-black/[0.06] dark:border-white/[0.06] rounded-sm hover:border-black/[0.15] dark:hover:border-white/[0.15] transition-colors group">
+              <a
+                href="https://t.me/zkgov_bot?start=link"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-between p-4 bg-[#EBE8E1] dark:bg-[#111] border border-black/[0.06] dark:border-white/[0.06] rounded-sm hover:border-black/[0.15] dark:hover:border-white/[0.15] transition-colors group"
+              >
                 <div className="flex items-center gap-3">
                   <Send size={16} className={cn(user.telegramLinked ? "text-[#24A1DE]" : "text-zinc-600")} />
                   <span className="text-[11px] font-bold uppercase tracking-widest">Telegram</span>
@@ -117,11 +141,16 @@ export default function ProfilePage() {
                 {user.telegramLinked ? (
                   <CheckCircle2 size={14} className="text-emerald-500" />
                 ) : (
-                  <span className="text-[10px] font-bold text-zinc-500 group-hover:text-zinc-900 dark:hover:text-white uppercase">Link</span>
+                  <span className="text-[10px] font-bold text-zinc-500 group-hover:text-zinc-900 dark:group-hover:text-white uppercase">Open Bot</span>
                 )}
-              </button>
+              </a>
 
-              <button className="flex items-center justify-between p-4 bg-[#EBE8E1] dark:bg-[#111] border border-black/[0.06] dark:border-white/[0.06] rounded-sm hover:border-black/[0.15] dark:hover:border-white/[0.15] transition-colors group">
+              <a
+                href="https://discord.com/oauth2/authorize?client_id=YOUR_CLIENT_ID&scope=identify&response_type=code&redirect_uri=https://zkgov.xyz/auth/discord/callback"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-between p-4 bg-[#EBE8E1] dark:bg-[#111] border border-black/[0.06] dark:border-white/[0.06] rounded-sm hover:border-black/[0.15] dark:hover:border-white/[0.15] transition-colors group"
+              >
                 <div className="flex items-center gap-3">
                   <DiscordIcon size={16} className={cn(user.discordLinked ? "text-[#5865F2]" : "text-zinc-600")} />
                   <span className="text-[11px] font-bold uppercase tracking-widest">Discord</span>
@@ -129,9 +158,9 @@ export default function ProfilePage() {
                 {user.discordLinked ? (
                   <CheckCircle2 size={14} className="text-emerald-500" />
                 ) : (
-                  <span className="text-[10px] font-bold text-zinc-500 group-hover:text-zinc-900 dark:hover:text-white uppercase">Link</span>
+                  <span className="text-[10px] font-bold text-zinc-500 group-hover:text-zinc-900 dark:group-hover:text-white uppercase">Connect</span>
                 )}
-              </button>
+              </a>
             </div>
           </section>
 
@@ -218,7 +247,7 @@ export default function ProfilePage() {
           )}
 
           <div className="flex flex-col gap-3">
-            {user.agents.length > 0 ? (
+            {(user.agents?.length || 0) > 0 ? (
               user.agents.map((agent: { id: string; name: string; isActive: boolean }) => (
                 <div key={agent.id} className="flex items-center justify-between p-5 bg-[#EBE8E1] dark:bg-[#111] border border-black/[0.06] dark:border-white/[0.06] rounded-sm group hover:border-black/[0.15] dark:hover:border-white/[0.15] transition-all">
                   <div className="flex items-center gap-4">
