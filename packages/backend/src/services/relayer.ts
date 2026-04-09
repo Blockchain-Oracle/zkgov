@@ -35,16 +35,12 @@ const ZK_GOVERNANCE_ABI = [
   },
 ] as const
 
-let currentNonce: number | null = null
-
+// Always fetch fresh nonce from chain to avoid stale nonce errors after restart or failed tx
 async function getNonce(): Promise<number> {
   const wallet = getWalletClient()
-  if (currentNonce === null) {
-    currentNonce = await publicClient.getTransactionCount({
-      address: wallet.account!.address,
-    })
-  }
-  return currentNonce++
+  return await publicClient.getTransactionCount({
+    address: wallet.account!.address,
+  })
 }
 
 export async function submitVote(

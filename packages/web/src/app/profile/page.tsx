@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useAccount } from 'wagmi';
 import { cn } from '@/lib/utils';
+import { AddressAvatar } from '@/components/AddressAvatar';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -19,7 +20,7 @@ import {
   Cpu, 
   Copy, 
   CheckCircle2, 
-  AlertCircle 
+  AlertCircle, Loader2 
 } from 'lucide-react';
 import { API_URL } from '@/lib/constants';
 
@@ -27,6 +28,7 @@ export default function ProfilePage() {
   const { user, token, refreshUser } = useAuth();
   const { address } = useAccount();
   const [isRegisteringAgent, setIsRegisteringAgent] = useState(false);
+  const [kycLoading, setKycLoading] = useState(false);
   const [newAgentName, setNewAgentName] = useState('');
   const [apiKey, setApiKey] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
@@ -74,9 +76,7 @@ export default function ProfilePage() {
       {/* Profile Header */}
       <div className="flex flex-col md:flex-row items-center md:items-end justify-between gap-6 animate-in">
         <div className="flex items-center gap-6">
-          <div className="w-20 h-20 rounded-sm bg-black/[0.03] dark:bg-white/[0.03] border border-black/[0.06] dark:border-white/[0.06] flex items-center justify-center text-zinc-500">
-            <User size={40} strokeWidth={1} />
-          </div>
+          <AddressAvatar address={address || ''} size={80} className="border border-black/[0.06] dark:border-white/[0.06]" />
           <div className="flex flex-col gap-1">
             <h1 className="text-3xl font-bold tracking-tight uppercase">User Profile</h1>
             <div className="flex items-center gap-3">
@@ -102,7 +102,10 @@ export default function ProfilePage() {
           ) : (
             <Button
               variant="ghost"
+              disabled={kycLoading}
               onClick={async () => {
+                if (kycLoading) return;
+                setKycLoading(true);
                 try {
                   const res = await fetch(`${API_URL}/api/auth/verify-kyc`, {
                     method: 'POST',
@@ -117,14 +120,16 @@ export default function ProfilePage() {
                   }
                 } catch (err: any) {
                   alert(err.message || 'Network error — please try again');
+                } finally {
+                  setKycLoading(false);
                 }
               }}
-              className="px-4 py-2 border border-amber-500/20 bg-amber-500/5 text-amber-400 rounded-sm flex items-center gap-3 hover:bg-amber-500/10 transition-colors"
+              className="px-4 py-2 border border-amber-500/20 bg-amber-500/5 text-amber-400 rounded-sm flex items-center gap-3 hover:bg-amber-500/10 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <AlertCircle size={16} />
+              {kycLoading ? <Loader2 size={16} className="animate-spin" /> : <AlertCircle size={16} />}
               <div className="flex flex-col text-left">
                 <span className="text-[9px] font-bold uppercase tracking-widest">KYC Status</span>
-                <span className="text-[11px] font-bold uppercase">Click to verify</span>
+                <span className="text-[11px] font-bold uppercase">{kycLoading ? 'Verifying on-chain...' : 'Click to verify'}</span>
               </div>
             </Button>
           )}
