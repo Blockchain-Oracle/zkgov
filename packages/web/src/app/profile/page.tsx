@@ -145,11 +145,13 @@ export default function ProfilePage() {
                 )}
               </a>
 
-              <a
-                href="https://discord.com/oauth2/authorize?client_id=YOUR_CLIENT_ID&scope=identify&response_type=code&redirect_uri=https://zkgov.xyz/auth/discord/callback"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center justify-between p-4 bg-[#EBE8E1] dark:bg-[#111] border border-black/[0.06] dark:border-white/[0.06] rounded-sm hover:border-black/[0.15] dark:hover:border-white/[0.15] transition-colors group"
+              <div
+                className="flex items-center justify-between p-4 bg-[#EBE8E1] dark:bg-[#111] border border-black/[0.06] dark:border-white/[0.06] rounded-sm hover:border-black/[0.15] dark:hover:border-white/[0.15] transition-colors group cursor-pointer"
+                onClick={() => {
+                  // Discord linking requires the bot to be set up with a client ID
+                  // For now, direct users to use /link in Discord
+                  window.open('https://discord.gg/zkgov', '_blank');
+                }}
               >
                 <div className="flex items-center gap-3">
                   <DiscordIcon size={16} className={cn(user.discordLinked ? "text-[#5865F2]" : "text-zinc-600")} />
@@ -158,9 +160,9 @@ export default function ProfilePage() {
                 {user.discordLinked ? (
                   <CheckCircle2 size={14} className="text-emerald-500" />
                 ) : (
-                  <span className="text-[10px] font-bold text-zinc-500 group-hover:text-zinc-900 dark:group-hover:text-white uppercase">Connect</span>
+                  <span className="text-[10px] font-bold text-zinc-500 group-hover:text-zinc-900 dark:group-hover:text-white uppercase">Join Server</span>
                 )}
-              </a>
+              </div>
             </div>
           </section>
 

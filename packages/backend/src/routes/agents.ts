@@ -19,10 +19,7 @@ export async function agentRoutes(app: FastifyInstance) {
       return reply.status(400).send({ error: "name is required" })
     }
 
-    if (!user.kycVerified) {
-      return reply.status(403).send({ error: "You must be KYC verified to register agents" })
-    }
-
+    // Any signed-in user can register agents — KYC is not required for agent registration
     // Create Semaphore identity for agent
     const identity = createIdentity()
 
