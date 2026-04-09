@@ -1,5 +1,16 @@
 import "dotenv/config"
-import { CONTRACTS, SEMAPHORE_GROUP_IDS, HASHKEY_TESTNET } from "@zkgov/shared"
+// Inline constants from shared package (ESM workspace resolution issues with tsx)
+// Source of truth: packages/shared/src/constants.ts
+const CONTRACTS = {
+  semaphore: "0x39A5c71685d2B7c86fb051A29824010720AAB6E4",
+  kycSBT: "0x551110C2B722D42399702869A82ee6E8CE368256",
+  agentRegistry: "0x6D20F5797E72d24ceaB762EaD562e47618e34B74",
+  kycGate: "0xDDf582e45B9f120D5ae7E94BD4e0b12798729B5f",
+  zkGovernance: "0x38928DDE71a8993789BA86A910f898aD0E8271bf",
+} as const
+
+const SEMAPHORE_GROUP_IDS = { human: 0, agent: 1 } as const
+const HASHKEY_TESTNET = { id: 133, rpcUrl: "https://testnet.hsk.xyz" } as const
 
 // Startup security warnings
 if (!process.env.JWT_SECRET) {
