@@ -58,6 +58,7 @@ async function sendProposalList(ctx: any) {
     for (const p of data.proposals.slice(0, 5)) {
       const keyboard = new InlineKeyboard()
         .url("Vote 🗳️", `${WEB_URL}/proposals/${p.id}`)
+        .url("Explorer 🔍", `https://testnet-explorer.hsk.xyz/address/0xEa625841E031758786141c8b13dD1b1137C9776C`)
 
       await ctx.reply(
         `📋 *Proposal #${p.id}*\n\n` +

@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { API_URL } from '@/lib/constants';
 import { fetchActivity } from '@/lib/api';
+import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -182,8 +183,9 @@ export default function ActivityPage() {
             if (typeFilter === 'COMMENTS') return a.type === 'comment';
             return true;
           }).map((activity, idx) => (
-            <div 
-              key={activity.id} 
+            <Link
+              href={activity.proposalId ? `/proposals/${activity.proposalId}` : '#'}
+              key={activity.id}
               className={cn(
                 "grid grid-cols-12 gap-4 px-6 py-5 border-b border-black/[0.04] dark:border-white/[0.04] items-center hover:bg-white/[0.02] transition-colors cursor-pointer animate-in group",
                 idx % 2 === 0 ? "bg-transparent" : "bg-white/[0.01]"
@@ -205,8 +207,7 @@ export default function ActivityPage() {
                   })}
                 </p>
                 <div className="flex items-center gap-2">
-                  <span className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest">TRANSACTION</span>
-                  <span className="text-[10px] font-mono text-zinc-500 group-hover:text-indigo-400 transition-colors">—</span>
+                  <span className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest">VIEW PROPOSAL →</span>
                 </div>
               </div>
 
@@ -226,7 +227,7 @@ export default function ActivityPage() {
                   {activity.time}
                 </span>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
 
