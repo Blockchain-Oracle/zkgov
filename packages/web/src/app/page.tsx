@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { STATS_LABELS, API_URL } from "@/lib/constants";
-import { fetchStats } from "@/lib/api";
+import { fetchStats, fetchActivity } from "@/lib/api";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import {
@@ -30,6 +30,19 @@ export default function Home() {
           voters: String(data.voters),
           agents: String(data.agents),
         });
+      })
+      .catch(() => {});
+
+    // Load historical activity for the audit log section
+    fetchActivity()
+      .then(data => {
+        setRecentActivity(data.activity.slice(0, 4).map(a => ({
+          id: a.id,
+          type: a.type,
+          platform: a.platform,
+          text: a.text,
+          time: formatTime(a.time),
+        })));
       })
       .catch(() => {});
 
@@ -94,15 +107,11 @@ export default function Home() {
           transition={{ duration: 0.5, delay: 0.3 }}
           className="flex flex-col sm:flex-row items-center gap-4 mt-4"
         >
-          <Link href="/proposals">
-            <Button size="lg" className="bg-zinc-900 dark:bg-white text-white dark:text-black hover:bg-zinc-800 dark:hover:bg-zinc-200 px-8 h-12 text-[11px] font-bold tracking-[0.2em] uppercase">
-              Enter Governance
-            </Button>
+          <Link href="/proposals" className="inline-flex items-center justify-center bg-zinc-900 dark:bg-white text-white dark:text-black hover:bg-zinc-800 dark:hover:bg-zinc-200 px-8 h-12 text-[11px] font-bold tracking-[0.2em] uppercase rounded-sm transition-colors">
+            Enter Governance
           </Link>
-          <Link href="/activity">
-            <Button variant="outline" size="lg" className="border-zinc-300 dark:border-white/10 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-white/5 px-8 h-12 text-[11px] font-bold tracking-[0.2em] uppercase">
-              View Feed
-            </Button>
+          <Link href="/activity" className="inline-flex items-center justify-center border border-zinc-300 dark:border-white/10 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-white/5 px-8 h-12 text-[11px] font-bold tracking-[0.2em] uppercase rounded-sm transition-colors">
+            View Feed
           </Link>
         </motion.div>
 
@@ -185,11 +194,9 @@ export default function Home() {
               The governance layer is alive.
             </p>
           </div>
-          <Link href="/activity">
-            <Button variant="ghost" className="flex items-center gap-2 text-[11px] font-bold tracking-[0.2em] text-zinc-900 dark:text-white uppercase group">
-              View full audit log
-              <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
-            </Button>
+          <Link href="/activity" className="flex items-center gap-2 text-[11px] font-bold tracking-[0.2em] text-zinc-900 dark:text-white uppercase group hover:opacity-80 transition-opacity">
+            View full audit log
+            <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
 
@@ -239,13 +246,21 @@ export default function Home() {
             Secure your identity. Register your agents. Shape the future of the HashKey ecosystem through zero-knowledge governance.
           </p>
         </div>
-        <Link href="/proposals">
-          <Button size="lg" className="bg-white text-indigo-600 hover:bg-zinc-100 px-12 h-14 text-xs font-bold tracking-[0.2em] uppercase rounded-sm">
-            Start Voting Now
-          </Button>
+        <Link href="/proposals" className="inline-flex items-center justify-center bg-white text-indigo-600 hover:bg-zinc-100 px-12 h-14 text-xs font-bold tracking-[0.2em] uppercase rounded-sm transition-colors">
+          Start Voting Now
         </Link>
       </section>
     </div>
   );
 }
 
+
+function formatTime(iso: string): string {
+  const diff = Date.now() - new Date(iso).getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1) return 'JUST NOW';
+  if (mins < 60) return `${mins}M AGO`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `${hours}H AGO`;
+  return `${Math.floor(hours / 24)}D AGO`;
+}

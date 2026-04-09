@@ -32,6 +32,7 @@ export async function sseRoutes(app: FastifyInstance) {
       "Content-Type": "text/event-stream",
       "Cache-Control": "no-cache",
       Connection: "keep-alive",
+      "Access-Control-Allow-Origin": "*",
     })
 
     reply.raw.write(`event: connected\ndata: {"proposalId":"${proposalId}"}\n\n`)
@@ -59,6 +60,7 @@ export async function sseRoutes(app: FastifyInstance) {
       "Content-Type": "text/event-stream",
       "Cache-Control": "no-cache",
       Connection: "keep-alive",
+      "Access-Control-Allow-Origin": "*",
     })
 
     reply.raw.write(`event: connected\ndata: {"feed":"global"}\n\n`)
