@@ -103,13 +103,12 @@ export function NavContent() {
                   </span>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48 bg-white dark:bg-[#111] border border-zinc-200 dark:border-white/10 rounded-sm shadow-lg">
-                  <DropdownMenuItem className="px-4 py-3 text-[11px] font-bold tracking-widest uppercase text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-white/5 transition-colors cursor-pointer" onClick={() => {}}>
-                    <Link href="/profile" className="w-full">
+                  <Link href="/profile">
+                    <DropdownMenuItem className="px-4 py-3 text-[11px] font-bold tracking-widest uppercase text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-white/5 transition-colors cursor-pointer">
                       Profile
-                    </Link>
-                  </DropdownMenuItem>
+                    </DropdownMenuItem>
+                  </Link>
                   <DropdownMenuItem
-                    variant="destructive"
                     onClick={() => { logout(); disconnect(); }}
                     className="px-4 py-3 text-[11px] font-bold tracking-widest uppercase text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors border-t border-zinc-200 dark:border-white/10 cursor-pointer"
                   >

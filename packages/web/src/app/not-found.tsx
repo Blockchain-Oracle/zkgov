@@ -12,11 +12,9 @@ export default function NotFound() {
         <h1 className="text-6xl font-bold tracking-tight">404</h1>
         <p className="text-zinc-500 text-sm uppercase tracking-widest font-bold">Page not found</p>
       </div>
-      <Link href="/">
-        <Button variant="outline" className="border-black/10 dark:border-white/10 font-bold text-sm tracking-wider uppercase">
-          <ArrowLeft size={14} className="mr-2" /> Back to Dashboard
-        </Button>
-      </Link>
+      <Link href="/"><Button variant="outline" className="border-black/10 dark:border-white/10 font-bold text-sm tracking-wider uppercase">
+        <ArrowLeft size={14} className="mr-2" /> Back to Dashboard
+      </Button></Link>
     </div>
   );
 }
