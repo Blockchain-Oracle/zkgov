@@ -6,6 +6,8 @@ import { ProposalCard } from '@/components/governance/ProposalCard';
 import type { ProposalResponse } from '@zkgov/shared';
 import { Search, Plus } from 'lucide-react';
 import Link from 'next/link';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import { useProposals } from '@/hooks/use-proposals';
 
 export default function ProposalsPage() {
@@ -52,26 +54,27 @@ export default function ProposalsPage() {
       <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
         <div className="relative w-full md:w-96">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" size={16} />
-          <input 
-            type="text" 
-            placeholder="SEARCH PROPOSALS..." 
+          <Input
+            type="text"
+            placeholder="SEARCH PROPOSALS..."
             className="w-full bg-[#EBE8E1] dark:bg-[#111] border border-black/[0.06] dark:border-white/[0.06] rounded-sm py-2.5 pl-10 pr-4 text-[11px] font-medium tracking-wider text-zinc-900 dark:text-white focus:outline-none focus:border-white/20 transition-colors"
           />
         </div>
 
         <div className="flex items-center gap-2 bg-[#EBE8E1] dark:bg-[#111] border border-black/[0.06] dark:border-white/[0.06] rounded-sm p-1">
           {['active', 'succeeded', 'defeated', 'all'].map((f) => (
-            <button
+            <Button
               key={f}
+              variant="ghost"
               onClick={() => setFilter(f)}
               className={`px-4 py-1.5 text-[10px] font-bold tracking-[0.15em] rounded-sm transition-all uppercase ${
-                filter === f 
-                  ? 'bg-white text-black' 
+                filter === f
+                  ? 'bg-white text-black'
                   : 'text-zinc-500 hover:text-zinc-900 dark:hover:text-white'
               }`}
             >
               {f}
-            </button>
+            </Button>
           ))}
         </div>
       </div>

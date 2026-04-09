@@ -200,8 +200,9 @@ export function VoteSection({ proposal, onVoteSuccess }: VoteSectionProps) {
               { label: 'AGAINST', value: 0, color: 'hover:bg-rose-500 hover:text-black hover:border-rose-500' },
               { label: 'ABSTAIN', value: 2, color: 'hover:bg-zinc-300 hover:text-black hover:border-zinc-300' },
             ].map((choice) => (
-              <button
+              <Button
                 key={choice.label}
+                variant="outline"
                 onClick={() => handleVote(choice.value as VoteChoice)}
                 disabled={votingState !== 'idle'}
                 className={cn(
@@ -217,7 +218,7 @@ export function VoteSection({ proposal, onVoteSuccess }: VoteSectionProps) {
                 ) : (
                   choice.label
                 )}
-              </button>
+              </Button>
             ))}
           </div>
         </div>

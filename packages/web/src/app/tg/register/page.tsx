@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useAccount, useSignMessage } from 'wagmi';
 import { API_URL } from '@/lib/constants';
 import { Shield, CheckCircle2, Loader2, Wallet, AlertCircle } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 /**
  * Telegram Mini App Registration Flow
@@ -189,12 +190,13 @@ function TelegramRegisterContent() {
           <AlertCircle className="w-12 h-12 text-rose-400 mb-4" />
           <h1 className="text-lg font-bold text-zinc-900 dark:text-white mb-2">Something Went Wrong</h1>
           <p className="text-rose-400/80 text-sm mb-6">{error}</p>
-          <button
+          <Button
+            variant="outline"
             onClick={() => { setStep('connect'); setError(''); }}
             className="px-6 py-3 rounded-sm border border-black/10 dark:border-white/10 text-zinc-900 dark:text-white text-sm font-bold tracking-wider uppercase"
           >
             Try Again
-          </button>
+          </Button>
         </>
       )}
     </div>

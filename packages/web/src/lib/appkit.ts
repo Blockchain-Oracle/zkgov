@@ -4,7 +4,7 @@ import { defineChain } from 'viem'
 import { http } from 'wagmi'
 
 // 1. Get projectId at https://cloud.reown.com
-export const projectId = '854696010041d5b1297e641772658428' // Demo projectId
+export const projectId = process.env.NEXT_PUBLIC_REOWN_PROJECT_ID || ''
 
 // 2. Define HashKey Chain Testnet
 export const hashkeyTestnet = defineChain({

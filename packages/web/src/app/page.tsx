@@ -15,6 +15,7 @@ import {
   ChevronRight
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 export default function Home() {
   const [stats, setStats] = useState({ proposals: "—", votes: "—", voters: "—", agents: "—" });
@@ -186,10 +187,10 @@ export default function Home() {
             </p>
           </div>
           <Link href="/activity">
-            <button className="flex items-center gap-2 text-[11px] font-bold tracking-[0.2em] text-zinc-900 dark:text-white uppercase group">
-              View full audit log 
+            <Button variant="ghost" className="flex items-center gap-2 text-[11px] font-bold tracking-[0.2em] text-zinc-900 dark:text-white uppercase group">
+              View full audit log
               <ChevronRight size={14} className="group-hover:translate-x-1 transition-transform" />
-            </button>
+            </Button>
           </Link>
         </div>
 
@@ -249,15 +250,3 @@ export default function Home() {
   );
 }
 
-function Button({ children, className, variant = 'default', size = 'default', ...props }: any) {
-  return (
-    <button className={cn(
-      "inline-flex items-center justify-center transition-all",
-      variant === 'default' ? "bg-white text-black" : "border border-black/10 dark:border-white/10 text-zinc-900 dark:text-white",
-      size === 'lg' ? "px-8 py-3" : "px-4 py-2",
-      className
-    )} {...props}>
-      {children}
-    </button>
-  );
-}

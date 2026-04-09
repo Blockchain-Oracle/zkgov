@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils';
 import { API_URL } from '@/lib/constants';
 import { Shield, CheckCircle2, Loader2, XCircle } from 'lucide-react';
 import type { ProposalResponse } from '@zkgov/shared';
+import { Button } from '@/components/ui/button';
 
 type VoteState = 'idle' | 'voting' | 'success' | 'error';
 
@@ -165,24 +166,27 @@ export default function TelegramVotePage({ params }: { params: Promise<{ id: str
 
       {/* Vote buttons */}
       <div className="flex-1 flex flex-col justify-center gap-3">
-        <button
+        <Button
+          variant="outline"
           onClick={() => castVote(1)}
-          className="w-full py-5 rounded-sm border border-emerald-500/20 bg-emerald-500/5 text-emerald-400 font-bold text-sm tracking-wider uppercase transition-all active:scale-[0.97] hover:bg-emerald-500/10 hover:border-emerald-500/40"
+          className="w-full py-5 rounded-sm border border-emerald-500/20 bg-emerald-500/5 text-emerald-400 font-bold text-sm tracking-wider uppercase transition-all active:scale-[0.97] hover:bg-emerald-500/10 hover:border-emerald-500/40 h-auto"
         >
           Vote For
-        </button>
-        <button
+        </Button>
+        <Button
+          variant="outline"
           onClick={() => castVote(0)}
-          className="w-full py-5 rounded-sm border border-rose-500/20 bg-rose-500/5 text-rose-400 font-bold text-sm tracking-wider uppercase transition-all active:scale-[0.97] hover:bg-rose-500/10 hover:border-rose-500/40"
+          className="w-full py-5 rounded-sm border border-rose-500/20 bg-rose-500/5 text-rose-400 font-bold text-sm tracking-wider uppercase transition-all active:scale-[0.97] hover:bg-rose-500/10 hover:border-rose-500/40 h-auto"
         >
           Vote Against
-        </button>
-        <button
+        </Button>
+        <Button
+          variant="outline"
           onClick={() => castVote(2)}
-          className="w-full py-5 rounded-sm border border-indigo-500/20 bg-indigo-500/5 text-indigo-400 font-bold text-sm tracking-wider uppercase transition-all active:scale-[0.97] hover:bg-indigo-500/10 hover:border-indigo-500/40"
+          className="w-full py-5 rounded-sm border border-indigo-500/20 bg-indigo-500/5 text-indigo-400 font-bold text-sm tracking-wider uppercase transition-all active:scale-[0.97] hover:bg-indigo-500/10 hover:border-indigo-500/40 h-auto"
         >
           Abstain
-        </button>
+        </Button>
       </div>
 
       {/* Error */}

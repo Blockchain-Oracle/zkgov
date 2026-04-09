@@ -4,7 +4,8 @@ import { useEffect, useState } from 'react';
 import { API_URL } from '@/lib/constants';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
-import { 
+import { Button } from '@/components/ui/button';
+import {
   BarChart3, 
   MessageSquare, 
   PlusCircle, 
@@ -118,20 +119,22 @@ export default function ActivityPage() {
                 "w-1.5 h-1.5 rounded-full animate-pulse",
                 autoUpdate ? "bg-emerald-500" : "bg-zinc-600"
               )}></div>
-              <button 
+              <Button
+                variant="ghost"
                 onClick={() => setAutoUpdate(!autoUpdate)}
                 className="text-[10px] font-bold tracking-[0.1em] text-zinc-400 hover:text-zinc-900 dark:hover:text-white uppercase transition-colors"
               >
                 AUTO UPDATE {autoUpdate ? 'ON' : 'OFF'}
-              </button>
+              </Button>
             </div>
           </div>
         </div>
 
         <div className="flex items-center gap-2 bg-[#EBE8E1] dark:bg-[#111] border border-black/[0.06] dark:border-white/[0.06] rounded-sm p-1">
           {['ALL ACTIVITY', 'VOTES', 'PROPOSALS', 'COMMENTS'].map((f) => (
-            <button
+            <Button
               key={f}
+              variant="ghost"
               onClick={() => setTypeFilter(f)}
               className={cn(
                 "px-4 py-1.5 text-[10px] font-bold tracking-[0.15em] rounded-sm transition-all uppercase whitespace-nowrap",
@@ -139,7 +142,7 @@ export default function ActivityPage() {
               )}
             >
               {f}
-            </button>
+            </Button>
           ))}
         </div>
       </div>
@@ -216,15 +219,15 @@ export default function ActivityPage() {
             {activities.length} EVENTS
           </span>
           <div className="flex items-center gap-1">
-            <button className="px-4 py-2 border border-black/[0.06] dark:border-white/[0.06] text-[10px] font-bold tracking-widest text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors uppercase disabled:opacity-30">
+            <Button variant="outline" className="px-4 py-2 border border-black/[0.06] dark:border-white/[0.06] text-[10px] font-bold tracking-widest text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors uppercase disabled:opacity-30">
               PREVIOUS
-            </button>
+            </Button>
             <div className="flex items-center px-4">
               <span className="text-[10px] font-bold tracking-widest text-zinc-900 dark:text-white">1</span>
             </div>
-            <button className="px-4 py-2 border border-black/[0.06] dark:border-white/[0.06] text-[10px] font-bold tracking-widest text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors uppercase">
+            <Button variant="outline" className="px-4 py-2 border border-black/[0.06] dark:border-white/[0.06] text-[10px] font-bold tracking-widest text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors uppercase">
               NEXT
-            </button>
+            </Button>
           </div>
         </div>
       </div>

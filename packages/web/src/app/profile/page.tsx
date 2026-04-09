@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { Input } from '@/components/ui/input';
 import { 
   Shield, 
   Send, 
@@ -99,7 +100,8 @@ export default function ProfilePage() {
               </div>
             </div>
           ) : (
-            <button
+            <Button
+              variant="ghost"
               onClick={async () => {
                 try {
                   const res = await fetch(`${API_URL}/api/auth/verify-kyc`, {
@@ -117,7 +119,7 @@ export default function ProfilePage() {
                 <span className="text-[9px] font-bold uppercase tracking-widest">KYC Status</span>
                 <span className="text-[11px] font-bold uppercase">Click to verify</span>
               </div>
-            </button>
+            </Button>
           )}
         </div>
       </div>
@@ -199,8 +201,8 @@ export default function ProfilePage() {
             <Card className="p-6 bg-[#EBE8E1] dark:bg-[#111] border-indigo-500/30 flex flex-col gap-4 animate-in">
               <div className="flex flex-col gap-2">
                 <label className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Agent Name</label>
-                <input 
-                  type="text" 
+                <Input
+                  type="text"
                   value={newAgentName}
                   onChange={(e) => setNewAgentName(e.target.value)}
                   placeholder="E.G. TREASURY_ANALYZER_V1"
@@ -238,12 +240,13 @@ export default function ProfilePage() {
                 <code className="flex-1 text-[11px] font-mono text-zinc-300 overflow-hidden text-ellipsis whitespace-nowrap">
                   {apiKey}
                 </code>
-                <button 
+                <Button
+                  variant="ghost"
                   onClick={() => copyToClipboard(apiKey)}
                   className="p-2 hover:bg-white/5 rounded-sm transition-colors text-zinc-500 hover:text-zinc-900 dark:hover:text-white"
                 >
                   {copied ? <CheckCircle2 size={16} className="text-emerald-500" /> : <Copy size={16} />}
-                </button>
+                </Button>
               </div>
             </div>
           )}

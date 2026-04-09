@@ -8,6 +8,13 @@ import { useAccount, useDisconnect } from "wagmi";
 import { NAVIGATION_ITEMS, APP_NAME } from "@/lib/constants";
 import { cn } from "@/lib/utils";
 import { Sun, Moon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 
 export function NavContent() {
   const pathname = usePathname();
@@ -17,7 +24,7 @@ export function NavContent() {
 
   const [isDark, setIsDark] = useState(true);
   const [mounted, setMounted] = useState(false);
-  const [showMenu, setShowMenu] = useState(false);
+  // showMenu state no longer needed — DropdownMenu manages open/close internally
 
   useEffect(() => { setMounted(true); }, []);
 
@@ -72,54 +79,52 @@ export function NavContent() {
         </div>
 
         <div className="flex items-center gap-4">
-          <button
+          <Button
+            variant="ghost"
+            size="icon"
             onClick={toggleTheme}
             className="w-9 h-9 flex items-center justify-center rounded-sm border border-zinc-200 dark:border-white/[0.08] hover:border-zinc-400 dark:hover:border-white/20 transition-colors text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-900 dark:hover:text-white"
             aria-label="Toggle theme"
           >
             {isDark ? <Sun size={16} /> : <Moon size={16} />}
-          </button>
+          </Button>
           {!mounted ? (
             /* Placeholder during SSR to prevent hydration mismatch */
             <div className="w-[140px] h-[40px] bg-zinc-200 dark:bg-white/5 rounded-sm animate-pulse" />
           ) : isConnected ? (
             user ? (
-              <div className="relative">
-                <button
-                  onClick={() => setShowMenu(!showMenu)}
+              <DropdownMenu>
+                <DropdownMenuTrigger
                   className="flex items-center gap-3 px-4 py-2 bg-zinc-100 dark:bg-white/[0.05] border border-zinc-200 dark:border-white/[0.1] rounded-sm hover:bg-zinc-200 dark:hover:bg-white/[0.08] transition-colors"
                 >
                   <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
                   <span className="text-[11px] font-bold tracking-tight uppercase">
                     {address?.slice(0, 6)}...{address?.slice(-4)}
                   </span>
-                </button>
-                {showMenu && (
-                  <div className="absolute right-0 top-full mt-2 w-48 bg-white dark:bg-[#111] border border-zinc-200 dark:border-white/10 rounded-sm shadow-lg z-50">
-                    <Link
-                      href="/profile"
-                      onClick={() => setShowMenu(false)}
-                      className="block px-4 py-3 text-[11px] font-bold tracking-widest uppercase text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-white/5 transition-colors"
-                    >
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48 bg-white dark:bg-[#111] border border-zinc-200 dark:border-white/10 rounded-sm shadow-lg">
+                  <DropdownMenuItem className="px-4 py-3 text-[11px] font-bold tracking-widest uppercase text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-white/5 transition-colors cursor-pointer" onClick={() => {}}>
+                    <Link href="/profile" className="w-full">
                       Profile
                     </Link>
-                    <button
-                      onClick={() => { logout(); disconnect(); setShowMenu(false); }}
-                      className="w-full text-left px-4 py-3 text-[11px] font-bold tracking-widest uppercase text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors border-t border-zinc-200 dark:border-white/10"
-                    >
-                      Disconnect
-                    </button>
-                  </div>
-                )}
-              </div>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    variant="destructive"
+                    onClick={() => { logout(); disconnect(); }}
+                    className="px-4 py-3 text-[11px] font-bold tracking-widest uppercase text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-colors border-t border-zinc-200 dark:border-white/10 cursor-pointer"
+                  >
+                    Disconnect
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             ) : (
-              <button
+              <Button
                 onClick={login}
                 disabled={isSigning}
                 className="px-5 py-2 bg-indigo-500 text-zinc-900 dark:text-white font-bold text-[11px] tracking-[0.1em] rounded-sm hover:bg-indigo-600 transition-colors uppercase disabled:opacity-50"
               >
                 {isSigning ? "SIGNING..." : "SIGN IN TO GOVERN"}
-              </button>
+              </Button>
             )
           ) : (
             <appkit-button />

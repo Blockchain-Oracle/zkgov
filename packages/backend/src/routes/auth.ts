@@ -110,36 +110,75 @@ export async function authRoutes(app: FastifyInstance) {
     }
   })
 
-  // POST /verify-kyc — check KYC on-chain
+  // POST /verify-kyc — approve user on-chain via MockKycSBT, then verify
+  // The relayer wallet (which owns the contract) calls setHuman() to approve the user,
+  // then reads isHuman() to confirm. This is how KYC works in the demo:
+  // we own the KYC contract and can approve anyone who requests it.
+  // In production, a real KYC provider would issue the SBT.
   app.post("/verify-kyc", { preHandler: [(app as any).authenticate] }, async (request, reply) => {
     const user = (request as any).user
-    const { checkKycStatus } = await import("../services/kyc.js")
-    const { isVerified, level } = await checkKycStatus(user.walletAddress as `0x${string}`)
 
-    if (!isVerified) {
-      return reply.status(400).send({ error: "No KYC SBT found for this wallet." })
+    if (user.kycVerified) {
+      return { kycVerified: true, kycLevel: user.kycLevel, message: "Already verified." }
     }
 
-    const levelNames = ["NONE", "BASIC", "ADVANCED", "PREMIUM", "ULTIMATE"]
+    const { publicClient, getWalletClient, hashkeyTestnet } = await import("../plugins/chain.js")
 
-    await db
-      .update(users)
-      .set({ kycVerified: true, kycLevel: levelNames[level] || "BASIC" })
-      .where(eq(users.id, user.id))
+    const KYC_ABI = [
+      { name: "setHuman", type: "function", stateMutability: "nonpayable",
+        inputs: [{ name: "user", type: "address" }, { name: "status", type: "bool" }, { name: "level", type: "uint8" }], outputs: [] },
+      { name: "isHuman", type: "function", stateMutability: "view",
+        inputs: [{ name: "account", type: "address" }], outputs: [{ type: "bool" }, { type: "uint8" }] },
+    ] as const
 
-    // Return the data needed for the frontend to register on-chain
-    // The user's wallet must call kycGate.registerHuman(commitment) directly
-    // because the contract checks msg.sender for KYC ownership
-    return {
-      kycVerified: true,
-      kycLevel: levelNames[level] || "BASIC",
-      identityCommitment: user.identityCommitment,
-      registration: {
-        contractAddress: (await import("../config/env.js")).env.KYC_GATE_ADDRESS,
-        functionName: "registerHuman",
-        args: [user.identityCommitment],
-        message: "Call kycGate.registerHuman() from your wallet to join the voter group.",
-      },
+    try {
+      const wallet = getWalletClient()
+      const kycAddr = (await import("../config/env.js")).env.KYC_SBT_ADDRESS
+
+      // Step 1: Approve user on-chain (relayer calls setHuman as contract owner)
+      const hash = await wallet.writeContract({
+        address: kycAddr,
+        abi: KYC_ABI,
+        functionName: "setHuman",
+        args: [user.walletAddress as `0x${string}`, true, 1],
+        chain: hashkeyTestnet,
+        account: wallet.account!,
+      } as any)
+
+      await publicClient.waitForTransactionReceipt({ hash })
+
+      // Step 2: Verify it worked
+      const [isKyc, level] = await publicClient.readContract({
+        address: kycAddr,
+        abi: KYC_ABI,
+        functionName: "isHuman",
+        args: [user.walletAddress as `0x${string}`],
+      })
+
+      if (!isKyc) {
+        return reply.status(500).send({ error: "On-chain KYC approval failed." })
+      }
+
+      const levelNames = ["NONE", "BASIC", "ADVANCED", "PREMIUM", "ULTIMATE"]
+      const kycLevel = levelNames[level] || "BASIC"
+
+      // Step 3: Update database
+      await db
+        .update(users)
+        .set({ kycVerified: true, kycLevel })
+        .where(eq(users.id, user.id))
+
+      return {
+        kycVerified: true,
+        kycLevel,
+        txHash: hash,
+        message: `KYC approved on-chain. TX: ${hash}`,
+        identityCommitment: user.identityCommitment,
+      }
+    } catch (err: any) {
+      return reply.status(500).send({
+        error: `KYC verification failed: ${err.message || "Unknown error"}`,
+      })
     }
   })
 

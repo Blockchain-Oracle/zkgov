@@ -172,19 +172,20 @@ export default function NewProposalPage() {
             </label>
             <div className="grid grid-cols-3 gap-3">
               {['both', 'humans', 'agents'].map((group) => (
-                <button
+                <Button
                   key={group}
                   type="button"
+                  variant="outline"
                   onClick={() => setFormData({ ...formData, voterGroup: group })}
                   className={cn(
                     "py-3 border text-[10px] font-bold uppercase tracking-[0.15em] rounded-sm transition-all",
-                    formData.voterGroup === group 
-                      ? "bg-white text-black border-white" 
+                    formData.voterGroup === group
+                      ? "bg-white text-black border-white"
                       : "bg-transparent text-zinc-500 border-black/10 dark:border-white/10 hover:border-white/30"
                   )}
                 >
                   {group === 'both' ? 'HUMANS + AGENTS' : group}
-                </button>
+                </Button>
               ))}
             </div>
           </div>
@@ -198,20 +199,23 @@ export default function NewProposalPage() {
                 { value: 'verified', label: 'KYC VERIFIED ONLY', desc: 'Only KYC-verified voters can participate' },
                 { value: 'open', label: 'OPEN TO ALL', desc: 'Anyone with a wallet can vote' },
               ].map((opt) => (
-                <button
+                <Button
                   key={opt.value}
                   type="button"
+                  variant="outline"
                   onClick={() => setFormData({ ...formData, proposalType: opt.value as 'verified' | 'open' })}
                   className={cn(
-                    "py-3 px-4 border text-left rounded-sm transition-all",
+                    "py-3 px-4 border text-left rounded-sm transition-all h-auto",
                     formData.proposalType === opt.value
                       ? "bg-indigo-500/10 text-indigo-400 border-indigo-500/30"
                       : "bg-transparent text-zinc-500 border-black/10 dark:border-white/10 hover:border-white/30"
                   )}
                 >
-                  <span className="text-[10px] font-bold uppercase tracking-[0.15em] block">{opt.label}</span>
-                  <span className="text-[9px] text-zinc-600 mt-1 block">{opt.desc}</span>
-                </button>
+                  <div className="flex flex-col items-start">
+                    <span className="text-[10px] font-bold uppercase tracking-[0.15em] block">{opt.label}</span>
+                    <span className="text-[9px] text-zinc-600 mt-1 block">{opt.desc}</span>
+                  </div>
+                </Button>
               ))}
             </div>
           </div>
