@@ -1,38 +1,66 @@
 import { config } from "dotenv"
 config({ path: "packages/backend/.env" })
+
 /**
- * View all proposals with vote counts and status.
- * Usage: npx tsx scripts/view-proposals.ts
+ * View all proposals from the ZKVoting contract.
  */
-const API_URL = process.env.API_URL || "http://localhost:3001"
+import { createPublicClient, http, defineChain } from "viem"
+
+const chain = defineChain({
+  id: 133, name: "HashKey Chain Testnet",
+  nativeCurrency: { name: "HSK", symbol: "HSK", decimals: 18 },
+  rpcUrls: { default: { http: [process.env.HASHKEY_RPC_URL || "https://testnet.hsk.xyz"] } },
+})
+
+const ZK_VOTING_ABI = [
+  { name: "proposalCount", type: "function", stateMutability: "view", inputs: [], outputs: [{ type: "uint256" }] },
+  { name: "getProposalContent", type: "function", stateMutability: "view",
+    inputs: [{ name: "proposalId", type: "uint256" }],
+    outputs: [{ name: "title", type: "string" }, { name: "description", type: "string" }, { name: "creator", type: "address" }] },
+  { name: "getProposalState", type: "function", stateMutability: "view",
+    inputs: [{ name: "proposalId", type: "uint256" }],
+    outputs: [
+      { type: "uint256" }, { type: "uint256" }, { type: "uint256" },
+      { type: "uint256" }, { type: "uint256" }, { type: "uint256" },
+      { type: "uint256" }, { type: "bool" }, { type: "bool" }, { type: "bool" },
+    ] },
+  { name: "getStats", type: "function", stateMutability: "view", inputs: [],
+    outputs: [{ type: "uint256" }, { type: "uint256" }, { type: "uint256" }] },
+] as const
 
 async function main() {
-  const res = await fetch(`${API_URL}/api/proposals?limit=50`)
-  const data = await res.json()
+  const addr = process.env.ZK_VOTING_ADDRESS
+  if (!addr) { console.error("Set ZK_VOTING_ADDRESS"); process.exit(1) }
 
-  if (!data.proposals?.length) {
-    console.log("No proposals found. Run: npx tsx scripts/seed-proposals.ts")
-    return
+  const pub = createPublicClient({ chain, transport: http() })
+
+  const [totalProposals, totalMembers] = await pub.readContract({
+    address: addr as `0x${string}`, abi: ZK_VOTING_ABI, functionName: "getStats",
+  }) as [bigint, bigint, bigint]
+
+  console.log("═══════════════════════════════════════════")
+  console.log(`  ${totalProposals} Proposals | ${totalMembers} Members`)
+  console.log("═══════════════════════════════════════════")
+
+  for (let i = Number(totalProposals); i >= 1; i--) {
+    const [title] = await pub.readContract({
+      address: addr as `0x${string}`, abi: ZK_VOTING_ABI,
+      functionName: "getProposalContent", args: [BigInt(i)],
+    }) as [string, string, string]
+
+    const state = await pub.readContract({
+      address: addr as `0x${string}`, abi: ZK_VOTING_ABI,
+      functionName: "getProposalState", args: [BigInt(i)],
+    }) as [bigint, bigint, bigint, bigint, bigint, bigint, bigint, boolean, boolean, boolean]
+
+    const [, , quorum, votesFor, votesAgainst, votesAbstain, totalVotes, finalized, passed, isActive] = state
+    const status = finalized ? (passed ? "PASSED" : "DEFEATED") : isActive ? "ACTIVE" : "ENDED"
+
+    console.log(`\n  #${String(i).padStart(3, "0")}  [${status.padEnd(8)}]  ${title}`)
+    console.log(`        Votes: ${votesFor}F / ${votesAgainst}A / ${votesAbstain}Ab  |  Quorum: ${totalVotes}/${quorum}`)
   }
 
-  console.log("═══════════════════════════════════════════")
-  console.log(`  ${data.pagination.total} Proposals`)
-  console.log("═══════════════════════════════════════════")
-
-  for (const p of data.proposals) {
-    const status = p.status.toUpperCase().padEnd(10)
-    const votes = `${p.votes.for}F / ${p.votes.against}A / ${p.votes.abstain}Ab`
-    const quorum = p.quorumReached ? "✓" : `${p.totalVotes}/${p.quorum}`
-
-    console.log()
-    console.log(`  #${String(p.id).padStart(3, "0")}  [${status}]  ${p.title}`)
-    console.log(`        Votes: ${votes}  |  Quorum: ${quorum}  |  Time: ${p.timeRemaining || "Ended"}`)
-    console.log(`        Group: ${p.voterGroup}  |  Comments: ${p.commentCount}`)
-    if (p.txHash) console.log(`        TX: ${p.txHash}`)
-  }
-
-  console.log()
-  console.log("═══════════════════════════════════════════")
+  console.log("\n═══════════════════════════════════════════")
 }
 
 main().catch(console.error)

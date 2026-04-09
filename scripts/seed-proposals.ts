@@ -2,89 +2,59 @@ import { config } from "dotenv"
 config({ path: "packages/backend/.env" })
 
 /**
- * Seed the database with realistic governance proposals.
- * Uses a real wallet signature to authenticate.
+ * Seed proposals by calling ZKVoting.createProposal() directly on-chain.
  */
+import { createPublicClient, createWalletClient, http, defineChain } from "viem"
 import { privateKeyToAccount } from "viem/accounts"
 
-const API_URL = process.env.API_URL || "http://localhost:3001"
-const PK = process.env.RELAYER_PRIVATE_KEY as `0x${string}`
+const chain = defineChain({
+  id: 133, name: "HashKey Chain Testnet",
+  nativeCurrency: { name: "HSK", symbol: "HSK", decimals: 18 },
+  rpcUrls: { default: { http: [process.env.HASHKEY_RPC_URL || "https://testnet.hsk.xyz"] } },
+})
+
+const ZK_VOTING_ABI = [
+  { name: "createProposal", type: "function", stateMutability: "nonpayable",
+    inputs: [{ name: "title", type: "string" }, { name: "description", type: "string" },
+      { name: "votingPeriod", type: "uint256" }, { name: "quorum", type: "uint256" }],
+    outputs: [{ type: "uint256" }] },
+  { name: "proposalCount", type: "function", stateMutability: "view", inputs: [], outputs: [{ type: "uint256" }] },
+] as const
 
 const PROPOSALS = [
-  {
-    title: "Allocate 10% of treasury to developer grants program",
-    description: "## Summary\n\nThis proposal allocates 10% of the HashKey Chain ecosystem treasury toward a developer grants program.\n\n## Motivation\n\nDeveloper adoption is the primary growth lever for any L2. A structured grants program will:\n- Attract builders to HashKey Chain\n- Fund tooling, SDKs, and documentation\n- Create a flywheel of ecosystem growth\n\n## Specification\n\n- 10% of current treasury (~$500K equivalent)\n- 6-month program with quarterly reviews\n- Grants committee of 5 elected members\n- Individual grants capped at $50K",
-    votingPeriod: 172800,
-    quorum: 5,
-    voterGroup: "both",
-    proposalType: "verified",
-  },
-  {
-    title: "Increase validator rewards by 15% for Q2 2026",
-    description: "## Summary\n\nAdjust validator rewards upward by 15% to improve network security and decentralization.\n\n## Rationale\n\nCurrent validator economics are below competitive rates for OP Stack L2s. This adjustment aligns HashKey Chain with market rates.\n\n## Impact\n\n- Estimated additional cost: ~$200K/quarter\n- Expected new validators: 8-12\n- Security improvement: 40% increase in stake diversity",
-    votingPeriod: 259200,
-    quorum: 3,
-    voterGroup: "humans",
-    proposalType: "verified",
-  },
-  {
-    title: "Establish an AI Agent governance committee",
-    description: "## Summary\n\nCreate a formal committee to oversee AI agent participation in governance.\n\n## Motivation\n\nAs AI agents become economic actors on-chain, we need frameworks for:\n- Agent identity verification and reputation\n- Voting weight policies for agents vs humans\n- Dispute resolution\n\n## Structure\n\n- 3 human members + 2 agent members\n- Quarterly mandate, renewable\n- Authority to pause agent voting in emergencies",
-    votingPeriod: 604800,
-    quorum: 8,
-    voterGroup: "both",
-    proposalType: "open",
-  },
+  { title: "Allocate 10% of treasury to developer grants", description: "## Summary\n\nAllocate 10% of the HashKey Chain ecosystem treasury toward a developer grants program.\n\n## Motivation\n\nDeveloper adoption is the primary growth lever for any L2.\n\n## Specification\n\n- 6-month program\n- Grants committee of 5 elected members\n- Individual grants capped at $50K", votingPeriod: 172800, quorum: 3 },
+  { title: "Increase validator rewards by 15%", description: "## Summary\n\nAdjust validator rewards upward by 15% to improve network security.\n\n## Impact\n\n- Estimated additional cost: ~$200K/quarter\n- Expected new validators: 8-12", votingPeriod: 259200, quorum: 2 },
+  { title: "Establish a governance committee", description: "## Summary\n\nCreate a formal committee to oversee governance participation.\n\n## Structure\n\n- 5 members, quarterly mandate\n- Authority to manage proposal standards", votingPeriod: 604800, quorum: 5 },
 ]
 
 async function main() {
-  if (!PK || PK === "0x") {
-    console.error("RELAYER_PRIVATE_KEY not set in .env")
-    process.exit(1)
-  }
+  const pk = process.env.RELAYER_PRIVATE_KEY || process.env.DEPLOYER_PRIVATE_KEY
+  if (!pk) { console.error("Set RELAYER_PRIVATE_KEY or DEPLOYER_PRIVATE_KEY"); process.exit(1) }
+  const zkVotingAddr = process.env.ZK_VOTING_ADDRESS
+  if (!zkVotingAddr) { console.error("Set ZK_VOTING_ADDRESS"); process.exit(1) }
 
-  const account = privateKeyToAccount(PK)
-  const nonce = `seed-${Date.now()}`
-  const message = `Sign in to ZKGov: ${nonce}`
+  const account = privateKeyToAccount(pk as `0x${string}`)
+  const wallet = createWalletClient({ account, chain, transport: http() })
+  const pub = createPublicClient({ chain, transport: http() })
 
-  // Sign the message with the relayer key
-  const signature = await account.signMessage({ message })
-
-  // Register
-  console.log(`Registering as ${account.address}...`)
-  const regRes = await fetch(`${API_URL}/api/auth/register`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ walletAddress: account.address, signature, nonce }),
-  })
-
-  const regData = await regRes.json()
-  const token = regData.token
-  if (!token) {
-    console.error("Registration failed:", regData.error || regData)
-    process.exit(1)
-  }
-  console.log(`Authenticated with token: ${token.slice(0, 20)}...`)
-
-  // Create proposals
   for (const p of PROPOSALS) {
-    console.log(`\nCreating: "${p.title}"...`)
-    const res = await fetch(`${API_URL}/api/proposals`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-      body: JSON.stringify(p),
+    console.log(`Creating: "${p.title}"...`)
+    const hash = await wallet.writeContract({
+      address: zkVotingAddr as `0x${string}`,
+      abi: ZK_VOTING_ABI,
+      functionName: "createProposal",
+      args: [p.title, p.description, BigInt(p.votingPeriod), BigInt(p.quorum)],
     })
-
-    const data = await res.json()
-    if (res.ok) {
-      console.log(`  ✓ Proposal #${data.proposal.id} — ${data.proposal.status}`)
-      if (data.proposal.txHash) console.log(`  TX: ${data.proposal.txHash}`)
-    } else {
-      console.error(`  ✗ Failed: ${data.error}`)
-    }
+    await pub.waitForTransactionReceipt({ hash })
+    console.log(`  ✓ TX: ${hash}`)
   }
 
-  console.log("\nDone!")
+  const count = await pub.readContract({
+    address: zkVotingAddr as `0x${string}`,
+    abi: ZK_VOTING_ABI,
+    functionName: "proposalCount",
+  })
+  console.log(`\nDone! ${count} proposals on-chain.`)
 }
 
 main().catch(console.error)
