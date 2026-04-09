@@ -56,7 +56,6 @@ export async function authRoutes(app: FastifyInstance) {
       id: user.id,
       walletAddress: user.walletAddress,
       telegramLinked: !!user.telegramId,
-      discordLinked: !!user.discordId,
       createdAt: user.createdAt,
     }
   })
@@ -102,17 +101,6 @@ export async function authRoutes(app: FastifyInstance) {
     return { linked: false, telegramUser: { id: parsed.userId, username: parsed.username } }
   })
 
-  // POST /discord/lookup — find user by discord_id
-  app.post<{ Body: { discordId: string } }>("/discord/lookup", async (request, reply) => {
-    const { discordId } = request.body
-    if (!discordId) return reply.status(400).send({ error: "discordId is required" })
-
-    const user = await db.query.users.findFirst({ where: eq(users.discordId, discordId) })
-    if (!user) return reply.status(404).send({ error: "Discord account not linked" })
-
-    const token = app.jwt.sign({ userId: user.id }, { expiresIn: "1h" })
-    return { token, user: { id: user.id, walletAddress: user.walletAddress } }
-  })
 }
 
 function parseInitData(initData: string) {

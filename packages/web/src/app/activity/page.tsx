@@ -13,7 +13,6 @@ import {
   CheckCircle2,
   Globe,
   Send,
-  MessageSquare as DiscordIcon,
   Cpu,
   UserPlus,
   ExternalLink,
@@ -22,7 +21,7 @@ import {
 interface ActivityItem {
   id: string;
   type: 'vote' | 'proposal' | 'comment' | 'registration' | 'tally';
-  platform: 'web' | 'on-chain' | 'telegram' | 'discord' | 'api';
+  platform: 'web' | 'on-chain' | 'telegram' | 'api';
   text: string;
   time: string;
   proposalId?: number;
@@ -105,7 +104,6 @@ export default function ActivityPage() {
   const getPlatformIcon = (platform: string) => {
     switch (platform) {
       case 'telegram': return <Send size={14} className="text-[#24A1DE]" />;
-      case 'discord': return <DiscordIcon size={14} className="text-[#5865F2]" />;
       case 'on-chain': return <Globe size={14} className="text-emerald-400" />;
       case 'api': return <Cpu size={14} className="text-amber-400" />;
       default: return <Globe size={14} className="text-indigo-400" />;

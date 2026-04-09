@@ -12,7 +12,7 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import {
-  Shield, Send, MessageSquare as DiscordIcon,
+  Shield, Send,
   CheckCircle2, ExternalLink, Loader2,
 } from 'lucide-react';
 
@@ -120,14 +120,6 @@ export default function ProfilePage() {
               <span className="text-[11px] font-bold uppercase tracking-widest">Telegram</span>
             </div>
             {user.telegramLinked ? <CheckCircle2 size={14} className="text-emerald-500" /> : <span className="text-[10px] text-zinc-500">Open Bot</span>}
-          </a>
-          <a href="https://discord.gg/zkgov" target="_blank" rel="noopener noreferrer"
-            className="flex items-center justify-between p-4 bg-black/[0.03] dark:bg-white/[0.03] rounded-sm hover:bg-black/[0.05] dark:hover:bg-white/[0.05] transition-colors">
-            <div className="flex items-center gap-3">
-              <DiscordIcon size={16} className={user.discordLinked ? "text-[#5865F2]" : "text-zinc-600"} />
-              <span className="text-[11px] font-bold uppercase tracking-widest">Discord</span>
-            </div>
-            {user.discordLinked ? <CheckCircle2 size={14} className="text-emerald-500" /> : <span className="text-[10px] text-zinc-500">Join Server</span>}
           </a>
         </div>
       </Card>
