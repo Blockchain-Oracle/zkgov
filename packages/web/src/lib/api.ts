@@ -49,6 +49,10 @@ export function fetchStats() {
   return request<{ proposals: number; votes: number; voters: number; agents: number }>('/api/stats');
 }
 
+export function fetchActivity() {
+  return request<{ activity: { id: string; type: string; platform: string; text: string; proposalId: number; time: string }[] }>('/api/activity');
+}
+
 // ─── Proposals ───────────────────────────────────────
 
 export interface ProposalsResponse {

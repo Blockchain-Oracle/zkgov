@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { API_URL } from '@/lib/constants';
+import { fetchActivity } from '@/lib/api';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -30,8 +31,24 @@ export default function ActivityPage() {
   const [autoUpdate, setAutoUpdate] = useState(true);
   const [typeFilter, setTypeFilter] = useState('ALL ACTIVITY');
 
+  // Load historical activity on mount
   useEffect(() => {
-    // Setup SSE for real-time global feed — no mock data
+    fetchActivity()
+      .then(data => {
+        setActivities(data.activity.map(a => ({
+          id: a.id,
+          type: a.type as ActivityItem['type'],
+          platform: a.platform as ActivityItem['platform'],
+          text: a.text,
+          proposalId: a.proposalId,
+          time: formatRelativeTime(a.time),
+        })));
+      })
+      .catch(() => {});
+  }, []);
+
+  useEffect(() => {
+    // Setup SSE for real-time updates on top of historical data
     const eventSource = new EventSource(`${API_URL}/api/sse/feed`);
     
     eventSource.addEventListener('vote_cast', (event) => {
@@ -241,4 +258,15 @@ export default function ActivityPage() {
       </div>
     </div>
   );
+}
+
+function formatRelativeTime(iso: string): string {
+  const diff = Date.now() - new Date(iso).getTime();
+  const mins = Math.floor(diff / 60000);
+  if (mins < 1) return 'JUST NOW';
+  if (mins < 60) return `${mins}M AGO`;
+  const hours = Math.floor(mins / 60);
+  if (hours < 24) return `${hours}H AGO`;
+  const days = Math.floor(hours / 24);
+  return `${days}D AGO`;
 }
