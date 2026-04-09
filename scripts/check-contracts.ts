@@ -1,3 +1,5 @@
+import { config } from "dotenv"
+config({ path: "packages/backend/.env" })
 /**
  * Verify all contracts are deployed and responsive on HashKey testnet.
  * Usage: npx tsx scripts/check-contracts.ts

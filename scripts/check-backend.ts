@@ -1,3 +1,5 @@
+import { config } from "dotenv"
+config({ path: "packages/backend/.env" })
 /**
  * Hit every API endpoint and verify responses.
  * Usage: npx tsx scripts/check-backend.ts

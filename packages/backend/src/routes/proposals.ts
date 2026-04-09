@@ -147,6 +147,10 @@ export async function proposalRoutes(app: FastifyInstance) {
         quorumReached: totalVotes >= proposal.quorum,
         timeRemaining: remaining > 0 ? formatDuration(remaining) : null,
         commentCount: commentCount[0]?.count || 0,
+        creator: {
+          type: proposal.creatorAgentId ? "agent" : "human",
+          displayName: "Anonymous",
+        },
         createdAt: proposal.createdAt?.toISOString(),
       },
     }

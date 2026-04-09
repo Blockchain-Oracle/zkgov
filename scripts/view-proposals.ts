@@ -1,3 +1,5 @@
+import { config } from "dotenv"
+config({ path: "packages/backend/.env" })
 /**
  * View all proposals with vote counts and status.
  * Usage: npx tsx scripts/view-proposals.ts
