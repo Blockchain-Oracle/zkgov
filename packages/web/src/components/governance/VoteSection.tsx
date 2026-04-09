@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useAccount, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
+import { useAccount } from 'wagmi';
 import { useAuth } from '@/hooks/useAuth';
 import { API_URL } from '@/lib/constants';
 import { cn } from '@/lib/utils';
@@ -22,51 +22,33 @@ export function VoteSection({ proposal, onVoteSuccess }: VoteSectionProps) {
   const [error, setError] = useState<string | null>(null);
   const [txHash, setTxHash] = useState<string | null>(null);
 
-  // Wagmi contract write for KycGate registration
-  const { writeContract, data: regHash, isPending: isRegPending } = useWriteContract();
-  const { isSuccess: isRegConfirmed } = useWaitForTransactionReceipt({ hash: regHash });
+  // KYC registration is handled by the backend (relayer calls setHuman on-chain)
 
   // Handle KYC -> On-chain Registration flow
   const handleRegisterOnChain = async () => {
     if (!token) return;
     setVotingState('registering');
     setError(null);
-    
+
     try {
+      // Backend calls MockKycSBT.setHuman() via relayer — approves user on-chain
       const res = await fetch(`${API_URL}/api/auth/verify-kyc`, {
         method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({}),
       });
       const data = await res.json();
-      
+
       if (!res.ok) throw new Error(data.error || 'KYC verification failed');
 
-      // Call kycGate.registerHuman(identityCommitment)
-      // The backend provides the exact data needed for this on-chain call
-      writeContract({
-        address: data.registration.contractAddress,
-        abi: [{
-          name: 'registerHuman',
-          type: 'function',
-          stateMutability: 'nonpayable',
-          inputs: [{ name: 'identityCommitment', type: 'uint256' }],
-          outputs: []
-        }],
-        functionName: 'registerHuman',
-        args: [BigInt(data.registration.args[0])],
-      });
+      // Refresh user state — they're now KYC'd
+      refreshUser();
+      setVotingState('idle');
     } catch (err: any) {
       setError(err.message);
       setVotingState('idle');
     }
   };
-
-  // Refresh user status after on-chain registration confirms
-  useEffect(() => {
-    if (isRegConfirmed) {
-      refreshUser().then(() => setVotingState('idle'));
-    }
-  }, [isRegConfirmed]);
 
   // Handle Voting (ZK Proof Generation + Relayer submission)
   const handleVote = async (choice: VoteChoice) => {
@@ -145,13 +127,13 @@ export function VoteSection({ proposal, onVoteSuccess }: VoteSectionProps) {
         </p>
         <Button 
           onClick={handleRegisterOnChain} 
-          disabled={votingState === 'registering' || isRegPending}
+          disabled={votingState === 'registering' }
           className="w-full bg-white text-black hover:bg-zinc-200 text-[11px] font-bold tracking-[0.1em] h-11"
         >
-          {votingState === 'registering' || isRegPending ? (
+          {votingState === 'registering'  ? (
             <Loader2 className="animate-spin mr-2" size={14} />
           ) : null}
-          {isRegPending ? 'CONFIRMING ON-CHAIN...' : 'VERIFY & REGISTER'}
+          {'VERIFY & REGISTER'}
         </Button>
       </Card>
     );
@@ -181,7 +163,7 @@ export function VoteSection({ proposal, onVoteSuccess }: VoteSectionProps) {
             <p className="text-[11px] text-zinc-500 mt-1">Your ZK-verified ballot has been cast.</p>
           </div>
           <a 
-            href={`https://hashkeychain-testnet-explorer.alt.technology/tx/${txHash}`}
+            href={`https://testnet-explorer.hsk.xyz/tx/${txHash}`}
             target="_blank"
             className="text-[10px] font-mono text-indigo-400/70 hover:text-indigo-400 break-all text-center px-4"
           >

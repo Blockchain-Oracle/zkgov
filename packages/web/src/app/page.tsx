@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { STATS_LABELS, API_URL } from "@/lib/constants";
-import { fetchProposals, fetchAgents } from "@/lib/api";
+import { fetchStats } from "@/lib/api";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import {
@@ -22,15 +22,14 @@ export default function Home() {
   const [recentActivity, setRecentActivity] = useState<{ id: string; type: string; platform: string; text: string; time: string }[]>([]);
 
   useEffect(() => {
-    fetchProposals({ limit: 1 })
+    fetchStats()
       .then(data => {
-        setStats(prev => ({ ...prev, proposals: String(data.pagination?.total || 0) }));
-      })
-      .catch(() => {});
-
-    fetchAgents()
-      .then(data => {
-        setStats(prev => ({ ...prev, agents: String(data.agents?.length || 0) }));
+        setStats({
+          proposals: String(data.proposals),
+          votes: String(data.votes),
+          voters: String(data.voters),
+          agents: String(data.agents),
+        });
       })
       .catch(() => {});
 

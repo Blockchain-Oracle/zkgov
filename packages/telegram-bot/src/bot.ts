@@ -10,7 +10,7 @@ export function createBot(token: string) {
   // /start — welcome message
   bot.command("start", async (ctx) => {
     const keyboard = new InlineKeyboard()
-      .url("Register to Vote", `${WEB_URL}/register`)
+      .url("Register to Vote", `${WEB_URL}/profile`)
       .row()
       .text("View Proposals", "list_proposals")
 
@@ -63,7 +63,7 @@ async function sendProposalList(ctx: any) {
     for (const p of data.proposals.slice(0, 5)) {
       const keyboard = new InlineKeyboard()
         .webApp("Vote Now 🗳️", `${MINI_APP_URL}/vote/${p.id}`)
-        .url("View Details", `${WEB_URL}/proposal/${p.id}`)
+        .url("View Details", `${WEB_URL}/proposals/${p.id}`)
 
       const quorumBar = p.quorumReached ? "✅" : `${p.totalVotes}/${p.quorum}`
 
@@ -85,7 +85,7 @@ async function sendProposalList(ctx: any) {
 export async function announceProposal(bot: Bot, chatId: number | string, proposal: any) {
   const keyboard = new InlineKeyboard()
     .webApp("Vote Now 🗳️", `${MINI_APP_URL}/vote/${proposal.id}`)
-    .url("View Details", `${WEB_URL}/proposal/${proposal.id}`)
+    .url("View Details", `${WEB_URL}/proposals/${proposal.id}`)
 
   await bot.api.sendMessage(
     chatId,

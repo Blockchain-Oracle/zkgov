@@ -189,7 +189,7 @@ export default function ActivityPage() {
                 </p>
                 <div className="flex items-center gap-2">
                   <span className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest">TRANSACTION</span>
-                  <span className="text-[10px] font-mono text-zinc-500 group-hover:text-indigo-400 transition-colors">0x7d21...f3a9</span>
+                  <span className="text-[10px] font-mono text-zinc-500 group-hover:text-indigo-400 transition-colors">—</span>
                 </div>
               </div>
 

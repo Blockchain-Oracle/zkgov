@@ -12,8 +12,12 @@ import { useProposals } from '@/hooks/use-proposals';
 
 export default function ProposalsPage() {
   const [filter, setFilter] = useState('active');
+  const [search, setSearch] = useState('');
   const { data, isLoading: loading } = useProposals(filter);
-  const proposals = (data?.proposals || []) as ProposalResponse[];
+  const allProposals = (data?.proposals || []) as ProposalResponse[];
+  const proposals = search
+    ? allProposals.filter(p => p.title.toLowerCase().includes(search.toLowerCase()))
+    : allProposals;
 
   return (
     <div className="flex flex-col gap-12">
@@ -56,6 +60,8 @@ export default function ProposalsPage() {
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" size={16} />
           <Input
             type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
             placeholder="SEARCH PROPOSALS..."
             className="w-full bg-[#EBE8E1] dark:bg-[#111] border border-black/[0.06] dark:border-white/[0.06] rounded-sm py-2.5 pl-10 pr-4 text-[11px] font-medium tracking-wider text-zinc-900 dark:text-white focus:outline-none focus:border-white/20 transition-colors"
           />

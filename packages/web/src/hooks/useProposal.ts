@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { API_URL } from '@/lib/constants';
-import type { ProposalResponse, SSEEvent } from '@zkgov/shared';
+import type { ProposalResponse } from '@zkgov/shared';
 
 export function useProposal(id: string) {
   const queryClient = useQueryClient();

@@ -68,6 +68,7 @@ export interface CreateProposalRequest {
   votingPeriod: number
   quorum: number
   voterGroup: VoterGroup
+  proposalType: ProposalType
 }
 
 export interface SSEEvent {

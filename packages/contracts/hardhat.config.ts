@@ -17,7 +17,7 @@ const config: HardhatUserConfig = {
       chainId: 1337,
     },
     hashkey: {
-      url: process.env.HASHKEY_RPC_URL || "https://hashkeychain-testnet.alt.technology",
+      url: process.env.HASHKEY_RPC_URL || "https://testnet.hsk.xyz",
       chainId: 133,
       accounts: process.env.DEPLOYER_PRIVATE_KEY
         ? [process.env.DEPLOYER_PRIVATE_KEY.startsWith("0x") ? process.env.DEPLOYER_PRIVATE_KEY : `0x${process.env.DEPLOYER_PRIVATE_KEY}`]

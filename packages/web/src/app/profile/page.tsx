@@ -109,8 +109,15 @@ export default function ProfilePage() {
                     headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                     body: JSON.stringify({}),
                   });
-                  if (res.ok) refreshUser();
-                } catch {}
+                  if (res.ok) {
+                    refreshUser();
+                  } else {
+                    const data = await res.json();
+                    alert(data.error || 'KYC verification failed');
+                  }
+                } catch (err: any) {
+                  alert(err.message || 'Network error — please try again');
+                }
               }}
               className="px-4 py-2 border border-amber-500/20 bg-amber-500/5 text-amber-400 rounded-sm flex items-center gap-3 hover:bg-amber-500/10 transition-colors"
             >

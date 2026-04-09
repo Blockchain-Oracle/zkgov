@@ -67,7 +67,7 @@ export function NavContent() {
                 key={item.label}
                 href={item.href}
                 className={cn(
-                  "nav-pill text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-900 dark:hover:text-white transition-colors uppercase",
+                  "nav-pill text-zinc-500 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white transition-colors uppercase",
                   (pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href))) && "active text-zinc-900 dark:text-white"
                 )}
               >
@@ -83,7 +83,7 @@ export function NavContent() {
             variant="ghost"
             size="icon"
             onClick={toggleTheme}
-            className="w-9 h-9 flex items-center justify-center rounded-sm border border-zinc-200 dark:border-white/[0.08] hover:border-zinc-400 dark:hover:border-white/20 transition-colors text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-900 dark:hover:text-white"
+            className="w-9 h-9 flex items-center justify-center rounded-sm border border-zinc-200 dark:border-white/[0.08] hover:border-zinc-400 dark:hover:border-white/20 transition-colors text-zinc-500 hover:text-zinc-900 dark:hover:text-white"
             aria-label="Toggle theme"
           >
             {isDark ? <Sun size={16} /> : <Moon size={16} />}

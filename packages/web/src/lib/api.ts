@@ -43,6 +43,14 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
 
 // ─── Proposals ───────────────────────────────────────
 
+// ─── Stats ───────────────────────────────────────────
+
+export function fetchStats() {
+  return request<{ proposals: number; votes: number; voters: number; agents: number }>('/api/stats');
+}
+
+// ─── Proposals ───────────────────────────────────────
+
 export interface ProposalsResponse {
   proposals: any[];
   pagination: { page: number; limit: number; total: number };

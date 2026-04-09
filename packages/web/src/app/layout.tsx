@@ -58,7 +58,7 @@ export default function RootLayout({
                     href={social.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-[11px] font-medium tracking-[0.15em] text-zinc-400 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-zinc-900 dark:hover:text-white transition-colors"
+                    className="text-[11px] font-medium tracking-[0.15em] text-zinc-400 dark:text-zinc-500 hover:text-zinc-900 dark:hover:text-white transition-colors"
                   >
                     {social.label}
                   </a>
