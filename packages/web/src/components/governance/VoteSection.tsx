@@ -24,7 +24,7 @@ export function VoteSection({ proposal, onVoteSuccess }: VoteSectionProps) {
   const { user, login, isSigning } = useAuth();
   const { identity, commitment, createIdentity, isCreating, hasIdentity } = useSemaphoreIdentity();
   const { data: voterData } = useIsVoter(address as `0x${string}`);
-  const { register, isPending: isRegistering, isSuccess: regSuccess, hash: regHash } = useRegister();
+  const { register, isPending: isRegistering, isSuccess: regSuccess, hash: regHash, error: regError } = useRegister();
   const { vote, isPending: isVoting, isConfirming, isSuccess: voteSuccess, hash: voteHash, error: voteError } = useCastVoteTx();
 
   const [proofState, setProofState] = useState<'idle' | 'generating'>('idle');
@@ -83,6 +83,7 @@ export function VoteSection({ proposal, onVoteSuccess }: VoteSectionProps) {
           </a>
         )}
         {regSuccess && <p className="text-xs text-emerald-400"><CheckCircle2 size={12} className="inline mr-1" />Registered! You can now vote.</p>}
+        {regError && <p className="text-xs text-rose-400 break-all">{(regError as any)?.shortMessage || (regError as any)?.message || 'Registration failed'}</p>}
       </Card>
     );
   }

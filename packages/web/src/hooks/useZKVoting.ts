@@ -2,6 +2,7 @@
 
 import { useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
 import { ZK_VOTING_ADDRESS, ZK_VOTING_ABI } from '@/lib/contracts';
+import { hashkeyTestnet } from '@/lib/appkit';
 import type { Proposal } from '@zkgov/shared';
 
 /**
@@ -92,7 +93,7 @@ export function useRegister() {
   const { isSuccess, isLoading: isConfirming } = useWaitForTransactionReceipt({ hash });
 
   const register = (commitment: bigint) => {
-    writeContract({
+    writeContract({ chainId: 133,
       address: ZK_VOTING_ADDRESS,
       abi: ZK_VOTING_ABI,
       functionName: 'register',
@@ -111,7 +112,7 @@ export function useCreateProposalTx() {
   const { isSuccess, isLoading: isConfirming } = useWaitForTransactionReceipt({ hash });
 
   const create = (title: string, description: string, votingPeriod: number, quorum: number) => {
-    writeContract({
+    writeContract({ chainId: 133,
       address: ZK_VOTING_ADDRESS,
       abi: ZK_VOTING_ABI,
       functionName: 'createProposal',
@@ -137,7 +138,7 @@ export function useCastVoteTx() {
     choice: bigint,
     points: readonly bigint[]
   ) => {
-    writeContract({
+    writeContract({ chainId: 133,
       address: ZK_VOTING_ADDRESS,
       abi: ZK_VOTING_ABI,
       functionName: 'castVote',
@@ -163,7 +164,7 @@ export function useFinalizeTx() {
   const { isSuccess, isLoading: isConfirming } = useWaitForTransactionReceipt({ hash });
 
   const finalize = (proposalId: number) => {
-    writeContract({
+    writeContract({ chainId: 133,
       address: ZK_VOTING_ADDRESS,
       abi: ZK_VOTING_ABI,
       functionName: 'finalizeProposal',

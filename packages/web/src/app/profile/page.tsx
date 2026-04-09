@@ -21,7 +21,7 @@ export default function ProfilePage() {
   const { user } = useAuth();
   const { identity, commitment, createIdentity, isCreating, hasIdentity } = useSemaphoreIdentity();
   const { data: voterData } = useIsVoter(address as `0x${string}`);
-  const { register, isPending: isRegistering, isSuccess: regSuccess, hash: regHash } = useRegister();
+  const { register, isPending: isRegistering, isSuccess: regSuccess, hash: regHash, error: regError } = useRegister();
 
   const isRegistered = !!(voterData as any)?.[0];
   const onChainCommitment = (voterData as any)?.[1]?.toString();
@@ -89,6 +89,7 @@ export default function ProfilePage() {
               </a>
             )}
             {regSuccess && <p className="text-xs text-emerald-400"><CheckCircle2 size={12} className="inline mr-1" />Registered!</p>}
+            {regError && <p className="text-xs text-rose-400 break-all">{(regError as any)?.shortMessage || (regError as any)?.message || 'Registration failed'}</p>}
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
