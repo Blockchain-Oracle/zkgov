@@ -83,7 +83,7 @@ export default function NewProposalPage() {
             Connect your wallet and sign in to create governance proposals.
           </p>
         </div>
-        <Link href="/register">
+        <Link href="/profile">
           <Button className="bg-indigo-500 text-zinc-900 dark:text-white hover:bg-indigo-600 text-[11px] font-bold uppercase tracking-widest px-8">
             Register
           </Button>

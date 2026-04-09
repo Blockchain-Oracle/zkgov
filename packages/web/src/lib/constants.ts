@@ -13,7 +13,7 @@ export const NAVIGATION_ITEMS = [
   { label: "PROPOSALS", href: "/proposals" },
   { label: "ACTIVITY", href: "/activity" },
   { label: "AGENTS", href: "/agents" },
-  { label: "REGISTER", href: "/register" },
+  { label: "PROFILE", href: "/profile" },
 ];
 
 export const STATS_LABELS = {

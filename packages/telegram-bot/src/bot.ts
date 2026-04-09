@@ -1,8 +1,8 @@
 import { Bot, InlineKeyboard } from "grammy"
 
 const API_URL = process.env.API_URL || "http://localhost:3001"
-const MINI_APP_URL = process.env.MINI_APP_URL || "https://zkgov.xyz/telegram"
-const WEB_URL = process.env.WEB_URL || "https://zkgov.xyz"
+const MINI_APP_URL = process.env.MINI_APP_URL || "http://localhost:3000/tg"
+const WEB_URL = process.env.WEB_URL || "http://localhost:3000"
 
 export function createBot(token: string) {
   const bot = new Bot(token)
