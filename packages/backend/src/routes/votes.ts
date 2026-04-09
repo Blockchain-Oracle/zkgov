@@ -1,7 +1,7 @@
 import type { FastifyInstance } from "fastify"
 import { db } from "../db/index.js"
-import { votes, proposals } from "../db/schema.js"
-import { eq } from "drizzle-orm"
+import { votes, proposals, voteRecords } from "../db/schema.js"
+import { eq, and } from "drizzle-orm"
 import { generateVoteProof } from "../services/semaphore.js"
 import { submitVote } from "../services/relayer.js"
 import { broadcastToProposal } from "./sse.js"
@@ -25,6 +25,27 @@ import type { VoteChoice } from "@zkgov/shared"
  * but the ON-CHAIN tally is the source of truth for governance outcomes.
  */
 export async function voteRoutes(app: FastifyInstance) {
+  // GET /votes/check/:proposalId — has the current user already voted?
+  app.get<{ Params: { proposalId: string } }>(
+    "/votes/check/:proposalId",
+    { preHandler: [(app as any).authenticate] },
+    async (request) => {
+      const user = (request as any).user
+      const agent = (request as any).agent
+      const commitment = agent ? agent.identityCommitment : user.identityCommitment
+      const proposalId = parseInt(request.params.proposalId)
+
+      const record = await db.query.voteRecords.findFirst({
+        where: and(
+          eq(voteRecords.identityCommitment, commitment),
+          eq(voteRecords.proposalId, proposalId)
+        ),
+      })
+
+      return { hasVoted: !!record, proposalId }
+    }
+  )
+
   // POST /votes — cast an anonymous vote
   app.post<{
     Body: { proposalId: number; choice: VoteChoice }
@@ -52,6 +73,18 @@ export async function voteRoutes(app: FastifyInstance) {
 
     if (proposal.status !== "active") {
       return reply.status(400).send({ error: "Proposal is not active" })
+    }
+
+    // Check if user has already voted (works across all platforms)
+    const commitment = agent ? agent.identityCommitment : user.identityCommitment
+    const existingVote = await db.query.voteRecords.findFirst({
+      where: and(
+        eq(voteRecords.identityCommitment, commitment),
+        eq(voteRecords.proposalId, proposalId)
+      ),
+    })
+    if (existingVote) {
+      return reply.status(409).send({ error: "You have already voted on this proposal." })
     }
 
     const now = new Date()
@@ -118,6 +151,12 @@ export async function voteRoutes(app: FastifyInstance) {
         txHash,
         txStatus: txHash ? "submitted" : "proof-only",
         submittedVia: platform,
+      })
+
+      // Record that this identity has voted on this proposal (for cross-platform check)
+      await db.insert(voteRecords).values({
+        identityCommitment: commitment,
+        proposalId,
       })
 
       // Broadcast real-time update

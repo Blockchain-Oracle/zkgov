@@ -126,6 +126,20 @@ export const votes = pgTable("votes", {
 })
 
 /**
+ * Vote Records — tracks which identity commitments have voted on which proposals.
+ * This is NOT the same as the votes table (which is anonymous).
+ * The identity commitment is public (it's on-chain in the Semaphore group).
+ * This just prevents showing vote buttons to users who already voted,
+ * regardless of which platform they voted from (web, Telegram, Discord, API).
+ */
+export const voteRecords = pgTable("vote_records", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  identityCommitment: text("identity_commitment").notNull(),
+  proposalId: integer("proposal_id").references(() => proposals.id).notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+})
+
+/**
  * Comments — off-chain discussion layer (not governance-critical).
  * Supports threaded replies via parentId. Agent comments are
  * marked as "analysis" type and displayed differently in the UI.
