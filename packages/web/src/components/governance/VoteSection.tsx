@@ -10,6 +10,7 @@ import { useIsVoter, useRegister, useCastVoteTx } from '@/hooks/useZKVoting';
 import { EXPLORER_URL, SEMAPHORE_ADDRESS } from '@/lib/contracts';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { cn } from '@/lib/utils';
 import { Shield, CheckCircle2, Loader2, AlertCircle, ExternalLink } from 'lucide-react';
 import type { Proposal } from '@zkgov/shared';
 import { HASHKEY_TESTNET, DEPLOYMENT_BLOCK } from '@zkgov/shared';
@@ -33,6 +34,25 @@ export function VoteSection({ proposal, onVoteSuccess }: VoteSectionProps) {
 
   const isRegistered = !!(voterData as any)?.[0];
 
+  // localStorage key per (address, proposalId) so state survives refresh
+  const votedKey = address ? `zkgov:voted:${address.toLowerCase()}:${proposal.id}` : null;
+
+  // Hydrate from localStorage on mount
+  useEffect(() => {
+    if (votedKey && typeof window !== 'undefined') {
+      if (localStorage.getItem(votedKey) === '1') {
+        setHasVoted(true);
+      }
+    }
+  }, [votedKey]);
+
+  // Persist vote state to localStorage whenever it flips true
+  useEffect(() => {
+    if (hasVoted && votedKey) {
+      localStorage.setItem(votedKey, '1');
+    }
+  }, [hasVoted, votedKey]);
+
   // Detect vote success or "already voted" error
   useEffect(() => {
     if (voteSuccess) setHasVoted(true);
@@ -46,6 +66,83 @@ export function VoteSection({ proposal, onVoteSuccess }: VoteSectionProps) {
       }
     }
   }, [voteError]);
+
+  // Check if voting has ended (time window closed OR finalized)
+  const votingEnded = proposal.finalized || !proposal.isActive || (proposal.votingEnd && proposal.votingEnd < Date.now());
+
+  // 0. Voting has ended — show final state, no vote UI
+  if (votingEnded) {
+    const totalVotes = proposal.votesFor + proposal.votesAgainst + proposal.votesAbstain;
+    const maxVotes = Math.max(proposal.votesFor, proposal.votesAgainst, proposal.votesAbstain, 1);
+    const quorumReached = totalVotes >= proposal.quorum;
+    const winning = proposal.votesFor > proposal.votesAgainst && quorumReached;
+
+    let statusLabel = 'VOTING ENDED';
+    let statusColor = 'text-zinc-400';
+    let statusBg = 'bg-zinc-500/10 border-zinc-500/30';
+
+    if (proposal.finalized) {
+      if (proposal.passed) {
+        statusLabel = 'PROPOSAL PASSED';
+        statusColor = 'text-emerald-400';
+        statusBg = 'bg-emerald-500/10 border-emerald-500/30';
+      } else {
+        statusLabel = 'PROPOSAL DEFEATED';
+        statusColor = 'text-rose-400';
+        statusBg = 'bg-rose-500/10 border-rose-500/30';
+      }
+    } else {
+      statusLabel = quorumReached
+        ? (winning ? 'PASSING — AWAITING FINALIZATION' : 'ENDED — AWAITING FINALIZATION')
+        : 'ENDED — QUORUM NOT REACHED';
+    }
+
+    return (
+      <Card className={cn("p-6 bg-[#EBE8E1] dark:bg-[#111] border flex flex-col gap-5", statusBg)}>
+        <div className="flex items-center gap-2">
+          <div className={cn("w-2 h-2 rounded-full", proposal.finalized ? (proposal.passed ? 'bg-emerald-400' : 'bg-rose-400') : 'bg-zinc-400')}></div>
+          <h3 className={cn("text-[10px] font-bold tracking-[0.2em] uppercase", statusColor)}>{statusLabel}</h3>
+        </div>
+
+        <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-1.5">
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest">For</span>
+              <span className="text-xs font-mono text-zinc-400">{proposal.votesFor}</span>
+            </div>
+            <div className="h-1.5 bg-black/10 dark:bg-white/5 rounded-sm overflow-hidden">
+              <div className="h-full bg-emerald-500/70" style={{ width: `${(proposal.votesFor / maxVotes) * 100}%` }}></div>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-1.5">
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-bold text-rose-400 uppercase tracking-widest">Against</span>
+              <span className="text-xs font-mono text-zinc-400">{proposal.votesAgainst}</span>
+            </div>
+            <div className="h-1.5 bg-black/10 dark:bg-white/5 rounded-sm overflow-hidden">
+              <div className="h-full bg-rose-500/70" style={{ width: `${(proposal.votesAgainst / maxVotes) * 100}%` }}></div>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-1.5">
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Abstain</span>
+              <span className="text-xs font-mono text-zinc-400">{proposal.votesAbstain}</span>
+            </div>
+            <div className="h-1.5 bg-black/10 dark:bg-white/5 rounded-sm overflow-hidden">
+              <div className="h-full bg-zinc-500/70" style={{ width: `${(proposal.votesAbstain / maxVotes) * 100}%` }}></div>
+            </div>
+          </div>
+        </div>
+
+        <div className="pt-3 border-t border-black/[0.06] dark:border-white/[0.06] flex items-center justify-between">
+          <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Quorum</span>
+          <span className="text-[10px] font-mono text-zinc-400">{totalVotes} / {proposal.quorum} {quorumReached ? '✓' : '—'}</span>
+        </div>
+      </Card>
+    );
+  }
 
   // 1. Not connected
   if (!isConnected) {

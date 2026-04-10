@@ -12,6 +12,7 @@ export const NAVIGATION_ITEMS = [
   { label: "DASHBOARD", href: "/" },
   { label: "PROPOSALS", href: "/proposals" },
   { label: "ACTIVITY", href: "/activity" },
+  { label: "DOCS", href: "/docs" },
   { label: "PROFILE", href: "/profile" },
 ];
 

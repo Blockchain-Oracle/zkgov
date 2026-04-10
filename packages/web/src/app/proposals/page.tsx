@@ -77,7 +77,7 @@ export default function ProposalsPage() {
             className="w-full bg-[#EBE8E1] dark:bg-[#111] border-black/[0.06] dark:border-white/[0.06] rounded-sm py-2.5 pl-10 pr-4 text-[11px] font-medium tracking-wider" />
         </div>
         <div className="flex items-center gap-2 bg-[#EBE8E1] dark:bg-[#111] border border-black/[0.06] dark:border-white/[0.06] rounded-sm p-1">
-          {['active', 'succeeded', 'defeated', 'all'].map((f) => (
+          {['active', 'ended', 'succeeded', 'defeated', 'all'].map((f) => (
             <Button key={f} variant="ghost" size="sm" onClick={() => setFilter(f)}
               className={`px-4 py-1.5 text-[10px] font-bold tracking-[0.15em] rounded-sm uppercase ${
                 filter === f ? 'bg-zinc-900 dark:bg-white text-white dark:text-black' : 'text-zinc-500'
