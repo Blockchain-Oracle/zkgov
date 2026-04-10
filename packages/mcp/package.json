@@ -4,14 +4,15 @@
   "private": true,
   "type": "module",
   "bin": {
-    "zkgov-mcp": "./dist/index.js"
+    "zkgov": "./dist/cli.js"
   },
   "scripts": {
     "build": "tsc",
-    "dev": "tsx src/index.ts"
+    "dev": "tsx src/cli.ts"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1",
+    "commander": "^14",
     "viem": "^2",
     "zod": "^3"
   },
