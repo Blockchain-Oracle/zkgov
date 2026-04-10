@@ -57,9 +57,35 @@ export async function statsRoutes(app: FastifyInstance) {
       })
 
       const explorerUrl = "https://testnet-explorer.hsk.xyz"
+      const recentLogs = logs.slice(-20)
 
-      for (const log of logs.slice(-20)) {
+      // Fetch block timestamps in parallel (one call per unique block)
+      const uniqueBlockNumbers = Array.from(
+        new Set(recentLogs.map((l) => l.blockNumber).filter((b): b is bigint => b !== null))
+      )
+      const blockTimestamps = new Map<string, string>()
+      await Promise.all(
+        uniqueBlockNumbers.map(async (blockNumber) => {
+          try {
+            const block = await publicClient.getBlock({ blockNumber })
+            blockTimestamps.set(
+              blockNumber.toString(),
+              new Date(Number(block.timestamp) * 1000).toISOString()
+            )
+          } catch {
+            // fall through — entry will default below
+          }
+        })
+      )
+
+      const getTime = (blockNumber: bigint | null) =>
+        (blockNumber && blockTimestamps.get(blockNumber.toString())) ||
+        new Date().toISOString()
+
+      for (const log of recentLogs) {
         const txHash = log.transactionHash
+        const time = getTime(log.blockNumber)
+
         try {
           const decoded = decodeEventLog({ abi: [proposalCreatedEvent], data: log.data, topics: log.topics })
           onChainActivity.push({
@@ -70,7 +96,7 @@ export async function statsRoutes(app: FastifyInstance) {
             proposalId: Number((decoded.args as any).proposalId),
             txHash,
             explorerUrl: `${explorerUrl}/tx/${txHash}`,
-            time: new Date().toISOString(),
+            time,
           })
           continue
         } catch {}
@@ -86,7 +112,7 @@ export async function statsRoutes(app: FastifyInstance) {
             proposalId: Number((decoded.args as any).proposalId),
             txHash,
             explorerUrl: `${explorerUrl}/tx/${txHash}`,
-            time: new Date().toISOString(),
+            time,
           })
           continue
         } catch {}
@@ -102,7 +128,7 @@ export async function statsRoutes(app: FastifyInstance) {
             proposalId: 0,
             txHash,
             explorerUrl: `${explorerUrl}/tx/${txHash}`,
-            time: new Date().toISOString(),
+            time,
           })
         } catch {}
       }
