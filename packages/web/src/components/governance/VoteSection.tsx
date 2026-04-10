@@ -6,7 +6,7 @@ import { Group, generateProof } from '@semaphore-protocol/core';
 import { SemaphoreEthers } from '@semaphore-protocol/data';
 import { useAuth } from '@/hooks/useAuth';
 import { useSemaphoreIdentity } from '@/hooks/useSemaphoreIdentity';
-import { useIsVoter, useRegister, useCastVoteTx } from '@/hooks/useZKVoting';
+import { useIsVoter, useRegister, useCastVoteTx, useFinalizeTx } from '@/hooks/useZKVoting';
 import { EXPLORER_URL, SEMAPHORE_ADDRESS } from '@/lib/contracts';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
@@ -27,6 +27,7 @@ export function VoteSection({ proposal, onVoteSuccess }: VoteSectionProps) {
   const { data: voterData } = useIsVoter(address as `0x${string}`);
   const { register, isPending: isRegistering, isSuccess: regSuccess, hash: regHash, error: regError } = useRegister();
   const { vote, isPending: isVoting, isConfirming, isSuccess: voteSuccess, hash: voteHash, error: voteError } = useCastVoteTx();
+  const { finalize, isPending: isFinalizing, isConfirming: isFinalizeConfirming, isSuccess: finalizeSuccess, hash: finalizeHash, error: finalizeError } = useFinalizeTx();
 
   const [proofState, setProofState] = useState<'idle' | 'generating'>('idle');
   const [error, setError] = useState<string | null>(null);
@@ -140,6 +141,71 @@ export function VoteSection({ proposal, onVoteSuccess }: VoteSectionProps) {
           <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Quorum</span>
           <span className="text-[10px] font-mono text-zinc-400">{totalVotes} / {proposal.quorum} {quorumReached ? '✓' : '—'}</span>
         </div>
+
+        {/* Finalization panel — only when not yet finalized */}
+        {!proposal.finalized && (
+          <div className="pt-4 border-t border-black/[0.06] dark:border-white/[0.06] flex flex-col gap-3">
+            <div className="flex flex-col gap-1">
+              <h4 className="text-[10px] font-bold tracking-[0.2em] text-zinc-500 uppercase">Next step — Finalize</h4>
+              <p className="text-[11px] text-zinc-500 leading-relaxed">
+                Voting has ended. Anyone can finalize this proposal to lock the result on-chain.
+                This records whether the proposal passed or was defeated.
+              </p>
+            </div>
+
+            {finalizeSuccess ? (
+              <div className="flex flex-col gap-2">
+                <div className="flex items-center gap-2 text-emerald-400">
+                  <CheckCircle2 size={14} />
+                  <span className="text-[11px] font-bold uppercase tracking-widest">Finalized</span>
+                </div>
+                {finalizeHash && (
+                  <a
+                    href={`${EXPLORER_URL}/tx/${finalizeHash}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[10px] text-indigo-400 flex items-center gap-1 hover:underline"
+                  >
+                    View transaction <ExternalLink size={10} />
+                  </a>
+                )}
+                <p className="text-[10px] text-zinc-500">Refresh the page to see the final status.</p>
+              </div>
+            ) : isConnected ? (
+              <>
+                <Button
+                  onClick={() => finalize(proposal.id)}
+                  disabled={isFinalizing || isFinalizeConfirming}
+                  className="w-full bg-indigo-500 hover:bg-indigo-600 text-white text-[11px] font-bold tracking-widest uppercase"
+                >
+                  {isFinalizing || isFinalizeConfirming ? (
+                    <><Loader2 size={14} className="animate-spin mr-2" /> Finalizing...</>
+                  ) : (
+                    'Finalize Proposal'
+                  )}
+                </Button>
+                {finalizeHash && !finalizeSuccess && (
+                  <a
+                    href={`${EXPLORER_URL}/tx/${finalizeHash}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[10px] text-indigo-400 flex items-center gap-1 hover:underline"
+                  >
+                    View transaction <ExternalLink size={10} />
+                  </a>
+                )}
+                {finalizeError && (
+                  <p className="text-[10px] text-rose-400 flex items-start gap-1 break-all">
+                    <AlertCircle size={10} className="shrink-0 mt-0.5" />
+                    {(finalizeError as any)?.shortMessage || (finalizeError as any)?.message || 'Finalization failed'}
+                  </p>
+                )}
+              </>
+            ) : (
+              <p className="text-[10px] text-zinc-500 italic">Connect a wallet to finalize.</p>
+            )}
+          </div>
+        )}
       </Card>
     );
   }
