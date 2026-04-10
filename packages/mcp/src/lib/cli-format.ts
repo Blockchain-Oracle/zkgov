@@ -5,6 +5,7 @@
  * these formatters entirely.
  */
 import type { Stats, Proposal, ProposalSummary, VoterInfo, MembersInfo, ActivityEvent } from "./queries.js";
+import type { WalletInfo, TxResult } from "./writes.js";
 
 // ─── ANSI color helpers ─────────────────────────────────────────
 // Using raw ANSI codes to avoid a chalk dependency
@@ -139,6 +140,52 @@ export function formatActivity(events: ActivityEvent[]): string {
   }
 
   lines.push("");
+  return lines.join("\n");
+}
+
+// ─── Wallet & Tx Formatters ─────────────────────────────────────
+
+export function formatWalletInfo(w: WalletInfo): string {
+  const status = w.registered ? green("✓ Registered") : yellow("○ Not registered");
+  const balance = parseFloat(w.balance);
+  const balanceColor = balance > 0.01 ? green : balance > 0 ? yellow : red;
+  return [
+    "",
+    bold("  ZKGov Wallet"),
+    gray("  " + "─".repeat(60)),
+    `  Address:       ${cyan(w.address)}`,
+    `  Balance:       ${balanceColor(w.balance + " HSK")}`,
+    `  Voter status:  ${status}`,
+    w.commitment ? `  Commitment:    ${dim(w.commitment.slice(0, 24) + "…")}` : "",
+    gray("  " + "─".repeat(60)),
+    `  ${dim("Config:")} ${dim(w.configPath)}`,
+    `  ${dim("Explorer:")} ${dim(w.explorer)}`,
+    "",
+  ].filter(Boolean).join("\n");
+}
+
+export function formatTxResult(label: string, tx: TxResult & { proposalId?: number }): string {
+  const statusLine =
+    tx.status === "success"
+      ? green("  ✓ " + label + " succeeded")
+      : red("  ✗ " + label + " reverted");
+
+  const lines = [
+    "",
+    statusLine,
+    gray("  " + "─".repeat(60)),
+  ];
+
+  if (tx.proposalId !== undefined) {
+    lines.push(`  ${dim("New proposal ID:")} ${bold("#" + tx.proposalId)}`);
+  }
+
+  lines.push(
+    `  ${dim("Tx hash: ")}${cyan(tx.txHash)}`,
+    `  ${dim("Explorer:")} ${dim(tx.explorerUrl)}`,
+    ""
+  );
+
   return lines.join("\n");
 }
 

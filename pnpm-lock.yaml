@@ -22,7 +22,7 @@ importers:
         version: 9.1.0
       '@semaphore-protocol/core':
         specifier: ^4.9.0
-        version: 4.14.2(@types/snarkjs@0.7.9)(commander@14.0.2)
+        version: 4.14.2
       '@semaphore-protocol/data':
         specifier: ^4.9.0
         version: 4.14.2(typescript@5.9.3)(zod@3.25.76)
@@ -80,7 +80,7 @@ importers:
         version: 4.14.2
       '@semaphore-protocol/core':
         specifier: ^4.9.0
-        version: 4.14.2(@types/snarkjs@0.7.9)(commander@14.0.2)
+        version: 4.14.2
       '@semaphore-protocol/data':
         specifier: ^4.9.0
         version: 4.14.2(typescript@5.9.3)(zod@3.25.76)
@@ -142,6 +142,15 @@ importers:
       '@modelcontextprotocol/sdk':
         specifier: ^1
         version: 1.29.0(zod@3.25.76)
+      '@semaphore-protocol/group':
+        specifier: ^4
+        version: 4.14.2
+      '@semaphore-protocol/identity':
+        specifier: ^4
+        version: 4.14.2
+      '@semaphore-protocol/proof':
+        specifier: ^4
+        version: 4.14.2(@semaphore-protocol/group@4.14.2)(@semaphore-protocol/identity@4.14.2)(@types/snarkjs@0.7.9)(commander@14.0.2)
       commander:
         specifier: ^14
         version: 14.0.2
@@ -9041,7 +9050,7 @@ snapshots:
     dependencies:
       '@zk-kit/lean-imt.sol': 2.0.1
 
-  '@semaphore-protocol/core@4.14.2(@types/snarkjs@0.7.9)(commander@14.0.2)':
+  '@semaphore-protocol/core@4.14.2':
     dependencies:
       '@semaphore-protocol/group': 4.14.2
       '@semaphore-protocol/identity': 4.14.2

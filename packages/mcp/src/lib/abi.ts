@@ -1,7 +1,41 @@
 /**
- * ZKVoting contract ABI — view functions only (MCP is read-only).
+ * ZKVoting contract ABI — view + write functions.
  */
 export const ZK_VOTING_ABI = [
+  // Write: registration
+  {
+    name: "register", type: "function", stateMutability: "nonpayable",
+    inputs: [{ name: "identityCommitment", type: "uint256" }], outputs: [],
+  },
+  // Write: create proposal
+  {
+    name: "createProposal", type: "function", stateMutability: "nonpayable",
+    inputs: [
+      { name: "title", type: "string" },
+      { name: "description", type: "string" },
+      { name: "votingPeriod", type: "uint256" },
+      { name: "quorum", type: "uint256" },
+    ],
+    outputs: [{ type: "uint256" }],
+  },
+  // Write: cast vote
+  {
+    name: "castVote", type: "function", stateMutability: "nonpayable",
+    inputs: [
+      { name: "proposalId", type: "uint256" },
+      { name: "merkleTreeDepth", type: "uint256" },
+      { name: "merkleTreeRoot", type: "uint256" },
+      { name: "nullifier", type: "uint256" },
+      { name: "choice", type: "uint256" },
+      { name: "points", type: "uint256[8]" },
+    ],
+    outputs: [],
+  },
+  // Write: finalize
+  {
+    name: "finalizeProposal", type: "function", stateMutability: "nonpayable",
+    inputs: [{ name: "proposalId", type: "uint256" }], outputs: [],
+  },
   {
     name: "getProposalContent", type: "function", stateMutability: "view",
     inputs: [{ name: "proposalId", type: "uint256" }],
