@@ -52,7 +52,7 @@ export function ProposalCard({ proposal }: ProposalCardProps) {
         </div>
 
         {/* Title */}
-        <h3 className="text-lg font-bold tracking-tight text-zinc-900 dark:text-white leading-tight group-hover:text-indigo-100 transition-colors">
+        <h3 className="text-lg font-bold tracking-tight text-zinc-900 dark:text-white leading-tight group-hover:text-indigo-600 dark:group-hover:text-indigo-300 transition-colors">
           {title}
         </h3>
 
