@@ -174,8 +174,8 @@ export default function Home() {
               key={stat.label} 
               className="flex flex-col gap-1 items-center md:items-start"
             >
-              <span className="stat-label uppercase tracking-widest text-zinc-600 font-bold">{stat.label}</span>
-              <span className="stat-value font-bold text-4xl tracking-tight tabular-nums">{stat.value}</span>
+              <span className="stat-label uppercase tracking-widest text-zinc-800 dark:text-zinc-200">{stat.label}</span>
+              <span className="stat-value font-bold text-4xl tracking-tight tabular-nums text-zinc-900 dark:text-white">{stat.value}</span>
             </motion.div>
           ))}
         </div>
