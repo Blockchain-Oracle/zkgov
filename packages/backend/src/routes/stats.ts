@@ -44,11 +44,15 @@ export async function statsRoutes(app: FastifyInstance) {
     // Parse on-chain events
     let onChainActivity: any[] = []
     try {
-      const { parseAbiItem, decodeEventLog } = await import("viem")
+      const { parseAbi, decodeEventLog } = await import("viem")
 
-      const proposalCreatedEvent = parseAbiItem('event ProposalCreated(uint256 indexed proposalId, address indexed creator, string title, uint256 votingEnd)')
-      const voteCastEvent = parseAbiItem('event VoteCast(uint256 indexed proposalId, uint256 nullifier, uint8 choice)')
-      const memberRegisteredEvent = parseAbiItem('event MemberRegistered(address indexed member, uint256 commitment)')
+      // Full event ABI — viem dispatches to the right event by topic[0]
+      const EVENTS_ABI = parseAbi([
+        'event ProposalCreated(uint256 indexed proposalId, address indexed creator, string title, uint256 votingEnd)',
+        'event VoteCast(uint256 indexed proposalId, uint256 nullifier, uint8 choice)',
+        'event MemberRegistered(address indexed member, uint256 commitment)',
+        'event ProposalFinalized(uint256 indexed proposalId, bool passed, uint256 votesFor, uint256 votesAgainst)',
+      ])
 
       const logs = await publicClient.getLogs({
         address: env.ZK_VOTING_ADDRESS,
@@ -57,7 +61,7 @@ export async function statsRoutes(app: FastifyInstance) {
       })
 
       const explorerUrl = "https://testnet-explorer.hsk.xyz"
-      const recentLogs = logs.slice(-20)
+      const recentLogs = logs.slice(-30)
 
       // Fetch block timestamps in parallel (one call per unique block)
       const uniqueBlockNumbers = Array.from(
@@ -85,43 +89,51 @@ export async function statsRoutes(app: FastifyInstance) {
       for (const log of recentLogs) {
         const txHash = log.transactionHash
         const time = getTime(log.blockNumber)
+        const logIndex = log.logIndex ?? 0
 
+        let decoded: any
         try {
-          const decoded = decodeEventLog({ abi: [proposalCreatedEvent], data: log.data, topics: log.topics })
+          decoded = decodeEventLog({
+            abi: EVENTS_ABI,
+            data: log.data,
+            topics: log.topics,
+          })
+        } catch {
+          // Unknown event — skip
+          continue
+        }
+
+        const eventName = decoded.eventName
+        const args = decoded.args as any
+        const baseId = `${eventName}-${txHash}-${logIndex}`
+
+        if (eventName === 'ProposalCreated') {
           onChainActivity.push({
-            id: `pc-${txHash}`,
+            id: baseId,
             type: 'proposal',
             platform: 'on-chain',
-            text: `Proposal #${String((decoded.args as any).proposalId).padStart(3, '0')} created: ${(decoded.args as any).title}`,
-            proposalId: Number((decoded.args as any).proposalId),
+            text: `Proposal #${String(args.proposalId).padStart(3, '0')} created: ${args.title}`,
+            proposalId: Number(args.proposalId),
             txHash,
             explorerUrl: `${explorerUrl}/tx/${txHash}`,
             time,
           })
-          continue
-        } catch {}
-
-        try {
-          const decoded = decodeEventLog({ abi: [voteCastEvent], data: log.data, topics: log.topics })
+        } else if (eventName === 'VoteCast') {
           const choices = ['Against', 'For', 'Abstain']
           onChainActivity.push({
-            id: `vc-${txHash}`,
+            id: baseId,
             type: 'vote',
             platform: 'on-chain',
-            text: `Anonymous vote (${choices[(decoded.args as any).choice] || '?'}) on proposal #${String((decoded.args as any).proposalId).padStart(3, '0')}`,
-            proposalId: Number((decoded.args as any).proposalId),
+            text: `Anonymous vote (${choices[Number(args.choice)] || '?'}) on proposal #${String(args.proposalId).padStart(3, '0')}`,
+            proposalId: Number(args.proposalId),
             txHash,
             explorerUrl: `${explorerUrl}/tx/${txHash}`,
             time,
           })
-          continue
-        } catch {}
-
-        try {
-          const decoded = decodeEventLog({ abi: [memberRegisteredEvent], data: log.data, topics: log.topics })
-          const addr = (decoded.args as any).member as string
+        } else if (eventName === 'MemberRegistered') {
+          const addr = args.member as string
           onChainActivity.push({
-            id: `mr-${txHash}`,
+            id: baseId,
             type: 'registration',
             platform: 'on-chain',
             text: `New voter registered: ${addr.slice(0, 6)}...${addr.slice(-4)}`,
@@ -130,7 +142,19 @@ export async function statsRoutes(app: FastifyInstance) {
             explorerUrl: `${explorerUrl}/tx/${txHash}`,
             time,
           })
-        } catch {}
+        } else if (eventName === 'ProposalFinalized') {
+          const outcome = args.passed ? 'PASSED' : 'DEFEATED'
+          onChainActivity.push({
+            id: baseId,
+            type: 'finalization',
+            platform: 'on-chain',
+            text: `Proposal #${String(args.proposalId).padStart(3, '0')} finalized — ${outcome} (${args.votesFor} for / ${args.votesAgainst} against)`,
+            proposalId: Number(args.proposalId),
+            txHash,
+            explorerUrl: `${explorerUrl}/tx/${txHash}`,
+            time,
+          })
+        }
       }
     } catch {
       // RPC might be down

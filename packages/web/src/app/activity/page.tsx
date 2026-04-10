@@ -20,7 +20,7 @@ import {
 
 interface ActivityItem {
   id: string;
-  type: 'vote' | 'proposal' | 'comment' | 'registration' | 'tally';
+  type: 'vote' | 'proposal' | 'comment' | 'registration' | 'finalization' | 'tally';
   platform: 'web' | 'on-chain' | 'telegram' | 'api';
   text: string;
   time: string;
@@ -116,6 +116,7 @@ export default function ActivityPage() {
       case 'proposal': return <PlusCircle size={16} />;
       case 'comment': return <MessageSquare size={16} />;
       case 'registration': return <UserPlus size={16} />;
+      case 'finalization': return <BarChart3 size={16} />;
       case 'tally': return <BarChart3 size={16} />;
       default: return <Globe size={16} />;
     }
@@ -127,6 +128,7 @@ export default function ActivityPage() {
       case 'proposal': return 'bg-indigo-500/10 text-indigo-400';
       case 'comment': return 'bg-amber-500/10 text-amber-400';
       case 'registration': return 'bg-cyan-500/10 text-cyan-400';
+      case 'finalization': return 'bg-purple-500/10 text-purple-400';
       case 'tally': return 'bg-purple-500/10 text-purple-400';
       default: return 'bg-zinc-500/10 text-zinc-400';
     }
