@@ -44,9 +44,10 @@ export function CodeBlock({ code, language = 'bash', filename, className }: Code
         </div>
       </div>
 
-      {/* Code body */}
+      {/* Code body — dark bg in both modes, so we use a neutral class
+          that our light-mode overrides don't touch */}
       <pre className="p-4 overflow-x-auto text-xs leading-relaxed">
-        <code className="font-mono text-zinc-300 whitespace-pre">{code}</code>
+        <code className="font-mono text-neutral-200 whitespace-pre">{code}</code>
       </pre>
     </div>
   );
