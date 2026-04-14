@@ -58,7 +58,7 @@ export default function ActivityPage() {
   useEffect(() => {
     // Setup SSE for real-time updates on top of historical data
     const eventSource = new EventSource(`${API_URL}/api/sse/feed`);
-    
+
     eventSource.addEventListener('vote_cast', (event) => {
       if (!autoUpdate) return;
       const data = JSON.parse(event.data);
@@ -174,26 +174,28 @@ export default function ActivityPage() {
           </div>
         </div>
 
-        <div className="flex items-center gap-2 bg-[#EBE8E1] dark:bg-[#111] border border-black/[0.06] dark:border-white/[0.06] rounded-sm p-1">
-          {['ALL ACTIVITY', 'VOTES', 'PROPOSALS', 'REGISTRATIONS', 'COMMENTS'].map((f) => (
-            <Button
-              key={f}
-              variant="ghost"
-              onClick={() => setTypeFilter(f)}
-              className={cn(
-                "px-4 py-1.5 text-[10px] font-bold tracking-[0.15em] rounded-sm transition-all uppercase whitespace-nowrap",
-                typeFilter === f ? 'bg-zinc-900 dark:bg-white text-white dark:text-black' : 'text-zinc-500 hover:text-zinc-900 dark:hover:text-white'
-              )}
-            >
-              {f}
-            </Button>
-          ))}
+        <div className="w-full md:w-auto overflow-x-auto [&::-webkit-scrollbar]:hidden">
+          <div className="flex items-center gap-2 min-w-max bg-[#EBE8E1] dark:bg-[#111] border border-black/[0.06] dark:border-white/[0.06] rounded-sm p-1">
+            {['ALL ACTIVITY', 'VOTES', 'PROPOSALS', 'REGISTRATIONS', 'COMMENTS'].map((f) => (
+              <Button
+                key={f}
+                variant="ghost"
+                onClick={() => setTypeFilter(f)}
+                className={cn(
+                  "px-4 py-1.5 text-[10px] font-bold tracking-[0.15em] rounded-sm transition-all uppercase whitespace-nowrap",
+                  typeFilter === f ? 'bg-zinc-900 dark:bg-white text-white dark:text-black' : 'text-zinc-500 hover:text-zinc-900 dark:hover:text-white'
+                )}
+              >
+                {f}
+              </Button>
+            ))}
+          </div>
         </div>
       </div>
 
       <div className="flex flex-col border border-black/[0.06] dark:border-white/[0.06] rounded-sm overflow-hidden bg-[#EBE8E1] dark:bg-[#0c0c0c]">
-        {/* Table Header */}
-        <div className="grid grid-cols-12 gap-4 px-6 py-4 border-b border-black/[0.06] dark:border-white/[0.06] bg-[#EBE8E1] dark:bg-[#111]">
+        {/* Table Header — desktop only */}
+        <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-4 border-b border-black/[0.06] dark:border-white/[0.06] bg-[#EBE8E1] dark:bg-[#111]">
           <div className="col-span-1 text-[10px] font-bold tracking-widest text-zinc-600 uppercase">TYPE</div>
           <div className="col-span-5 text-[10px] font-bold tracking-widest text-zinc-600 uppercase">EVENT</div>
           <div className="col-span-2 text-[10px] font-bold tracking-widest text-zinc-600 uppercase">TX HASH</div>
@@ -207,69 +209,132 @@ export default function ActivityPage() {
             <div
               key={activity.id}
               className={cn(
-                "grid grid-cols-12 gap-4 px-6 py-5 border-b border-black/[0.04] dark:border-white/[0.04] items-center animate-in",
+                "border-b border-black/[0.04] dark:border-white/[0.04] animate-in",
                 idx % 2 === 0 ? "bg-transparent" : "bg-white/[0.01]"
               )}
               style={{ animationDelay: `${idx * 0.05}s` }}
             >
-              <div className="col-span-1">
-                <div className={cn("w-9 h-9 rounded-sm flex items-center justify-center", getTypeColor(activity.type))}>
-                  {getTypeIcon(activity.type)}
+              {/* Desktop: grid layout */}
+              <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-5 items-center">
+                <div className="col-span-1">
+                  <div className={cn("w-9 h-9 rounded-sm flex items-center justify-center", getTypeColor(activity.type))}>
+                    {getTypeIcon(activity.type)}
+                  </div>
                 </div>
-              </div>
 
-              <div className="col-span-5 flex flex-col gap-1">
-                {activity.proposalId ? (
-                  <Link href={`/proposals/${activity.proposalId}`} className="hover:underline">
+                <div className="col-span-5 flex flex-col gap-1">
+                  {activity.proposalId ? (
+                    <Link href={`/proposals/${activity.proposalId}`} className="hover:underline">
+                      <p className="text-sm font-medium tracking-tight text-zinc-800 dark:text-zinc-300 leading-none">
+                        {activity.text}
+                      </p>
+                    </Link>
+                  ) : (
                     <p className="text-sm font-medium tracking-tight text-zinc-800 dark:text-zinc-300 leading-none">
                       {activity.text}
                     </p>
-                  </Link>
-                ) : (
-                  <p className="text-sm font-medium tracking-tight text-zinc-800 dark:text-zinc-300 leading-none">
-                    {activity.text}
-                  </p>
-                )}
-                <span className={cn(
-                  "text-[9px] font-bold uppercase tracking-widest w-fit",
-                  getTypeColor(activity.type).split(' ')[1]
-                )}>
-                  {activity.type}
-                </span>
-              </div>
+                  )}
+                  <span className={cn(
+                    "text-[9px] font-bold uppercase tracking-widest w-fit",
+                    getTypeColor(activity.type).split(' ')[1]
+                  )}>
+                    {activity.type}
+                  </span>
+                </div>
 
-              <div className="col-span-2">
-                {activity.txHash && activity.explorerUrl ? (
-                  <a
-                    href={activity.explorerUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-1.5 text-[11px] font-mono text-indigo-400 hover:text-indigo-300 hover:underline transition-colors"
-                    onClick={e => e.stopPropagation()}
-                  >
-                    {activity.txHash.slice(0, 6)}...{activity.txHash.slice(-4)}
-                    <ExternalLink size={10} />
-                  </a>
-                ) : (
-                  <span className="text-[10px] text-zinc-600">—</span>
-                )}
-              </div>
+                <div className="col-span-2">
+                  {activity.txHash && activity.explorerUrl ? (
+                    <a
+                      href={activity.explorerUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1.5 text-[11px] font-mono text-indigo-400 hover:text-indigo-300 hover:underline transition-colors"
+                      onClick={e => e.stopPropagation()}
+                    >
+                      {activity.txHash.slice(0, 6)}...{activity.txHash.slice(-4)}
+                      <ExternalLink size={10} />
+                    </a>
+                  ) : (
+                    <span className="text-[10px] text-zinc-600">—</span>
+                  )}
+                </div>
 
-              <div className="col-span-2">
-                <div className="flex items-center gap-2.5">
-                  <div className="p-1.5 bg-white/[0.04] rounded-sm">
-                    {getPlatformIcon(activity.platform)}
+                <div className="col-span-2">
+                  <div className="flex items-center gap-2.5">
+                    <div className="p-1.5 bg-white/[0.04] rounded-sm">
+                      {getPlatformIcon(activity.platform)}
+                    </div>
+                    <span className="text-[10px] font-bold tracking-widest text-zinc-400 uppercase">
+                      {activity.platform}
+                    </span>
                   </div>
-                  <span className="text-[10px] font-bold tracking-widest text-zinc-400 uppercase">
-                    {activity.platform}
+                </div>
+
+                <div className="col-span-2 text-right">
+                  <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-tight">
+                    {activity.time}
                   </span>
                 </div>
               </div>
 
-              <div className="col-span-2 text-right">
-                <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-tight">
-                  {activity.time}
-                </span>
+              {/* Mobile: stacked card layout */}
+              <div className="md:hidden px-4 py-4 flex flex-col gap-2">
+                {/* Row 1: type icon + event text */}
+                <div className="flex items-start gap-3">
+                  <div className={cn("w-8 h-8 rounded-sm flex-shrink-0 flex items-center justify-center", getTypeColor(activity.type))}>
+                    {getTypeIcon(activity.type)}
+                  </div>
+                  <div className="flex flex-col gap-0.5 flex-1 min-w-0">
+                    {activity.proposalId ? (
+                      <Link href={`/proposals/${activity.proposalId}`} className="hover:underline">
+                        <p className="text-sm font-medium tracking-tight text-zinc-800 dark:text-zinc-300 leading-snug">
+                          {activity.text}
+                        </p>
+                      </Link>
+                    ) : (
+                      <p className="text-sm font-medium tracking-tight text-zinc-800 dark:text-zinc-300 leading-snug">
+                        {activity.text}
+                      </p>
+                    )}
+                    <span className={cn(
+                      "text-[9px] font-bold uppercase tracking-widest w-fit",
+                      getTypeColor(activity.type).split(' ')[1]
+                    )}>
+                      {activity.type}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Row 2: platform + time */}
+                <div className="flex items-center justify-between pl-11">
+                  <div className="flex items-center gap-2">
+                    <div className="p-1.5 bg-white/[0.04] rounded-sm">
+                      {getPlatformIcon(activity.platform)}
+                    </div>
+                    <span className="text-[10px] font-bold tracking-widest text-zinc-400 uppercase">
+                      {activity.platform}
+                    </span>
+                  </div>
+                  <span className="text-[10px] font-mono text-zinc-500 uppercase tracking-tight">
+                    {activity.time}
+                  </span>
+                </div>
+
+                {/* Row 3: tx hash (only if present) */}
+                {activity.txHash && activity.explorerUrl && (
+                  <div className="pl-11">
+                    <a
+                      href={activity.explorerUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1.5 text-[11px] font-mono text-indigo-400 hover:text-indigo-300 hover:underline transition-colors"
+                      onClick={e => e.stopPropagation()}
+                    >
+                      {activity.txHash.slice(0, 6)}...{activity.txHash.slice(-4)}
+                      <ExternalLink size={10} />
+                    </a>
+                  </div>
+                )}
               </div>
             </div>
           ))}
@@ -301,7 +366,7 @@ export default function ActivityPage() {
       <div className="flex flex-col gap-4 p-8 border border-black/[0.06] dark:border-white/[0.06] rounded-sm bg-[#EBE8E1] dark:bg-[#111] animate-in delay-2">
         <h3 className="text-xs font-bold tracking-[0.2em] text-zinc-500 uppercase">Audit Principle</h3>
         <p className="text-sm text-zinc-400 leading-relaxed max-w-2xl font-mono">
-          All actions in the ZKGov layer are verified on-chain. While identity is private, the mathematical proof of eligibility and the result of every vote is public and immutable. 
+          All actions in the ZKGov layer are verified on-chain. While identity is private, the mathematical proof of eligibility and the result of every vote is public and immutable.
           This transparency ensures the integrity of the agent era.
         </p>
       </div>

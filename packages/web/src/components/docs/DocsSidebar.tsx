@@ -4,13 +4,24 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { DOCS_NAVIGATION } from '@/lib/docs';
 import { cn } from '@/lib/utils';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export function DocsSidebar() {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
+
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [mobileOpen]);
 
   const content = (
     <nav className="flex flex-col gap-8">
@@ -58,7 +69,7 @@ export function DocsSidebar() {
         variant="outline"
         size="icon"
         onClick={() => setMobileOpen(!mobileOpen)}
-        className="md:hidden fixed bottom-6 right-6 z-40 w-11 h-11 rounded-full bg-indigo-500 border-indigo-600 text-white hover:bg-indigo-600 shadow-lg"
+        className="md:hidden fixed bottom-6 right-6 z-[45] w-11 h-11 rounded-full bg-indigo-500 border-indigo-600 text-white hover:bg-indigo-600 shadow-lg"
         aria-label="Toggle docs menu"
       >
         {mobileOpen ? <X size={18} /> : <Menu size={18} />}
@@ -66,7 +77,7 @@ export function DocsSidebar() {
 
       {/* Mobile drawer */}
       {mobileOpen && (
-        <div className="md:hidden fixed inset-0 z-30 bg-black/70 backdrop-blur-sm" onClick={() => setMobileOpen(false)}>
+        <div className="md:hidden fixed inset-x-0 top-16 bottom-0 z-40 bg-black/70 backdrop-blur-sm" onClick={() => setMobileOpen(false)}>
           <div
             className="absolute left-0 top-0 bottom-0 w-72 bg-[#F5F2EB] dark:bg-[#0a0a0a] border-r border-black/[0.06] dark:border-white/[0.06] p-6 overflow-y-auto"
             onClick={(e) => e.stopPropagation()}

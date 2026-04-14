@@ -53,7 +53,7 @@ export default function ProposalsPage() {
       </div>
 
       {/* Stats */}
-      <div className="w-full border-y border-black/[0.04] dark:border-white/[0.04] py-8 grid grid-cols-3 gap-12">
+      <div className="w-full border-y border-black/[0.04] dark:border-white/[0.04] py-8 grid grid-cols-3 gap-4 md:gap-12">
         <div className="flex flex-col gap-1">
           <span className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest">Total</span>
           <span className="text-2xl font-bold tracking-tight">{proposals.length}</span>
@@ -76,7 +76,8 @@ export default function ProposalsPage() {
             placeholder="SEARCH PROPOSALS..."
             className="w-full bg-[#EBE8E1] dark:bg-[#111] border-black/[0.06] dark:border-white/[0.06] rounded-sm py-2.5 pl-10 pr-4 text-[11px] font-medium tracking-wider" />
         </div>
-        <div className="flex items-center gap-2 bg-[#EBE8E1] dark:bg-[#111] border border-black/[0.06] dark:border-white/[0.06] rounded-sm p-1">
+        <div className="w-full md:w-auto overflow-x-auto [&::-webkit-scrollbar]:hidden">
+          <div className="flex items-center gap-2 min-w-max bg-[#EBE8E1] dark:bg-[#111] border border-black/[0.06] dark:border-white/[0.06] rounded-sm p-1">
           {['active', 'ended', 'succeeded', 'defeated', 'all'].map((f) => (
             <Button key={f} variant="ghost" size="sm" onClick={() => setFilter(f)}
               className={`px-4 py-1.5 text-[10px] font-bold tracking-[0.15em] rounded-sm uppercase ${
@@ -85,6 +86,7 @@ export default function ProposalsPage() {
               {f}
             </Button>
           ))}
+          </div>
         </div>
       </div>
 
