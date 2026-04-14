@@ -1,0 +1,58 @@
+# ZKGov monorepo — Nixpacks build config for Coolify / Railway / Render
+#
+# One config, four deployable services. Set APP_NAME per Coolify service
+# so each deploy builds and runs the right workspace:
+#
+#   backend      → APP_NAME=@zkgov/backend       (Fastify API + relayer, port $PORT)
+#   web          → APP_NAME=web                  (Next.js 15 frontend)
+#   telegram-bot → APP_NAME=@zkgov/telegram-bot  (grammY bot, webhook mode)
+#   discord-bot  → APP_NAME=@zkgov/discord-bot   (discord.js bot)
+#
+# NOT deployed here (published to npm instead):
+#   @zkgov/cli, @zkgov/mcp
+#
+# IMPORTANT: In Coolify, set "Base Directory" to / (repo root), NOT
+# packages/<name>. Nixpacks needs to see the workspace root so pnpm
+# can resolve the full monorepo graph. APP_NAME picks the target.
+
+# ── Install phase ────────────────────────────────────────────────
+# onlyIncludeFiles limits cache busting: nixpacks only rebuilds the
+# install layer when a manifest or lockfile changes — not on source
+# edits, README changes, or skill file updates. Keeps rebuilds fast.
+#
+# List every workspace member that has a package.json on disk.
+# packages/skills/ contains SKILL.md assets only (no package.json)
+# so it is intentionally omitted — adding a phantom path causes
+# Docker COPY to fail before the build phase even runs.
+[phases.install]
+cmds = ["NODE_ENV=development pnpm install --frozen-lockfile"]
+cacheDirectories = [".pnpm-store"]
+onlyIncludeFiles = [
+  "package.json",
+  "pnpm-lock.yaml",
+  "pnpm-workspace.yaml",
+  "packages/backend/package.json",
+  "packages/web/package.json",
+  "packages/telegram-bot/package.json",
+  "packages/discord-bot/package.json",
+  "packages/shared/package.json",
+  "packages/cli/package.json",
+  "packages/mcp/package.json",
+  "packages/contracts/package.json"
+]
+
+# ── Build phase ──────────────────────────────────────────────────
+# Builds only the target workspace. shared is a type-only package
+# (no emit), so it doesn't need a separate build step — TypeScript
+# resolves it via paths at build time in each consumer package.
+[phases.build]
+dependsOn = ["install"]
+cmds = ["pnpm --filter ${APP_NAME:-@zkgov/backend} build"]
+
+# ── Start ────────────────────────────────────────────────────────
+# backend      → node dist/index.js  (Fastify respects $PORT, defaults 3000)
+# web          → next start -p $PORT (Next.js respects $PORT)
+# telegram-bot → node dist/index.js  (grammY webhook, needs WEBHOOK_URL set)
+# discord-bot  → node dist/index.js  (discord.js gateway connection)
+[start]
+cmd = "pnpm --filter ${APP_NAME:-@zkgov/backend} start"
