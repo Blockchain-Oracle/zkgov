@@ -51,7 +51,11 @@ function output(data: unknown, pretty: string, opts: { json?: boolean }) {
 
 function fatal(e: unknown): never {
   const msg = e instanceof Error ? e.message : String(e);
-  process.stderr.write(`\x1b[31mError:\x1b[0m ${msg}\n`);
+  if (program.opts().json) {
+    process.stdout.write(JSON.stringify({ error: msg }) + "\n");
+  } else {
+    process.stderr.write(`\x1b[31mError:\x1b[0m ${msg}\n`);
+  }
   process.exit(1);
 }
 
