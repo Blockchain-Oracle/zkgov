@@ -4,6 +4,7 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
+    "prestart": "lsof -ti:3000,3001 | xargs kill -9 2>/dev/null || true",
     "start": "turbo run start",
     "lint": "turbo run lint",
     "clean": "turbo run clean",
