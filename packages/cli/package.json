@@ -1,11 +1,11 @@
 {
   "name": "@zkgov/cli",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "ZKGov CLI — anonymous governance on HashKey Chain with zero-knowledge proofs",
   "type": "module",
   "license": "MIT",
   "bin": {
-    "zkgov": "./dist/cli.js"
+    "zkgov": "dist/cli.js"
   },
   "main": "./dist/server.js",
   "types": "./dist/server.d.ts",
