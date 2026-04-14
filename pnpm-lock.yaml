@@ -202,6 +202,9 @@ importers:
         specifier: ^1
         version: 1.41.1
     devDependencies:
+      '@types/node':
+        specifier: ^22
+        version: 22.19.15
       tsx:
         specifier: ^4
         version: 4.21.0
@@ -9866,7 +9869,7 @@ snapshots:
 
   '@types/mute-stream@0.0.4':
     dependencies:
-      '@types/node': 20.19.37
+      '@types/node': 22.19.15
 
   '@types/node@20.19.37':
     dependencies:
@@ -9906,7 +9909,7 @@ snapshots:
 
   '@types/ws@8.18.1':
     dependencies:
-      '@types/node': 20.19.37
+      '@types/node': 22.19.15
 
   '@typescript-eslint/eslint-plugin@8.58.0(@typescript-eslint/parser@8.58.0(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3)':
     dependencies:
