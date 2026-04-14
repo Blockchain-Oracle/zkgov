@@ -196,7 +196,7 @@ export const HeroScene: React.FC = () => {
               textTransform: "uppercase",
             }}
           >
-            → zkgov.xyz
+            → zkgov.app
           </div>
           <div style={{ display: "flex", gap: u(10), flexWrap: "wrap", justifyContent: "center" }}>
             <Pill color={theme.colors.accent}>Semaphore v4</Pill>
@@ -233,7 +233,7 @@ export const HeroScene: React.FC = () => {
           marginTop: "auto",
         }}
       >
-        → zkgov.xyz
+        → zkgov.app
       </div>
     </AbsoluteFill>
   );
@@ -904,7 +904,7 @@ export const OutroScene: React.FC = () => {
           letterSpacing: "0.05em",
         }}
       >
-        zkgov.xyz · built on HashKey Chain
+        zkgov.app · built on HashKey Chain
       </div>
     </AbsoluteFill>
   );
