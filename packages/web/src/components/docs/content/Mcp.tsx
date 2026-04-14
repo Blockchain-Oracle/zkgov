@@ -16,12 +16,26 @@ export function McpContent() {
 
       <CodeBlock
         language="bash"
-        filename="terminal"
-        code={`# Claude Code
-claude mcp add zkgov npx @zkgov/mcp
+        filename="Claude Code"
+        code={`claude mcp add zkgov npx @zkgov/mcp`}
+      />
 
-# Cursor / Windsurf / VS Code (add to MCP config)
-{
+      <CodeBlock
+        language="bash"
+        filename="Gemini CLI"
+        code={`gemini mcp add zkgov npx -y @zkgov/mcp`}
+      />
+
+      <CodeBlock
+        language="bash"
+        filename="OpenAI Codex"
+        code={`codex mcp add zkgov npx -y @zkgov/mcp`}
+      />
+
+      <CodeBlock
+        language="json"
+        filename="Cursor / Windsurf / Claude Desktop — mcp config"
+        code={`{
   "mcpServers": {
     "zkgov": {
       "command": "npx",
@@ -31,9 +45,37 @@ claude mcp add zkgov npx @zkgov/mcp
 }`}
       />
 
+      <CodeBlock
+        language="json"
+        filename="VS Code Copilot — .vscode/mcp.json"
+        code={`{
+  "servers": {
+    "zkgov": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "@zkgov/mcp"]
+    }
+  }
+}`}
+      />
+
+      <CodeBlock
+        language="json"
+        filename="Zed — ~/.config/zed/settings.json"
+        code={`{
+  "context_servers": {
+    "zkgov": {
+      "command": { "path": "npx", "args": ["-y", "@zkgov/mcp"] },
+      "source": "custom"
+    }
+  }
+}`}
+      />
+
       <Callout type="tip" title="No local paths needed">
         <code>npx @zkgov/mcp</code> downloads and runs the server automatically.
-        No cloning repos or pointing to local dist folders.
+        No cloning repos or pointing to local dist folders. See the full list of
+        supported platforms at <a href="/skill">/skill</a>.
       </Callout>
 
       <h2>Install the agent skill</h2>
