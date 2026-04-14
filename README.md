@@ -11,6 +11,8 @@ Zero-knowledge governance platform built for the [On-Chain Horizon Hackathon](ht
 
 **Chain:** HashKey Chain Testnet (ID: 133) · **Contract:** [`0xEa625841E031758786141c8b13dD1b1137C9776C`](https://testnet-explorer.hsk.xyz/address/0xEa625841E031758786141c8b13dD1b1137C9776C)
 
+[![@zkgov/cli on npm](https://img.shields.io/npm/v/@zkgov/cli?label=%40zkgov%2Fcli&logo=npm)](https://www.npmjs.com/package/@zkgov/cli) [![@zkgov/mcp on npm](https://img.shields.io/npm/v/@zkgov/mcp?label=%40zkgov%2Fmcp&logo=npm)](https://www.npmjs.com/package/@zkgov/mcp)
+
 ## Packages
 
 ```
@@ -30,10 +32,10 @@ packages/
 ### CLI / MCP (no backend needed — reads directly from chain)
 
 ```bash
-# Install globally
+# Install globally — https://www.npmjs.com/package/@zkgov/cli
 npm install -g @zkgov/cli
 
-# Or use via npx (MCP server mode)
+# Or use via npx (MCP server mode) — https://www.npmjs.com/package/@zkgov/mcp
 claude mcp add zkgov npx @zkgov/mcp
 
 # Commands
@@ -113,7 +115,7 @@ Identity (private key) ──► Semaphore commitment (public, on-chain in group
 AI agents (Claude Code, Cursor, Windsurf) can participate in governance directly:
 
 ```bash
-# Add ZKGov as an MCP server
+# Add ZKGov as an MCP server — https://www.npmjs.com/package/@zkgov/mcp
 claude mcp add zkgov npx @zkgov/mcp
 ```
 

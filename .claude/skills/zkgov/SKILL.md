@@ -11,9 +11,11 @@ ZKGov is a zero-knowledge governance platform on HashKey Chain testnet (chain ID
 
 ```bash
 # MCP server (preferred — works with Claude Code, Cursor, Windsurf, VS Code)
+# https://www.npmjs.com/package/@zkgov/mcp
 claude mcp add zkgov npx @zkgov/mcp
 
 # Standalone CLI
+# https://www.npmjs.com/package/@zkgov/cli
 npm install -g @zkgov/cli
 zkgov --help
 ```
