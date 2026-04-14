@@ -115,7 +115,7 @@ function parseInitData(initData: string) {
 
 function validateInitData(initData: string): boolean {
   const { TELEGRAM_BOT_TOKEN } = env
-  if (!TELEGRAM_BOT_TOKEN) return true
+  if (!TELEGRAM_BOT_TOKEN) return false // reject if token not configured
 
   const params = new URLSearchParams(initData)
   const hash = params.get("hash")

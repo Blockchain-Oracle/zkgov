@@ -6,8 +6,9 @@ import { broadcastToProposal } from "./sse.js"
 
 export async function commentRoutes(app: FastifyInstance) {
   // GET /proposals/:id/comments
-  app.get<{ Params: { id: string } }>("/proposals/:id/comments", async (request) => {
+  app.get<{ Params: { id: string } }>("/proposals/:id/comments", async (request, reply) => {
     const proposalId = parseInt(request.params.id)
+    if (isNaN(proposalId) || proposalId <= 0) return reply.status(400).send({ error: "Invalid proposal ID" })
 
     const items = await db.query.comments.findMany({
       where: eq(comments.proposalId, proposalId),
@@ -54,17 +55,23 @@ export async function commentRoutes(app: FastifyInstance) {
     Body: { content: string; parentId?: string; commentType?: string }
   }>("/proposals/:id/comments", { preHandler: [(app as any).authenticate] }, async (request, reply) => {
     const proposalId = parseInt(request.params.id)
+    if (isNaN(proposalId) || proposalId <= 0) return reply.status(400).send({ error: "Invalid proposal ID" })
+
     const { content, parentId, commentType } = request.body
     const user = (request as any).user
 
     if (!content) return reply.status(400).send({ error: "content is required" })
+    if (content.length > 5000) return reply.status(400).send({ error: "content too long (max 5000 chars)" })
+
+    const validTypes = ["comment", "analysis"]
+    const safeType = validTypes.includes(commentType || "") ? commentType : "comment"
 
     const [comment] = await db.insert(comments).values({
       proposalId,
       userId: user.id,
       content,
       parentId: parentId || null,
-      commentType: commentType || "comment",
+      commentType: safeType || "comment",
     }).returning()
 
     broadcastToProposal(proposalId, "comment_added", {

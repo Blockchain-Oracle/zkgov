@@ -4,15 +4,66 @@ export function McpContent() {
   return (
     <>
       <p className="lead">
-        ZKGov ships with a Model Context Protocol server so AI agents can participate in
-        governance. The same binary that runs the CLI also runs as an MCP stdio server when
-        invoked without arguments.
+        ZKGov ships as two npm packages: an MCP server for AI agents and a CLI for humans.
+        It also ships as an agent skill that teaches any LLM when and how to use the tools.
       </p>
+
+      <h2>Install the MCP server</h2>
+      <p>
+        The fastest way to give your agent access to ZKGov is via the MCP server.
+        Works with Claude Code, Cursor, Windsurf, VS Code, and any MCP-compatible host.
+      </p>
+
+      <CodeBlock
+        language="bash"
+        filename="terminal"
+        code={`# Claude Code
+claude mcp add zkgov npx @zkgov/mcp
+
+# Cursor / Windsurf / VS Code (add to MCP config)
+{
+  "mcpServers": {
+    "zkgov": {
+      "command": "npx",
+      "args": ["-y", "@zkgov/mcp"]
+    }
+  }
+}`}
+      />
+
+      <Callout type="tip" title="No local paths needed">
+        <code>npx @zkgov/mcp</code> downloads and runs the server automatically.
+        No cloning repos or pointing to local dist folders.
+      </Callout>
+
+      <h2>Install the agent skill</h2>
+      <p>
+        The skill is a procedural instruction file that teaches agents <em>when</em> to
+        invoke ZKGov tools and <em>how</em> to handle responses. It covers trigger keywords,
+        tool selection, wallet management, and error handling.
+      </p>
+
+      <CodeBlock
+        language="bash"
+        filename="terminal"
+        code={`# Via the community skills CLI (works with 12+ agent platforms)
+pnpm dlx skills add github:Blockchain-Oracle/zkgov --skill zkgov
+
+# Or manually — copy SKILL.md into your agent's skill directory
+cp packages/skills/zkgov/SKILL.md ~/.claude/skills/zkgov/SKILL.md`}
+      />
+
+      <p>
+        The skill and MCP server complement each other:
+      </p>
+      <ul>
+        <li><strong>MCP server</strong> gives the agent the <em>ability</em> to call contract functions.</li>
+        <li><strong>Skill</strong> gives the agent the <em>judgment</em> to know when to use which tool.</li>
+      </ul>
 
       <h2>What the MCP server exposes</h2>
       <p>
-        Eleven tools are registered — six read-only and five write — covering the full
-        governance surface:
+        Eleven tools — six read-only, five write — covering the full governance surface:
       </p>
 
       <ul>
@@ -20,77 +71,64 @@ export function McpContent() {
         <li><strong>Write:</strong> <code>zkgov-wallet</code>, <code>zkgov-register</code>, <code>zkgov-create-proposal</code>, <code>zkgov-vote</code>, <code>zkgov-finalize</code></li>
       </ul>
 
-      <h2>Connecting Claude Desktop</h2>
-      <p>
-        Add the server to your <code>claude_desktop_config.json</code>:
-      </p>
-
-      <CodeBlock
-        language="json"
-        filename="claude_desktop_config.json"
-        code={`{
-  "mcpServers": {
-    "zkgov": {
-      "command": "node",
-      "args": ["/absolute/path/to/packages/mcp/dist/cli.js"]
-    }
-  }
-}`}
-      />
-
-      <p>
-        Restart Claude Desktop. You will see the ZKGov tools in the tool picker. Ask things like:
-      </p>
-
-      <ul>
-        <li>"What proposals are currently active on ZKGov?"</li>
-        <li>"Show me the details of proposal 7."</li>
-        <li>"Create a proposal titled 'Fund hackathon prizes' with a 3-day voting period."</li>
-        <li>"Vote 'for' on proposal 5."</li>
-      </ul>
-
       <Callout type="warning" title="Write tools sign transactions">
-        The agent will sign transactions with the wallet stored at <code>~/.zkgov/config.json</code>.
-        Only give your agent access to a wallet with a small testnet balance until you trust
-        its decision-making. You can override the wallet with <code>ZKGOV_PRIVATE_KEY</code>.
+        The agent signs transactions with the wallet at <code>~/.zkgov/config.json</code>.
+        Only give your agent a wallet with a small testnet balance until you trust its
+        decision-making. Override with <code>ZKGOV_PRIVATE_KEY</code> env var.
       </Callout>
 
       <h2>Why MCP for governance</h2>
       <p>
-        The Semaphore privacy guarantees do not change when an agent is the one voting — a ZK
-        proof is still a ZK proof. This lets you delegate participation to an agent without
-        revealing which votes came from automation versus a human.
+        Semaphore privacy guarantees do not change when an agent votes — a ZK proof is still
+        a ZK proof. This lets you delegate participation to an agent without revealing which
+        votes came from automation versus a human.
       </p>
 
-      <p>
-        An agent can:
-      </p>
-      <ul>
+      <p>An agent workflow looks like:</p>
+      <ol>
         <li>Monitor new proposals with <code>zkgov-activity</code></li>
         <li>Read full context with <code>zkgov-proposal</code></li>
-        <li>Evaluate against its policy or the user's guidelines</li>
+        <li>Evaluate against its policy or your guidelines</li>
         <li>Cast a vote via <code>zkgov-vote</code></li>
-        <li>Report back with the tx hash for audit</li>
-      </ul>
+        <li>Report the tx hash for audit</li>
+      </ol>
 
-      <h2>Running the server directly</h2>
+      <h2>Architecture</h2>
       <p>
-        If you want to test the MCP server without Claude Desktop, invoke it with no subcommand
-        and pipe JSON-RPC requests via stdin:
+        The MCP package (<code>@zkgov/mcp</code>) is a thin ~25-line wrapper that imports
+        a <code>createMcpServer()</code> factory from the CLI package (<code>@zkgov/cli</code>)
+        and connects it to a stdio transport. All tool implementations, queries, writes, and
+        ZK proof generation live in the CLI package.
       </p>
 
       <CodeBlock
         language="bash"
         filename="terminal"
-        code={`echo '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}' \\
-  | node packages/mcp/dist/cli.js`}
+        code={`# Test the MCP server directly (pipe JSON-RPC)
+echo '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}' \\
+  | npx @zkgov/mcp`}
       />
 
-      <Callout type="tip" title="Dual-mode binary">
-        The same <code>cli.js</code> is both the CLI and the MCP server. If you pass a
-        subcommand, you get the CLI. With no arguments, Commander's default action falls
-        through and starts the stdio MCP server. One binary, two interfaces.
-      </Callout>
+      <h2>Standalone CLI</h2>
+      <p>
+        If you prefer a terminal interface, install the CLI globally:
+      </p>
+
+      <CodeBlock
+        language="bash"
+        filename="terminal"
+        code={`npm install -g @zkgov/cli
+zkgov --help
+
+# Quick examples
+zkgov stats
+zkgov proposals --json
+zkgov vote 4 for`}
+      />
+
+      <p>
+        See the <a href="/docs/cli">CLI documentation</a> for the full command reference.
+      </p>
     </>
   );
 }
