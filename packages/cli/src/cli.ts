@@ -63,9 +63,12 @@ const program = new Command()
   .version("0.0.1")
   .option("--json", "Output raw JSON instead of formatted text");
 
-// Default action: no subcommand → start MCP server
+// Default action: no subcommand → start MCP server on stdio
 program.action(async () => {
-  await import("./index.js");
+  const { StdioServerTransport } = await import("@modelcontextprotocol/sdk/server/stdio.js");
+  const { createMcpServer } = await import("./server.js");
+  const server = createMcpServer();
+  await server.connect(new StdioServerTransport());
 });
 
 // ─── Commands ───────────────────────────────────────────────────

@@ -1,0 +1,52 @@
+{
+  "name": "@zkgov/cli",
+  "version": "0.0.1",
+  "description": "ZKGov CLI — anonymous governance on HashKey Chain with zero-knowledge proofs",
+  "type": "module",
+  "license": "MIT",
+  "bin": {
+    "zkgov": "./dist/cli.js"
+  },
+  "main": "./dist/server.js",
+  "types": "./dist/server.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/server.js",
+      "types": "./dist/server.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx src/cli.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1",
+    "@semaphore-protocol/group": "^4",
+    "@semaphore-protocol/identity": "^4",
+    "@semaphore-protocol/proof": "^4",
+    "commander": "^14",
+    "viem": "^2",
+    "zod": "^3"
+  },
+  "devDependencies": {
+    "typescript": "^5.5",
+    "tsx": "^4"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "zkgov",
+    "governance",
+    "zero-knowledge",
+    "zk-proofs",
+    "semaphore",
+    "hashkey",
+    "mcp",
+    "cli"
+  ]
+}

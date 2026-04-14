@@ -1,56 +1,26 @@
 #!/usr/bin/env node
 /**
- * ZKGov MCP Server
+ * @zkgov/mcp — ZKGov MCP stdio server.
  *
- * Exposes ZKVoting contract data AND write operations as MCP tools
- * so AI agents can query governance state, register, create proposals,
- * vote anonymously with ZK proofs, and finalize proposals.
+ * Thin wrapper: all tool implementations live in @zkgov/cli.
+ * This package exists so `npx @zkgov/mcp` works cleanly with
+ * MCP hosts (Claude Code, Cursor, Windsurf, VS Code, etc.).
  *
- * The server manages its own wallet at ~/.zkgov/config.json.
- *
- * Usage:
- *   zkgov                     (stdio transport, default action)
- *   Add to claude_desktop_config.json as an MCP server
+ * Install:
+ *   claude mcp add zkgov npx @zkgov/mcp
  */
-
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { createMcpServer } from "@zkgov/cli";
 
-// Read tools
-import { registerStatsTool } from "./tools/stats.js";
-import { registerProposalTool, registerListProposalsTool } from "./tools/proposal.js";
-import { registerVoterTool, registerMembersTool } from "./tools/voter.js";
-import { registerActivityTool } from "./tools/activity.js";
+async function main() {
+  const server = createMcpServer();
+  const transport = new StdioServerTransport();
+  await server.connect(transport);
+}
 
-// Write tools
-import {
-  registerWalletTool,
-  registerRegisterTool,
-  registerCreateProposalTool,
-  registerVoteTool,
-  registerFinalizeTool,
-} from "./tools/write.js";
-
-const server = new McpServer(
-  { name: "zkgov", version: "0.0.1" },
-  { capabilities: { tools: {} } }
-);
-
-// ── Read tools ──
-registerStatsTool(server);
-registerProposalTool(server);
-registerListProposalsTool(server);
-registerVoterTool(server);
-registerMembersTool(server);
-registerActivityTool(server);
-
-// ── Write tools ──
-registerWalletTool(server);
-registerRegisterTool(server);
-registerCreateProposalTool(server);
-registerVoteTool(server);
-registerFinalizeTool(server);
-
-// Start with stdio transport
-const transport = new StdioServerTransport();
-await server.connect(transport);
+main().catch((error: unknown) => {
+  process.stderr.write(
+    `[zkgov-mcp] fatal: ${error instanceof Error ? error.stack ?? error.message : String(error)}\n`
+  );
+  process.exit(1);
+});

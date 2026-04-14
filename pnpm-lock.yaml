@@ -67,6 +67,37 @@ importers:
         specifier: ^4.1.2
         version: 4.1.2(@types/node@22.19.15)(msw@2.12.14(@types/node@22.19.15)(typescript@5.9.3))(vite@8.0.3(@emnapi/core@1.9.1)(@emnapi/runtime@1.9.1)(@types/node@22.19.15)(esbuild@0.19.12)(jiti@2.6.1)(tsx@4.21.0))
 
+  packages/cli:
+    dependencies:
+      '@modelcontextprotocol/sdk':
+        specifier: ^1
+        version: 1.29.0(zod@3.25.76)
+      '@semaphore-protocol/group':
+        specifier: ^4
+        version: 4.14.2
+      '@semaphore-protocol/identity':
+        specifier: ^4
+        version: 4.14.2
+      '@semaphore-protocol/proof':
+        specifier: ^4
+        version: 4.14.2(@semaphore-protocol/group@4.14.2)(@semaphore-protocol/identity@4.14.2)(@types/snarkjs@0.7.9)(commander@14.0.2)
+      commander:
+        specifier: ^14
+        version: 14.0.2
+      viem:
+        specifier: ^2
+        version: 2.47.6(typescript@5.9.3)(zod@3.25.76)
+      zod:
+        specifier: ^3
+        version: 3.25.76
+    devDependencies:
+      tsx:
+        specifier: ^4
+        version: 4.21.0
+      typescript:
+        specifier: ^5.5
+        version: 5.9.3
+
   packages/contracts:
     devDependencies:
       '@nomicfoundation/hardhat-chai-matchers':
@@ -142,24 +173,9 @@ importers:
       '@modelcontextprotocol/sdk':
         specifier: ^1
         version: 1.29.0(zod@3.25.76)
-      '@semaphore-protocol/group':
-        specifier: ^4
-        version: 4.14.2
-      '@semaphore-protocol/identity':
-        specifier: ^4
-        version: 4.14.2
-      '@semaphore-protocol/proof':
-        specifier: ^4
-        version: 4.14.2(@semaphore-protocol/group@4.14.2)(@semaphore-protocol/identity@4.14.2)(@types/snarkjs@0.7.9)(commander@14.0.2)
-      commander:
-        specifier: ^14
-        version: 14.0.2
-      viem:
-        specifier: ^2
-        version: 2.47.6(typescript@5.9.3)(zod@3.25.76)
-      zod:
-        specifier: ^3
-        version: 3.25.76
+      '@zkgov/cli':
+        specifier: workspace:*
+        version: link:../cli
     devDependencies:
       tsx:
         specifier: ^4
@@ -7599,7 +7615,7 @@ snapshots:
       '@vladfrangu/async_event_emitter': 2.4.7
       discord-api-types: 0.38.43
       tslib: 2.7.0
-      ws: 8.18.0
+      ws: 8.20.0
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
@@ -11540,7 +11556,7 @@ snapshots:
       '@next/eslint-plugin-next': 16.2.2
       eslint: 9.39.4(jiti@2.6.1)
       eslint-import-resolver-node: 0.3.10
-      eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0)(eslint@9.39.4(jiti@2.6.1))
+      eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.58.0(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.4(jiti@2.6.1)))(eslint@9.39.4(jiti@2.6.1))
       eslint-plugin-import: 2.32.0(@typescript-eslint/parser@8.58.0(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-typescript@3.10.1)(eslint@9.39.4(jiti@2.6.1))
       eslint-plugin-jsx-a11y: 6.10.2(eslint@9.39.4(jiti@2.6.1))
       eslint-plugin-react: 7.37.5(eslint@9.39.4(jiti@2.6.1))
@@ -11563,7 +11579,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0)(eslint@9.39.4(jiti@2.6.1)):
+  eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.58.0(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.4(jiti@2.6.1)))(eslint@9.39.4(jiti@2.6.1)):
     dependencies:
       '@nolyfill/is-core-module': 1.0.39
       debug: 4.4.3(supports-color@8.1.1)
@@ -11578,14 +11594,14 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-module-utils@2.12.1(@typescript-eslint/parser@8.58.0(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-node@0.3.10)(eslint-import-resolver-typescript@3.10.1)(eslint@9.39.4(jiti@2.6.1)):
+  eslint-module-utils@2.12.1(@typescript-eslint/parser@8.58.0(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-node@0.3.10)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.58.0(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.4(jiti@2.6.1)))(eslint@9.39.4(jiti@2.6.1)))(eslint@9.39.4(jiti@2.6.1)):
     dependencies:
       debug: 3.2.7
     optionalDependencies:
       '@typescript-eslint/parser': 8.58.0(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3)
       eslint: 9.39.4(jiti@2.6.1)
       eslint-import-resolver-node: 0.3.10
-      eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0)(eslint@9.39.4(jiti@2.6.1))
+      eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.58.0(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.4(jiti@2.6.1)))(eslint@9.39.4(jiti@2.6.1))
     transitivePeerDependencies:
       - supports-color
 
@@ -11600,7 +11616,7 @@ snapshots:
       doctrine: 2.1.0
       eslint: 9.39.4(jiti@2.6.1)
       eslint-import-resolver-node: 0.3.10
-      eslint-module-utils: 2.12.1(@typescript-eslint/parser@8.58.0(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-node@0.3.10)(eslint-import-resolver-typescript@3.10.1)(eslint@9.39.4(jiti@2.6.1))
+      eslint-module-utils: 2.12.1(@typescript-eslint/parser@8.58.0(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-node@0.3.10)(eslint-import-resolver-typescript@3.10.1(eslint-plugin-import@2.32.0(@typescript-eslint/parser@8.58.0(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.4(jiti@2.6.1)))(eslint@9.39.4(jiti@2.6.1)))(eslint@9.39.4(jiti@2.6.1))
       hasown: 2.0.2
       is-core-module: 2.16.1
       is-glob: 4.0.3
@@ -15059,8 +15075,7 @@ snapshots:
 
   ws@8.18.3: {}
 
-  ws@8.20.0:
-    optional: true
+  ws@8.20.0: {}
 
   wsl-utils@0.3.1:
     dependencies:

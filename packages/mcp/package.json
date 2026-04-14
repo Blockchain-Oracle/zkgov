@@ -1,26 +1,38 @@
 {
   "name": "@zkgov/mcp",
   "version": "0.0.1",
-  "private": true,
+  "description": "ZKGov MCP server — anonymous ZK governance on HashKey Chain via Model Context Protocol",
   "type": "module",
+  "license": "MIT",
   "bin": {
-    "zkgov": "./dist/cli.js"
+    "zkgov-mcp": "dist/index.js"
   },
+  "main": "./dist/index.js",
+  "files": [
+    "dist",
+    "README.md"
+  ],
   "scripts": {
     "build": "tsc",
-    "dev": "tsx src/cli.ts"
+    "dev": "tsx src/index.ts"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1",
-    "@semaphore-protocol/group": "^4",
-    "@semaphore-protocol/identity": "^4",
-    "@semaphore-protocol/proof": "^4",
-    "commander": "^14",
-    "viem": "^2",
-    "zod": "^3"
+    "@zkgov/cli": "workspace:*"
   },
   "devDependencies": {
     "typescript": "^5.5",
     "tsx": "^4"
-  }
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "zkgov",
+    "governance",
+    "zero-knowledge",
+    "hashkey"
+  ]
 }
