@@ -1,8 +1,16 @@
 import { CodeBlock, Callout } from '../CodeBlock';
+import { HeroVideoDialog } from '@/components/ui/hero-video-dialog';
 
 export function QuickstartContent() {
   return (
     <>
+      {/* Video walkthrough — click to expand */}
+      <HeroVideoDialog
+        src="/quickstart-wide.gif"
+        alt="ZKGov quickstart walkthrough"
+        className="my-6 not-prose"
+      />
+
       <p className="lead">
         Get from zero to your first anonymous vote in about two minutes. You need a wallet
         with a tiny amount of HSK on HashKey Chain testnet for gas.

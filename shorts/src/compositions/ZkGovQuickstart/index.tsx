@@ -14,7 +14,7 @@ import {
 // ─── Audio ────────────────────────────────────────────────────────────────────
 // Set to true once you've added audio files to public/audio/.
 // See public/audio/README.md for the full file spec.
-const AUDIO_ENABLED = false;
+const AUDIO_ENABLED = true;
 
 // Absolute frame offsets for each scene (used to time SFX precisely).
 const F = {
@@ -38,32 +38,46 @@ export const ZkGovQuickstart: React.FC = () => {
           {/* Ambient music bed — full 30s at low volume */}
           <Audio
             src={staticFile("audio/music-bed.mp3")}
-            volume={0.22}
+            volume={0.18}
             loop
           />
 
-          {/* Scene transition whooshes — fires 3 frames before each cut */}
-          {[F.faucet, F.connect, F.identity, F.register, F.vote, F.outro].map(
-            (cutFrame, i) => (
-              <Sequence key={i} from={cutFrame - 3} durationInFrames={22}>
-                <Audio src={staticFile("audio/whoosh.mp3")} volume={0.5} />
-              </Sequence>
-            )
-          )}
-
           {/* Typewriter sound during identity commitment reveal */}
           <Sequence from={F.identity + 62} durationInFrames={48}>
-            <Audio src={staticFile("audio/keytype.mp3")} volume={0.28} />
+            <Audio src={staticFile("audio/keytype.mp3")} volume={0.25} />
           </Sequence>
 
           {/* Chime when register tx confirms */}
           <Sequence from={F.register + 138} durationInFrames={30}>
-            <Audio src={staticFile("audio/chime.mp3")} volume={0.6} />
+            <Audio src={staticFile("audio/chime.mp3")} volume={0.55} />
           </Sequence>
 
           {/* Success sting when vote is submitted */}
           <Sequence from={F.vote + 110} durationInFrames={35}>
-            <Audio src={staticFile("audio/success.mp3")} volume={0.72} />
+            <Audio src={staticFile("audio/success.mp3")} volume={0.65} />
+          </Sequence>
+
+          {/* ── Voiceover — one line per scene, plays to natural end ── */}
+          <Sequence from={F.hero}>
+            <Audio src={staticFile("audio/voice-hero.mp3")} volume={1} />
+          </Sequence>
+          <Sequence from={F.faucet}>
+            <Audio src={staticFile("audio/voice-faucet.mp3")} volume={1} />
+          </Sequence>
+          <Sequence from={F.connect}>
+            <Audio src={staticFile("audio/voice-connect.mp3")} volume={1} />
+          </Sequence>
+          <Sequence from={F.identity}>
+            <Audio src={staticFile("audio/voice-identity.mp3")} volume={1} />
+          </Sequence>
+          <Sequence from={F.register}>
+            <Audio src={staticFile("audio/voice-register.mp3")} volume={1} />
+          </Sequence>
+          <Sequence from={F.vote}>
+            <Audio src={staticFile("audio/voice-vote.mp3")} volume={1} />
+          </Sequence>
+          <Sequence from={F.outro}>
+            <Audio src={staticFile("audio/voice-outro.mp3")} volume={1} />
           </Sequence>
         </>
       )}
