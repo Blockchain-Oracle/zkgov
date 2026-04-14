@@ -1,0 +1,24 @@
+{
+  "name": "@zkgov/shorts",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "remotion studio",
+    "build": "remotion render ZkGovQuickstart out/quickstart.mp4",
+    "build:wide": "remotion render ZkGovQuickstartWide out/quickstart-wide.mp4",
+    "build:hq": "remotion render ZkGovQuickstart out/quickstart.mp4 --crf=18",
+    "build:all": "npm run build && npm run build:wide"
+  },
+  "dependencies": {
+    "@remotion/google-fonts": "^4.0.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@remotion/cli": "^4.0.0",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "remotion": "^4.0.0",
+    "typescript": "^5.5.4"
+  }
+}

@@ -1,11 +1,11 @@
 {
   "name": "@zkgov/mcp",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "ZKGov MCP server — anonymous ZK governance on HashKey Chain via Model Context Protocol",
   "type": "module",
   "license": "MIT",
   "bin": {
-    "zkgov-mcp": "dist/index.js"
+    "zkgov-mcp": "./dist/index.js"
   },
   "main": "./dist/index.js",
   "files": [
@@ -24,6 +24,11 @@
     "typescript": "^5.5",
     "tsx": "^4"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Blockchain-Oracle/zkgov.git"
+  },
+  "homepage": "https://github.com/Blockchain-Oracle/zkgov",
   "engines": {
     "node": ">=18"
   },

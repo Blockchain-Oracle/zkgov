@@ -1,6 +1,6 @@
 {
   "name": "@zkgov/cli",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "ZKGov CLI — anonymous governance on HashKey Chain with zero-knowledge proofs",
   "type": "module",
   "license": "MIT",
@@ -36,6 +36,11 @@
     "typescript": "^5.5",
     "tsx": "^4"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Blockchain-Oracle/zkgov.git"
+  },
+  "homepage": "https://github.com/Blockchain-Oracle/zkgov",
   "engines": {
     "node": ">=18"
   },
