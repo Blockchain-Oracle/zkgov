@@ -43,12 +43,13 @@ onlyIncludeFiles = [
 ]
 
 # ── Build phase ──────────────────────────────────────────────────
-# Builds only the target workspace. shared is a type-only package
-# (no emit), so it doesn't need a separate build step — TypeScript
-# resolves it via paths at build time in each consumer package.
+# Build shared first (emits to dist/), then the target workspace.
 [phases.build]
 dependsOn = ["install"]
-cmds = ["pnpm --filter ${APP_NAME:-@zkgov/backend} build"]
+cmds = [
+  "pnpm --filter @zkgov/shared build",
+  "pnpm --filter ${APP_NAME:-@zkgov/backend} build"
+]
 
 # ── Start ────────────────────────────────────────────────────────
 # backend      → node dist/index.js  (Fastify respects $PORT, defaults 3000)
