@@ -1,4 +1,5 @@
 import { CodeBlock, Callout } from '../CodeBlock';
+import { ConfigTabs } from '../ConfigTabs';
 
 export function McpContent() {
   return (
@@ -10,45 +11,46 @@ export function McpContent() {
 
       <h2>Install the MCP server</h2>
       <p>
-        The fastest way to give your agent access to ZKGov is via the MCP server.
-        Works with Claude Code, Cursor, Windsurf, VS Code, and any MCP-compatible host.
+        The fastest way to give your agent access to ZKGov. Pick your platform:
       </p>
 
-      <CodeBlock
-        language="bash"
-        filename="Claude Code"
-        code={`claude mcp add zkgov npx @zkgov/mcp`}
-      />
-
-      <CodeBlock
-        language="bash"
-        filename="Gemini CLI"
-        code={`gemini mcp add zkgov npx -y @zkgov/mcp`}
-      />
-
-      <CodeBlock
-        language="bash"
-        filename="OpenAI Codex"
-        code={`codex mcp add zkgov npx -y @zkgov/mcp`}
-      />
-
-      <CodeBlock
-        language="json"
-        filename="Cursor / Windsurf / Claude Desktop — mcp config"
-        code={`{
+      <ConfigTabs tabs={[
+        {
+          label: 'Claude Code',
+          language: 'bash',
+          code: 'claude mcp add zkgov npx @zkgov/mcp',
+        },
+        {
+          label: 'Cursor',
+          language: 'json',
+          code: `// .cursor/mcp.json
+{
   "mcpServers": {
     "zkgov": {
       "command": "npx",
       "args": ["-y", "@zkgov/mcp"]
     }
   }
-}`}
-      />
-
-      <CodeBlock
-        language="json"
-        filename="VS Code Copilot — .vscode/mcp.json"
-        code={`{
+}`,
+        },
+        {
+          label: 'Windsurf',
+          language: 'json',
+          code: `// ~/.codeium/windsurf/mcp_config.json
+{
+  "mcpServers": {
+    "zkgov": {
+      "command": "npx",
+      "args": ["-y", "@zkgov/mcp"]
+    }
+  }
+}`,
+        },
+        {
+          label: 'VS Code',
+          language: 'json',
+          code: `// .vscode/mcp.json
+{
   "servers": {
     "zkgov": {
       "type": "stdio",
@@ -56,44 +58,83 @@ export function McpContent() {
       "args": ["-y", "@zkgov/mcp"]
     }
   }
-}`}
-      />
-
-      <CodeBlock
-        language="json"
-        filename="Zed — ~/.config/zed/settings.json"
-        code={`{
+}`,
+        },
+        {
+          label: 'Claude Desktop',
+          language: 'json',
+          code: `// claude_desktop_config.json
+{
+  "mcpServers": {
+    "zkgov": {
+      "command": "npx",
+      "args": ["-y", "@zkgov/mcp"]
+    }
+  }
+}`,
+        },
+        {
+          label: 'Gemini CLI',
+          language: 'bash',
+          code: 'gemini mcp add zkgov npx -y @zkgov/mcp',
+        },
+        {
+          label: 'Codex',
+          language: 'bash',
+          code: 'codex mcp add zkgov npx -y @zkgov/mcp',
+        },
+        {
+          label: 'Zed',
+          language: 'json',
+          code: `// ~/.config/zed/settings.json
+{
   "context_servers": {
     "zkgov": {
-      "command": { "path": "npx", "args": ["-y", "@zkgov/mcp"] },
+      "command": {
+        "path": "npx",
+        "args": ["-y", "@zkgov/mcp"]
+      },
       "source": "custom"
     }
   }
-}`}
-      />
+}`,
+        },
+      ]} />
 
       <Callout type="tip" title="No local paths needed">
         <code>npx @zkgov/mcp</code> downloads and runs the server automatically.
-        No cloning repos or pointing to local dist folders. See the full list of
-        supported platforms at <a href="/skill">/skill</a>.
+        See the full platform list + skill paths at <a href="/skill">/skill</a>.
       </Callout>
 
       <h2>Install the agent skill</h2>
       <p>
-        The skill is a procedural instruction file that teaches agents <em>when</em> to
-        invoke ZKGov tools and <em>how</em> to handle responses. It covers trigger keywords,
-        tool selection, wallet management, and error handling.
+        The skill teaches agents <em>when</em> to invoke ZKGov tools and <em>how</em> to
+        handle responses — trigger keywords, tool selection, wallet management, error handling.
       </p>
 
-      <CodeBlock
-        language="bash"
-        filename="terminal"
-        code={`# Via the community skills CLI (works with 12+ agent platforms)
-pnpm dlx skills add github:Blockchain-Oracle/zkgov --skill zkgov
-
-# Or manually — copy SKILL.md into your agent's skill directory
-cp packages/skills/zkgov/SKILL.md ~/.claude/skills/zkgov/SKILL.md`}
-      />
+      <ConfigTabs tabs={[
+        {
+          label: 'Skills CLI',
+          language: 'bash',
+          code: 'pnpm dlx skills add github:Blockchain-Oracle/zkgov --skill zkgov',
+        },
+        {
+          label: 'npx',
+          language: 'bash',
+          code: 'npx skills add github:Blockchain-Oracle/zkgov --skill zkgov',
+        },
+        {
+          label: 'Prompt',
+          language: 'text',
+          code: 'Read https://zkgov.vercel.app/skill.md and follow the instructions.',
+        },
+        {
+          label: 'Manual',
+          language: 'bash',
+          code: `mkdir -p ~/.claude/skills/zkgov
+curl -o ~/.claude/skills/zkgov/SKILL.md https://zkgov.vercel.app/skill.md`,
+        },
+      ]} />
 
       <p>
         The skill and MCP server complement each other:
