@@ -32,9 +32,9 @@ Zero-knowledge governance platform built for the [On-Chain Horizon Hackathon](ht
 
 ```
 packages/
-├── contracts/       Solidity — ZKGovernance, KycGate, AgentRegistry
+├── contracts/       Solidity — ZKVoting (Semaphore v4 integration)
 ├── backend/         Fastify API + relayer + server-side ZK proof generation
-├── web/             Next.js 15 web UI + Telegram Mini App
+├── web/             Next.js 15 web UI
 ├── telegram-bot/    grammY bot — proposals in group chats, "Vote Now" button
 ├── discord-bot/     discord.js — slash commands, ephemeral voting
 ├── mcp/             MCP server — AI agents vote via Claude Code, Cursor, etc.
@@ -125,7 +125,7 @@ Identity (private key) ──► Semaphore commitment (public, on-chain in group
 | Contracts | Solidity 0.8.23 + Hardhat |
 | Backend | Fastify + Drizzle ORM + PostgreSQL |
 | Frontend | Next.js 15 + shadcn/ui + Reown AppKit |
-| Telegram | grammY + Mini App |
+| Telegram | grammY bot |
 | Discord | discord.js |
 | AI Integration | MCP server + zkgov skill |
 

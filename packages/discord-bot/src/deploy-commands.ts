@@ -18,15 +18,6 @@ const commands = [
       opt.setName("proposal_id").setDescription("Proposal number").setRequired(true)
     ),
   new SlashCommandBuilder()
-    .setName("propose")
-    .setDescription("Create a new governance proposal")
-    .addStringOption((opt) =>
-      opt.setName("title").setDescription("Proposal title").setRequired(true)
-    )
-    .addStringOption((opt) =>
-      opt.setName("description").setDescription("Proposal description").setRequired(true)
-    ),
-  new SlashCommandBuilder()
     .setName("link")
     .setDescription("Link your Discord account to ZKGov"),
 ]
