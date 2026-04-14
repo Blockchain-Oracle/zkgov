@@ -69,6 +69,11 @@ export const DOCS_NAVIGATION: DocSection[] = [
         description: "Let AI agents participate in governance via the Model Context Protocol.",
       },
       {
+        slug: "skills",
+        title: "Agent Skills",
+        description: "Install the ZKGov skill so any AI agent knows when and how to use governance tools.",
+      },
+      {
         slug: "contracts",
         title: "Smart Contracts",
         description: "ZKVoting contract API, events, and on-chain verification.",

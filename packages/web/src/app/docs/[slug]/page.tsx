@@ -12,6 +12,7 @@ import { VotingFlowContent } from '@/components/docs/content/VotingFlow';
 import { CreateProposalContent } from '@/components/docs/content/CreateProposal';
 import { CliContent } from '@/components/docs/content/Cli';
 import { McpContent } from '@/components/docs/content/Mcp';
+import { SkillsContent } from '@/components/docs/content/Skills';
 import { ContractsContent } from '@/components/docs/content/Contracts';
 
 const CONTENT_MAP: Record<string, () => React.ReactElement> = {
@@ -23,6 +24,7 @@ const CONTENT_MAP: Record<string, () => React.ReactElement> = {
   'create-proposal': CreateProposalContent,
   cli: CliContent,
   mcp: McpContent,
+  skills: SkillsContent,
   contracts: ContractsContent,
 };
 
