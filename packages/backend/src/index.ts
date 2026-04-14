@@ -10,7 +10,20 @@ import { statsRoutes } from "./routes/stats.js"
 
 const app = Fastify({ logger: true })
 
-await app.register(cors, { origin: true })
+const ALLOWED_ORIGINS = [
+  "http://localhost:3000",
+  "http://localhost:3001",
+  process.env.FRONTEND_URL,
+].filter(Boolean) as string[]
+
+await app.register(cors, {
+  origin: (origin, cb) => {
+    // Allow requests with no origin (curl, Postman, server-to-server)
+    if (!origin) return cb(null, true)
+    if (ALLOWED_ORIGINS.some(allowed => origin.startsWith(allowed))) return cb(null, true)
+    cb(new Error("CORS: origin not allowed"), false)
+  },
+})
 await app.register(authPlugin)
 
 // Health check

@@ -7,11 +7,7 @@ import { env } from "../config/env.js"
 import { db } from "../db/index.js"
 import { comments } from "../db/schema.js"
 import { sql, desc } from "drizzle-orm"
-
-const ZK_VOTING_ABI = [
-  { name: "getStats", type: "function", stateMutability: "view", inputs: [],
-    outputs: [{ name: "totalProposals", type: "uint256" }, { name: "totalMembers", type: "uint256" }, { name: "activeGroupId", type: "uint256" }] },
-] as const
+import { ZK_VOTING_ABI } from "@zkgov/shared"
 
 export async function statsRoutes(app: FastifyInstance) {
   app.get("/stats", async () => {

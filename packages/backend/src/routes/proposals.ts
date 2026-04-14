@@ -7,24 +7,7 @@
 import type { FastifyInstance } from "fastify"
 import { publicClient } from "../plugins/chain.js"
 import { env } from "../config/env.js"
-
-const ZK_VOTING_ABI = [
-  { name: "proposalCount", type: "function", stateMutability: "view", inputs: [], outputs: [{ type: "uint256" }] },
-  { name: "getProposalContent", type: "function", stateMutability: "view",
-    inputs: [{ name: "proposalId", type: "uint256" }],
-    outputs: [{ name: "title", type: "string" }, { name: "description", type: "string" }, { name: "creator", type: "address" }] },
-  { name: "getProposalState", type: "function", stateMutability: "view",
-    inputs: [{ name: "proposalId", type: "uint256" }],
-    outputs: [
-      { name: "votingStart", type: "uint256" }, { name: "votingEnd", type: "uint256" },
-      { name: "quorum", type: "uint256" }, { name: "votesFor", type: "uint256" },
-      { name: "votesAgainst", type: "uint256" }, { name: "votesAbstain", type: "uint256" },
-      { name: "totalVotes", type: "uint256" }, { name: "finalized", type: "bool" },
-      { name: "passed", type: "bool" }, { name: "isActive", type: "bool" },
-    ] },
-  { name: "getStats", type: "function", stateMutability: "view", inputs: [],
-    outputs: [{ name: "totalProposals", type: "uint256" }, { name: "totalMembers", type: "uint256" }, { name: "activeGroupId", type: "uint256" }] },
-] as const
+import { ZK_VOTING_ABI } from "@zkgov/shared"
 
 export async function proposalRoutes(app: FastifyInstance) {
   // GET /proposals — list all proposals from contract
@@ -35,47 +18,44 @@ export async function proposalRoutes(app: FastifyInstance) {
       functionName: "proposalCount",
     }) as bigint
 
-    const proposals = []
-    for (let i = Number(count); i >= 1; i--) {
-      try {
-        const [title, description, creator] = await publicClient.readContract({
-          address: env.ZK_VOTING_ADDRESS,
-          abi: ZK_VOTING_ABI,
-          functionName: "getProposalContent",
-          args: [BigInt(i)],
-        }) as [string, string, string]
+    // Fetch all proposals in parallel (2 calls per proposal, batched)
+    const ids = Array.from({ length: Number(count) }, (_, i) => Number(count) - i)
 
-        const state = await publicClient.readContract({
-          address: env.ZK_VOTING_ADDRESS,
-          abi: ZK_VOTING_ABI,
-          functionName: "getProposalState",
-          args: [BigInt(i)],
-        }) as [bigint, bigint, bigint, bigint, bigint, bigint, bigint, boolean, boolean, boolean]
+    const results = await Promise.all(
+      ids.map(async (i) => {
+        try {
+          const [content, state] = await Promise.all([
+            publicClient.readContract({
+              address: env.ZK_VOTING_ADDRESS, abi: ZK_VOTING_ABI,
+              functionName: "getProposalContent", args: [BigInt(i)],
+            }) as Promise<[string, string, string]>,
+            publicClient.readContract({
+              address: env.ZK_VOTING_ADDRESS, abi: ZK_VOTING_ABI,
+              functionName: "getProposalState", args: [BigInt(i)],
+            }) as Promise<[bigint, bigint, bigint, bigint, bigint, bigint, bigint, boolean, boolean, boolean]>,
+          ])
 
-        const [votingStart, votingEnd, quorum, votesFor, votesAgainst, votesAbstain, totalVotes, finalized, passed, isActive] = state
+          const [title, description, creator] = content
+          const [votingStart, votingEnd, quorum, votesFor, votesAgainst, votesAbstain, totalVotes, finalized, passed, isActive] = state
+          const end = Number(votingEnd) * 1000
+          const remaining = end - Date.now()
 
-        const now = Date.now()
-        const end = Number(votingEnd) * 1000
-        const remaining = end - now
+          return {
+            id: i, title, description, creator,
+            votingStart: new Date(Number(votingStart) * 1000).toISOString(),
+            votingEnd: new Date(end).toISOString(),
+            quorum: Number(quorum),
+            votes: { for: Number(votesFor), against: Number(votesAgainst), abstain: Number(votesAbstain) },
+            totalVotes: Number(totalVotes),
+            finalized, passed, isActive,
+            status: finalized ? (passed ? "succeeded" : "defeated") : isActive ? "active" : "ended",
+            timeRemaining: remaining > 0 ? formatDuration(remaining) : null,
+          }
+        } catch { return null }
+      })
+    )
 
-        proposals.push({
-          id: i,
-          title,
-          description,
-          creator,
-          votingStart: new Date(Number(votingStart) * 1000).toISOString(),
-          votingEnd: new Date(Number(votingEnd) * 1000).toISOString(),
-          quorum: Number(quorum),
-          votes: { for: Number(votesFor), against: Number(votesAgainst), abstain: Number(votesAbstain) },
-          totalVotes: Number(totalVotes),
-          finalized,
-          passed,
-          isActive,
-          status: finalized ? (passed ? "succeeded" : "defeated") : isActive ? "active" : "ended",
-          timeRemaining: remaining > 0 ? formatDuration(remaining) : null,
-        })
-      } catch { /* skip invalid proposals */ }
-    }
+    const proposals = results.filter((p): p is NonNullable<typeof p> => p !== null)
 
     return { proposals, pagination: { total: proposals.length } }
   })
@@ -83,21 +63,22 @@ export async function proposalRoutes(app: FastifyInstance) {
   // GET /proposals/:id — single proposal from contract
   app.get<{ Params: { id: string } }>("/proposals/:id", async (request, reply) => {
     const id = parseInt(request.params.id)
+    if (isNaN(id) || id <= 0) return reply.status(400).send({ error: "Invalid proposal ID" })
 
     try {
-      const [title, description, creator] = await publicClient.readContract({
-        address: env.ZK_VOTING_ADDRESS,
-        abi: ZK_VOTING_ABI,
-        functionName: "getProposalContent",
-        args: [BigInt(id)],
-      }) as [string, string, string]
+      const [content, stateResult] = await Promise.all([
+        publicClient.readContract({
+          address: env.ZK_VOTING_ADDRESS, abi: ZK_VOTING_ABI,
+          functionName: "getProposalContent", args: [BigInt(id)],
+        }) as Promise<[string, string, string]>,
+        publicClient.readContract({
+          address: env.ZK_VOTING_ADDRESS, abi: ZK_VOTING_ABI,
+          functionName: "getProposalState", args: [BigInt(id)],
+        }) as Promise<[bigint, bigint, bigint, bigint, bigint, bigint, bigint, boolean, boolean, boolean]>,
+      ])
 
-      const state = await publicClient.readContract({
-        address: env.ZK_VOTING_ADDRESS,
-        abi: ZK_VOTING_ABI,
-        functionName: "getProposalState",
-        args: [BigInt(id)],
-      }) as [bigint, bigint, bigint, bigint, bigint, bigint, bigint, boolean, boolean, boolean]
+      const [title, description, creator] = content
+      const state = stateResult
 
       const [votingStart, votingEnd, quorum, votesFor, votesAgainst, votesAbstain, totalVotes, finalized, passed, isActive] = state
 

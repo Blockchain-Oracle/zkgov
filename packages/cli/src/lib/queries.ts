@@ -135,37 +135,37 @@ export async function listProposals(): Promise<ProposalSummary[]> {
     functionName: "proposalCount",
   })) as bigint;
 
-  const proposals: ProposalSummary[] = [];
-  for (let i = 1; i <= Number(count); i++) {
-    const content = (await publicClient.readContract({
-      address: ZK_VOTING,
-      abi: ZK_VOTING_ABI,
-      functionName: "getProposalContent",
-      args: [BigInt(i)],
-    })) as [string, string, string];
+  const ids = Array.from({ length: Number(count) }, (_, i) => i + 1);
 
-    const state = (await publicClient.readContract({
-      address: ZK_VOTING,
-      abi: ZK_VOTING_ABI,
-      functionName: "getProposalState",
-      args: [BigInt(i)],
-    })) as [bigint, bigint, bigint, bigint, bigint, bigint, bigint, boolean, boolean, boolean];
+  const results = await Promise.all(
+    ids.map(async (i) => {
+      const [content, state] = await Promise.all([
+        publicClient.readContract({
+          address: ZK_VOTING, abi: ZK_VOTING_ABI,
+          functionName: "getProposalContent", args: [BigInt(i)],
+        }) as Promise<[string, string, string]>,
+        publicClient.readContract({
+          address: ZK_VOTING, abi: ZK_VOTING_ABI,
+          functionName: "getProposalState", args: [BigInt(i)],
+        }) as Promise<[bigint, bigint, bigint, bigint, bigint, bigint, bigint, boolean, boolean, boolean]>,
+      ]);
 
-    const [title, , creator] = content;
-    const [, votingEnd, quorum, votesFor, votesAgainst, votesAbstain, totalVotes, finalized, passed, isActive] = state;
+      const [title, , creator] = content;
+      const [, votingEnd, quorum, votesFor, votesAgainst, votesAbstain, totalVotes, finalized, passed, isActive] = state;
 
-    proposals.push({
-      id: i,
-      title,
-      creator,
-      votingEnd: new Date(Number(votingEnd) * 1000).toISOString(),
-      votes: { for: Number(votesFor), against: Number(votesAgainst), abstain: Number(votesAbstain), total: Number(totalVotes) },
-      quorum: Number(quorum),
-      status: deriveStatus(finalized, passed, isActive),
-    });
-  }
+      return {
+        id: i,
+        title,
+        creator,
+        votingEnd: new Date(Number(votingEnd) * 1000).toISOString(),
+        votes: { for: Number(votesFor), against: Number(votesAgainst), abstain: Number(votesAbstain), total: Number(totalVotes) },
+        quorum: Number(quorum),
+        status: deriveStatus(finalized, passed, isActive),
+      };
+    })
+  );
 
-  return proposals;
+  return results;
 }
 
 export async function checkVoter(address: string): Promise<VoterInfo> {
