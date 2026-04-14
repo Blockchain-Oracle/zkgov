@@ -9,3 +9,4 @@ typechain-types/
 coverage/
 *.log
 .turbo/
+SUBMISSION.md

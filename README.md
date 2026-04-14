@@ -1,6 +1,23 @@
-# ZKGov — Anonymous Governance on HashKey Chain
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Blockchain-Oracle/zkgov/main/assets/zkgov-header.svg" alt="ZKGov — Anonymous Governance on HashKey Chain" width="100%"/>
+</p>
+
+<p align="center">
+  <a href="https://zkgov.app"><strong>zkgov.app</strong></a> ·
+  <a href="https://testnet-explorer.hsk.xyz/address/0xEa625841E031758786141c8b13dD1b1137C9776C">Contract on HashKey Testnet</a> ·
+  <a href="https://www.npmjs.com/package/@zkgov/cli"><img src="https://img.shields.io/npm/v/@zkgov/cli?label=%40zkgov%2Fcli&logo=npm" alt="@zkgov/cli on npm"/></a>
+  <a href="https://www.npmjs.com/package/@zkgov/mcp"><img src="https://img.shields.io/npm/v/@zkgov/mcp?label=%40zkgov%2Fmcp&logo=npm" alt="@zkgov/mcp on npm"/></a>
+</p>
+
+---
 
 Zero-knowledge governance platform built for the [On-Chain Horizon Hackathon](https://hashkey.com) (ZKID track). Voters cast anonymous, Groth16-verified votes on governance proposals — your vote is mathematically unlinkable to your identity.
+
+## Walkthrough
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Blockchain-Oracle/zkgov/main/assets/quickstart-wide.gif" alt="ZKGov quickstart — register, browse proposals, cast an anonymous ZK vote" width="100%"/>
+</p>
 
 ## How It Works
 
@@ -10,8 +27,6 @@ Zero-knowledge governance platform built for the [On-Chain Horizon Hackathon](ht
 4. **Finalize** — Anyone can finalize a proposal after the voting period ends, recording the outcome on-chain
 
 **Chain:** HashKey Chain Testnet (ID: 133) · **Contract:** [`0xEa625841E031758786141c8b13dD1b1137C9776C`](https://testnet-explorer.hsk.xyz/address/0xEa625841E031758786141c8b13dD1b1137C9776C)
-
-[![@zkgov/cli on npm](https://img.shields.io/npm/v/@zkgov/cli?label=%40zkgov%2Fcli&logo=npm)](https://www.npmjs.com/package/@zkgov/cli) [![@zkgov/mcp on npm](https://img.shields.io/npm/v/@zkgov/mcp?label=%40zkgov%2Fmcp&logo=npm)](https://www.npmjs.com/package/@zkgov/mcp)
 
 ## Packages
 
@@ -77,6 +92,10 @@ pnpm dev
 Get testnet HSK from the [HashKey faucet](https://faucet.hsk.xyz).
 
 ## ZK Architecture
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/Blockchain-Oracle/zkgov/main/assets/zkgov-architecture.svg" alt="ZKGov architecture — five-step vote flow from voter to ZKGovernance.sol" width="100%"/>
+</p>
 
 The `castVote` function on-chain **does not check `msg.sender`** — only the ZK proof matters. This means:
 

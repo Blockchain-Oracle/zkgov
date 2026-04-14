@@ -1,0 +1,224 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 500" role="img" aria-label="ZKGov architecture — anonymous vote flow from voter to ZKGovernance contract">
+  <title>ZKGov architecture — how a vote propagates from voter to ZKGovernance.sol without revealing identity</title>
+
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#111111"/>
+      <stop offset="100%" stop-color="#0a0a0a"/>
+    </linearGradient>
+    <!-- Brand logo gradient -->
+    <linearGradient id="logoBg" x1="0" y1="0" x2="512" y2="512" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#4338ca"/>
+    </linearGradient>
+    <linearGradient id="logoShield" x1="256" y1="80" x2="256" y2="440" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95"/>
+      <stop offset="100%" stop-color="#c7d2fe" stop-opacity="0.85"/>
+    </linearGradient>
+    <!-- Brand accent -->
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#818cf8"/>
+    </linearGradient>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#6366f1"/>
+    </marker>
+    <!-- Dashed arrow for private/hidden path -->
+    <marker id="arrowPrivate" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#4b5563"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1400" height="500" fill="url(#bg)"/>
+
+  <!-- Dot grid corners -->
+  <g fill="#ffffff" fill-opacity="0.04">
+    <circle cx="20" cy="20" r="1.2"/><circle cx="60" cy="20" r="1.2"/><circle cx="100" cy="20" r="1.2"/>
+    <circle cx="20" cy="480" r="1.2"/><circle cx="60" cy="480" r="1.2"/><circle cx="100" cy="480" r="1.2"/>
+    <circle cx="1300" cy="20" r="1.2"/><circle cx="1340" cy="20" r="1.2"/><circle cx="1380" cy="20" r="1.2"/>
+    <circle cx="1300" cy="480" r="1.2"/><circle cx="1340" cy="480" r="1.2"/><circle cx="1380" cy="480" r="1.2"/>
+  </g>
+
+  <!-- Title -->
+  <text x="44" y="52" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="26" font-weight="800" fill="#fafafa" letter-spacing="-0.5">ZKGov architecture</text>
+  <text x="44" y="76" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace" font-size="12" font-weight="400" fill="#71717a">How a vote flows from wallet to chain — without revealing which wallet voted</text>
+  <line x1="44" y1="92" x2="130" y2="92" stroke="url(#accent)" stroke-width="2.5" stroke-linecap="round"/>
+
+  <!-- ZKGov logo (top-right) -->
+  <svg x="1300" y="12" width="72" height="72" viewBox="0 0 512 512" fill="none">
+    <rect width="512" height="512" rx="96" fill="url(#logoBg)"/>
+    <path d="M256 88 L392 148 L392 284 C392 360 332 416 256 440 C180 416 120 360 120 284 L120 148 Z" fill="url(#logoShield)"/>
+    <path d="M192 192 L312 192 L312 216 L228 296 L312 296 L312 320 L192 320 L192 296 L276 216 L192 216 Z" fill="#4338ca"/>
+    <circle cx="256" cy="156" r="14" fill="#4338ca" opacity="0.5"/>
+    <path d="M340 168 L348 176 L368 152" stroke="#22c55e" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  </svg>
+
+  <!-- ═══════════════════════════════════════════
+       BOX 1: VOTER  x=44
+  ═══════════════════════════════════════════ -->
+  <g transform="translate(44, 116)">
+    <rect width="234" height="320" rx="10" fill="#111111" stroke="rgba(255,255,255,0.08)" stroke-width="1.5"/>
+    <text x="16" y="30" font-family="ui-monospace, monospace" font-size="9.5" font-weight="700" fill="#818cf8" letter-spacing="1.2">01 · VOTER</text>
+    <line x1="16" y1="42" x2="56" y2="42" stroke="url(#accent)" stroke-width="1.5" stroke-linecap="round"/>
+
+    <text x="16" y="72" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="18" font-weight="700" fill="#fafafa">Voter</text>
+
+    <!-- Human sub-section -->
+    <rect x="14" y="88" width="206" height="96" rx="6" fill="rgba(99,102,241,0.05)" stroke="rgba(99,102,241,0.15)" stroke-width="1"/>
+    <text x="22" y="106" font-family="ui-monospace, monospace" font-size="9" font-weight="600" fill="#818cf8">HUMAN</text>
+    <text x="22" y="124" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" fill="#a1a1aa">Web UI (Next.js 15)</text>
+    <text x="22" y="142" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" fill="#a1a1aa">Telegram Mini App</text>
+    <text x="22" y="160" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" fill="#a1a1aa">Discord slash commands</text>
+    <text x="22" y="178" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" fill="#a1a1aa">Reown AppKit wallet</text>
+
+    <!-- AI Agent sub-section -->
+    <rect x="14" y="194" width="206" height="96" rx="6" fill="rgba(34,197,94,0.04)" stroke="rgba(34,197,94,0.15)" stroke-width="1"/>
+    <text x="22" y="212" font-family="ui-monospace, monospace" font-size="9" font-weight="600" fill="#4ade80">AI AGENT</text>
+    <text x="22" y="230" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" fill="#a1a1aa">@zkgov/mcp (MCP server)</text>
+    <text x="22" y="248" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" fill="#a1a1aa">@zkgov/cli (zkgov vote)</text>
+    <text x="22" y="266" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" fill="#a1a1aa">Claude Code · Cursor</text>
+    <text x="22" y="284" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" fill="#a1a1aa">auto-generated wallet</text>
+
+    <text x="16" y="314" font-family="ui-monospace, monospace" font-size="9" font-weight="700" fill="#818cf8">HOLDS KYC SBT</text>
+  </g>
+
+  <!-- Arrow 1→2 -->
+  <line x1="280" y1="276" x2="324" y2="276" stroke="#6366f1" stroke-width="1.8" marker-end="url(#arrow)"/>
+  <text x="302" y="264" text-anchor="middle" font-family="ui-monospace, monospace" font-size="8.5" font-weight="600" fill="#818cf8">register</text>
+  <text x="302" y="292" text-anchor="middle" font-family="ui-monospace, monospace" font-size="8" fill="#71717a">(once)</text>
+
+  <!-- ═══════════════════════════════════════════
+       BOX 2: IDENTITY  x=328
+  ═══════════════════════════════════════════ -->
+  <g transform="translate(328, 116)">
+    <rect width="234" height="320" rx="10" fill="#111111" stroke="rgba(255,255,255,0.08)" stroke-width="1.5"/>
+    <text x="16" y="30" font-family="ui-monospace, monospace" font-size="9.5" font-weight="700" fill="#818cf8" letter-spacing="1.2">02 · IDENTITY</text>
+    <line x1="16" y1="42" x2="56" y2="42" stroke="url(#accent)" stroke-width="1.5" stroke-linecap="round"/>
+
+    <text x="16" y="72" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="18" font-weight="700" fill="#fafafa">Registration</text>
+
+    <text x="16" y="106" font-family="ui-monospace, monospace" font-size="9.5" font-weight="700" fill="#a5b4fc">KycGate.sol</text>
+    <text x="16" y="126" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" fill="#a1a1aa">Checks wallet holds a valid</text>
+    <text x="16" y="144" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" fill="#a1a1aa">HNS KYC SBT on HashKey</text>
+
+    <line x1="16" y1="158" x2="80" y2="158" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+
+    <text x="16" y="178" font-family="ui-monospace, monospace" font-size="9.5" font-weight="700" fill="#a5b4fc">Semaphore.sol</text>
+    <text x="16" y="198" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" fill="#a1a1aa">Identity commitment</text>
+    <text x="16" y="216" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" fill="#a1a1aa">H(secret, nullifier)</text>
+    <text x="16" y="234" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" fill="#a1a1aa">added to on-chain group</text>
+
+    <line x1="16" y1="248" x2="80" y2="248" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+
+    <text x="16" y="268" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" fill="#a1a1aa">Identity secret stays</text>
+    <text x="16" y="286" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" fill="#a1a1aa">local — never on-chain</text>
+
+    <text x="16" y="314" font-family="ui-monospace, monospace" font-size="9" font-weight="700" fill="#818cf8">ONE-TIME · GASLESS</text>
+  </g>
+
+  <!-- Arrow 2→3 (dashed — identity secret is private) -->
+  <line x1="564" y1="276" x2="608" y2="276" stroke="#6366f1" stroke-width="1.8" stroke-dasharray="5 3" marker-end="url(#arrow)"/>
+  <text x="586" y="264" text-anchor="middle" font-family="ui-monospace, monospace" font-size="8.5" font-weight="600" fill="#818cf8">secret</text>
+  <text x="586" y="292" text-anchor="middle" font-family="ui-monospace, monospace" font-size="8" fill="#71717a">(private)</text>
+
+  <!-- ═══════════════════════════════════════════
+       BOX 3: ZK PROOF  x=612
+  ═══════════════════════════════════════════ -->
+  <g transform="translate(612, 116)">
+    <!-- Active box — highlighted border-active rgba(129,140,248,0.3) -->
+    <rect width="234" height="320" rx="10" fill="#111111" stroke="rgba(129,140,248,0.35)" stroke-width="2"/>
+    <text x="16" y="30" font-family="ui-monospace, monospace" font-size="9.5" font-weight="700" fill="#818cf8" letter-spacing="1.2">03 · ZK PROOF</text>
+    <line x1="16" y1="42" x2="56" y2="42" stroke="url(#accent)" stroke-width="1.5" stroke-linecap="round"/>
+
+    <text x="16" y="72" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="18" font-weight="700" fill="#fafafa">Proof Engine</text>
+
+    <text x="16" y="106" font-family="ui-monospace, monospace" font-size="9.5" font-weight="700" fill="#a5b4fc">Semaphore v4 · Groth16</text>
+    <text x="16" y="126" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" fill="#a1a1aa">Runs locally in browser</text>
+    <text x="16" y="144" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" fill="#a1a1aa">or Node.js WASM — 3–5s</text>
+
+    <line x1="16" y1="158" x2="80" y2="158" stroke="rgba(129,140,248,0.15)" stroke-width="1"/>
+
+    <text x="16" y="178" font-family="ui-monospace, monospace" font-size="9.5" font-weight="700" fill="#a5b4fc">Proves (without revealing):</text>
+    <text x="16" y="200" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" fill="#a1a1aa">✓ I am in the voter group</text>
+    <text x="16" y="218" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" fill="#a1a1aa">✓ I vote YES/NO/ABSTAIN</text>
+    <text x="16" y="236" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" fill="#a1a1aa">✓ I have not voted before</text>
+
+    <line x1="16" y1="250" x2="80" y2="250" stroke="rgba(129,140,248,0.15)" stroke-width="1"/>
+
+    <text x="16" y="268" font-family="ui-monospace, monospace" font-size="9" font-weight="400" fill="#71717a">Outputs: proof π,</text>
+    <text x="16" y="284" font-family="ui-monospace, monospace" font-size="9" font-weight="400" fill="#71717a">nullifier, merkle root</text>
+
+    <text x="16" y="314" font-family="ui-monospace, monospace" font-size="9" font-weight="700" fill="#818cf8">NEVER REVEALS IDENTITY</text>
+  </g>
+
+  <!-- Arrow 3→4 -->
+  <line x1="848" y1="276" x2="892" y2="276" stroke="#6366f1" stroke-width="1.8" marker-end="url(#arrow)"/>
+  <text x="870" y="264" text-anchor="middle" font-family="ui-monospace, monospace" font-size="8.5" font-weight="600" fill="#818cf8">proof π</text>
+  <text x="870" y="292" text-anchor="middle" font-family="ui-monospace, monospace" font-size="8" fill="#71717a">(public)</text>
+
+  <!-- ═══════════════════════════════════════════
+       BOX 4: RELAYER  x=896
+  ═══════════════════════════════════════════ -->
+  <g transform="translate(896, 116)">
+    <rect width="234" height="320" rx="10" fill="#111111" stroke="rgba(255,255,255,0.08)" stroke-width="1.5"/>
+    <text x="16" y="30" font-family="ui-monospace, monospace" font-size="9.5" font-weight="700" fill="#818cf8" letter-spacing="1.2">04 · RELAYER</text>
+    <line x1="16" y1="42" x2="56" y2="42" stroke="url(#accent)" stroke-width="1.5" stroke-linecap="round"/>
+
+    <text x="16" y="72" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif" font-size="18" font-weight="700" fill="#fafafa">Relayer</text>
+
+    <text x="16" y="106" font-family="ui-monospace, monospace" font-size="9.5" font-weight="700" fill="#a5b4fc">Fastify API · Backend</text>
+    <text x="16" y="126" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" fill="#a1a1aa">Receives proof from voter</text>
+    <text x="16" y="144" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" fill="#a1a1aa">Holds its own funded wallet</text>
+
+    <line x1="16" y1="158" x2="80" y2="158" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+
+    <text x="16" y="180" font-family="ui-monospace, monospace" font-size="9.5" font-weight="700" fill="#a5b4fc">Gas abstraction</text>
+    <text x="16" y="200" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" fill="#a1a1aa">Pays gas on voter's behalf</text>
+    <text x="16" y="218" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" fill="#a1a1aa">Voter wallet never touches</text>
+    <text x="16" y="236" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" fill="#a1a1aa">the chain for this vote</text>
+
+    <line x1="16" y1="250" x2="80" y2="250" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+
+    <text x="16" y="270" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" fill="#a1a1aa">msg.sender = relayer</text>
+    <text x="16" y="288" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" fill="#a1a1aa">voter wallet unlinkable</text>
+
+    <text x="16" y="314" font-family="ui-monospace, monospace" font-size="9" font-weight="700" fill="#818cf8">GASLESS FOR VOTERS</text>
+  </g>
+
+  <!-- Arrow 4→5 -->
+  <line x1="1132" y1="276" x2="1176" y2="276" stroke="#6366f1" stroke-width="1.8" marker-end="url(#arrow)"/>
+  <text x="1154" y="264" text-anchor="middle" font-family="ui-monospace, monospace" font-size="8.5" font-weight="600" fill="#818cf8">castVote</text>
+  <text x="1154" y="292" text-anchor="middle" font-family="ui-monospace, monospace" font-size="8" fill="#71717a">(on-chain)</text>
+
+  <!-- ═══════════════════════════════════════════
+       BOX 5: CONTRACT  x=1180
+  ═══════════════════════════════════════════ -->
+  <g transform="translate(1180, 116)">
+    <rect width="182" height="320" rx="10" fill="#111111" stroke="rgba(255,255,255,0.08)" stroke-width="1.5"/>
+    <text x="16" y="30" font-family="ui-monospace, monospace" font-size="9.5" font-weight="700" fill="#818cf8" letter-spacing="1.2">05 · CONTRACT</text>
+    <line x1="16" y1="42" x2="56" y2="42" stroke="url(#accent)" stroke-width="1.5" stroke-linecap="round"/>
+
+    <text x="16" y="72" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace" font-size="14" font-weight="700" fill="#fafafa">ZKGov.sol</text>
+
+    <text x="16" y="104" font-family="ui-monospace, monospace" font-size="9.5" font-weight="700" fill="#a5b4fc">verifyProof()</text>
+    <text x="16" y="122" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" fill="#a1a1aa">Semaphore verifier</text>
+    <text x="16" y="140" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" fill="#a1a1aa">checks Groth16 proof</text>
+
+    <text x="16" y="164" font-family="ui-monospace, monospace" font-size="9.5" font-weight="700" fill="#a5b4fc">nullifier check</text>
+    <text x="16" y="182" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" fill="#a1a1aa">Reverts if already used</text>
+    <text x="16" y="200" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" fill="#a1a1aa">Prevents double-vote</text>
+
+    <text x="16" y="224" font-family="ui-monospace, monospace" font-size="9.5" font-weight="700" fill="#a5b4fc">tally update</text>
+    <text x="16" y="242" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" fill="#a1a1aa">forVotes / againstVotes</text>
+    <text x="16" y="260" font-family="-apple-system, BlinkMacSystemFont, sans-serif" font-size="11" fill="#a1a1aa">abstainVotes updated</text>
+
+    <text x="16" y="284" font-family="ui-monospace, monospace" font-size="9" fill="#71717a">HashKey Chain 133</text>
+    <text x="16" y="300" font-family="ui-monospace, monospace" font-size="8" fill="#52525b">0xEa625841...9776C</text>
+
+    <text x="16" y="314" font-family="ui-monospace, monospace" font-size="9" font-weight="700" fill="#818cf8">NO msg.sender CHECK</text>
+  </g>
+
+  <!-- Bottom caption -->
+  <text x="44" y="470" font-family="ui-monospace, 'SF Mono', Menlo, Consolas, monospace" font-size="11" fill="#52525b">The contract never learns which wallet cast which vote. The ZK proof is the only identity.</text>
+</svg>
