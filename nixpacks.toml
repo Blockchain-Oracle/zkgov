@@ -1,15 +1,16 @@
 # ZKGov monorepo — Nixpacks build config for Coolify / Railway / Render
 #
-# One config, four deployable services. Set APP_NAME per Coolify service
+# One config, three deployable services. Set APP_NAME per Coolify service
 # so each deploy builds and runs the right workspace:
 #
 #   backend      → APP_NAME=@zkgov/backend       (Fastify API + relayer, port $PORT)
 #   web          → APP_NAME=web                  (Next.js 15 frontend)
 #   telegram-bot → APP_NAME=@zkgov/telegram-bot  (grammY bot, webhook mode)
-#   discord-bot  → APP_NAME=@zkgov/discord-bot   (discord.js bot)
 #
 # NOT deployed here (published to npm instead):
 #   @zkgov/cli, @zkgov/mcp
+#
+# discord-bot stays in the repo but is not deployed.
 #
 # IMPORTANT: In Coolify, set "Base Directory" to / (repo root), NOT
 # packages/<name>. Nixpacks needs to see the workspace root so pnpm
@@ -53,6 +54,5 @@ cmds = ["pnpm --filter ${APP_NAME:-@zkgov/backend} build"]
 # backend      → node dist/index.js  (Fastify respects $PORT, defaults 3000)
 # web          → next start -p $PORT (Next.js respects $PORT)
 # telegram-bot → node dist/index.js  (grammY webhook, needs WEBHOOK_URL set)
-# discord-bot  → node dist/index.js  (discord.js gateway connection)
 [start]
 cmd = "pnpm --filter ${APP_NAME:-@zkgov/backend} start"
