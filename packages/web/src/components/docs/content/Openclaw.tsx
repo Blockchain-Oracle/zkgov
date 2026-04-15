@@ -51,7 +51,7 @@ export function OpenclawContent() {
       <CodeBlock
         language="bash"
         filename="terminal"
-        code={`openclaw restart`}
+        code={`openclaw gateway restart`}
       />
 
       <h2>Part 2 — Install the Agent Skill</h2>
@@ -65,7 +65,7 @@ export function OpenclawContent() {
       <CodeBlock
         language="bash"
         filename="terminal"
-        code={`openclaw skill add zkgov`}
+        code={`openclaw skills install zkgov`}
       />
 
       <h3>Or via prompt — works in any OpenClaw chat</h3>
@@ -113,7 +113,7 @@ Finalize proposal 2`}
       <CodeBlock
         language="bash"
         filename="terminal"
-        code={`npm install -g @openclaw/cli`}
+        code={`npm install -g openclaw`}
       />
 
       <h3>Skill not triggering</h3>
