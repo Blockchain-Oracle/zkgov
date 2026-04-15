@@ -56,6 +56,16 @@ export const DOCS_NAVIGATION: DocSection[] = [
     ],
   },
   {
+    title: "Integrations",
+    pages: [
+      {
+        slug: "telegram",
+        title: "Telegram Bot",
+        description: "Browse proposals and check stats from any Telegram chat using the ZKGov bot.",
+      },
+    ],
+  },
+  {
     title: "Developer Tools",
     pages: [
       {
