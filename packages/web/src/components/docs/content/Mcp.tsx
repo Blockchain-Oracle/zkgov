@@ -126,13 +126,13 @@ export function McpContent() {
         {
           label: 'Prompt',
           language: 'text',
-          code: 'Read https://zkgov.vercel.app/skill.md and follow the instructions.',
+          code: 'Read https://zkgov.app/docs/skills and follow the instructions.',
         },
         {
           label: 'Manual',
           language: 'bash',
           code: `mkdir -p ~/.claude/skills/zkgov
-curl -o ~/.claude/skills/zkgov/SKILL.md https://zkgov.vercel.app/skill.md`,
+curl -o ~/.claude/skills/zkgov/SKILL.md https://zkgov.app/docs/skills`,
         },
       ]} />
 

@@ -58,7 +58,8 @@ export function IntroductionContent() {
         language="bash"
         filename="terminal"
         code={`# Try it now from the CLI
-pnpm --filter @zkgov/mcp dev stats`}
+npm install -g @zkgov/cli
+zkgov stats`}
       />
     </>
   );
