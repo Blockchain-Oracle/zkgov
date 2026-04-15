@@ -132,7 +132,7 @@ export function McpContent() {
           label: 'Manual',
           language: 'bash',
           code: `mkdir -p ~/.claude/skills/zkgov
-curl -o ~/.claude/skills/zkgov/SKILL.md https://zkgov.app/docs/skills`,
+curl -o ~/.claude/skills/zkgov/SKILL.md https://zkgov.app/skill.md`,
         },
       ]} />
 

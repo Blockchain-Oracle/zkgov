@@ -94,7 +94,7 @@ Get testnet HSK from the [HashKey faucet](https://faucet.hsk.xyz).
 ## ZK Architecture
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/Blockchain-Oracle/zkgov/main/assets/zkgov-architecture.svg" alt="ZKGov architecture — five-step vote flow from voter to ZKGovernance.sol" width="100%"/>
+  <img src="https://raw.githubusercontent.com/Blockchain-Oracle/zkgov/main/assets/zkgov-architecture.svg" alt="ZKGov architecture — five-step vote flow from voter to ZKVoting.sol" width="100%"/>
 </p>
 
 The `castVote` function on-chain **does not check `msg.sender`** — only the ZK proof matters. This means:

@@ -17,7 +17,7 @@ const INSTALL_METHODS = [
   },
   {
     label: 'Prompt',
-    code: 'Read https://zkgov.vercel.app/skill.md and follow the instructions.',
+    code: 'Read https://zkgov.app/skill.md and follow the instructions.',
   },
 ];
 
