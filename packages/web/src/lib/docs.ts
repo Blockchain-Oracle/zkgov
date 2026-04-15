@@ -63,6 +63,11 @@ export const DOCS_NAVIGATION: DocSection[] = [
         title: "Telegram Bot",
         description: "Browse proposals and check stats from any Telegram chat using the ZKGov bot.",
       },
+      {
+        slug: "openclaw",
+        title: "OpenClaw",
+        description: "Vote anonymously from Telegram, WhatsApp, Slack, and 20+ other chat apps via OpenClaw.",
+      },
     ],
   },
   {

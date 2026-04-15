@@ -15,9 +15,11 @@ import { McpContent } from '@/components/docs/content/Mcp';
 import { SkillsContent } from '@/components/docs/content/Skills';
 import { ContractsContent } from '@/components/docs/content/Contracts';
 import { TelegramContent } from '@/components/docs/content/Telegram';
+import { OpenclawContent } from '@/components/docs/content/Openclaw';
 
 const CONTENT_MAP: Record<string, () => React.ReactElement> = {
   telegram: TelegramContent,
+  openclaw: OpenclawContent,
   introduction: IntroductionContent,
   quickstart: QuickstartContent,
   architecture: ArchitectureContent,
