@@ -27,6 +27,24 @@ export function SkillsContent() {
         Install both for the best experience.
       </Callout>
 
+      <h2>Install via ClawHub (OpenClaw users)</h2>
+      <p>
+        The ZKGov skill is published on{' '}
+        <a href="https://clawhub.ai" target="_blank" rel="noopener noreferrer">ClawHub</a> —
+        the public skill registry for OpenClaw. One command installs it into your active workspace:
+      </p>
+
+      <CodeBlock
+        language="bash"
+        filename="terminal"
+        code={`openclaw skills install zkgov`}
+      />
+
+      <p>
+        Or search for it directly in the OpenClaw app under <strong>Skills</strong>.
+        See the <a href="/docs/openclaw">OpenClaw guide</a> for the full setup walkthrough.
+      </p>
+
       <h2>Install via the community skills CLI</h2>
       <p>
         The <a href="https://github.com/vercel-labs/skills">skills CLI</a> (maintained by Vercel Labs)
