@@ -64,7 +64,7 @@ function fatal(e: unknown): never {
 const program = new Command()
   .name("zkgov")
   .description("ZKGov — Anonymous governance on HashKey Chain (CLI + MCP)")
-  .version("0.0.1")
+  .version("0.0.3")
   .option("--json", "Output raw JSON instead of formatted text");
 
 // Default action: no subcommand → start MCP server on stdio

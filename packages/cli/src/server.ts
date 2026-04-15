@@ -27,7 +27,7 @@ import {
 
 export function createMcpServer(): McpServer {
   const server = new McpServer(
-    { name: "zkgov", version: "0.0.1" },
+    { name: "zkgov", version: "0.0.3" },
     { capabilities: { tools: {} } }
   );
 
