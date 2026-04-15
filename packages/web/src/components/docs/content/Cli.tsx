@@ -10,24 +10,21 @@ export function CliContent() {
       </p>
 
       <h2>Install</h2>
+      <CodeBlock
+        language="bash"
+        filename="terminal"
+        code={`npm install -g @zkgov/cli`}
+      />
+
       <p>
-        The CLI lives in the <code>@zkgov/mcp</code> package inside this monorepo.
-        Build it once, then use the output binary:
+        That's it. The <code>zkgov</code> command is now available globally:
       </p>
 
       <CodeBlock
         language="bash"
         filename="terminal"
-        code={`pnpm install
-pnpm --filter @zkgov/mcp build
-
-# Then
-node packages/mcp/dist/cli.js --help`}
+        code={`zkgov --help`}
       />
-
-      <p>
-        After <code>pnpm link</code> or publishing, the command is just <code>zkgov</code>.
-      </p>
 
       <h2>Read commands</h2>
       <p>These do not require a wallet and are safe to run anywhere.</p>
