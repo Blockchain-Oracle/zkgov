@@ -174,8 +174,8 @@ importers:
         specifier: ^1
         version: 1.29.0(zod@3.25.76)
       '@zkgov/cli':
-        specifier: workspace:*
-        version: link:../cli
+        specifier: ^0.0.3
+        version: 0.0.3(typescript@5.9.3)
     devDependencies:
       tsx:
         specifier: ^4
@@ -3042,6 +3042,11 @@ packages:
 
   '@zk-kit/utils@1.4.1':
     resolution: {integrity: sha512-IoXzy3ElfkvRfC/s6uk3eFQO8uxkCdAOVxKlJlaEjM7pgckX5AK46Q+7n5yMQD/v/o6OL0mMtet065o5EpUocA==}
+
+  '@zkgov/cli@0.0.3':
+    resolution: {integrity: sha512-BacaNw/sQ9NOr1kRjfSKfUweESSW+3nqNqhojAPtaZAyso462UBojeCfuiNKk7xIUNi8y8iR6E3WiOkVMXSqvA==}
+    engines: {node: '>=18'}
+    hasBin: true
 
   abitype@1.0.6:
     resolution: {integrity: sha512-MMSqYh4+C/aVqI2RQaWqbvI4Kxo5cQV40WQ4QFtDnNzCkqChm8MuENhElmynZlO0qUy/ObkEUaXtKqYnx1Kp3A==}
@@ -10490,6 +10495,24 @@ snapshots:
       ethers: 6.13.5
     transitivePeerDependencies:
       - bufferutil
+      - utf-8-validate
+
+  '@zkgov/cli@0.0.3(typescript@5.9.3)':
+    dependencies:
+      '@modelcontextprotocol/sdk': 1.29.0(zod@3.25.76)
+      '@semaphore-protocol/group': 4.14.2
+      '@semaphore-protocol/identity': 4.14.2
+      '@semaphore-protocol/proof': 4.14.2(@semaphore-protocol/group@4.14.2)(@semaphore-protocol/identity@4.14.2)(@types/snarkjs@0.7.9)(commander@14.0.2)
+      commander: 14.0.2
+      viem: 2.47.6(typescript@5.9.3)(zod@3.25.76)
+      zod: 3.25.76
+    transitivePeerDependencies:
+      - '@cfworker/json-schema'
+      - '@types/snarkjs'
+      - bufferutil
+      - react-native-b4a
+      - supports-color
+      - typescript
       - utf-8-validate
 
   abitype@1.0.6(typescript@5.9.3)(zod@3.25.76):
