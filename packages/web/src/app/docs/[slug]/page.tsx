@@ -16,6 +16,7 @@ import { SkillsContent } from '@/components/docs/content/Skills';
 import { ContractsContent } from '@/components/docs/content/Contracts';
 import { TelegramContent } from '@/components/docs/content/Telegram';
 import { OpenclawContent } from '@/components/docs/content/Openclaw';
+import { ResourcesContent } from '@/components/docs/content/Resources';
 
 const CONTENT_MAP: Record<string, () => React.ReactElement> = {
   telegram: TelegramContent,
@@ -30,6 +31,7 @@ const CONTENT_MAP: Record<string, () => React.ReactElement> = {
   mcp: McpContent,
   skills: SkillsContent,
   contracts: ContractsContent,
+  resources: ResourcesContent,
 };
 
 export async function generateStaticParams() {

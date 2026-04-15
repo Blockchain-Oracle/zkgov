@@ -93,6 +93,11 @@ export const DOCS_NAVIGATION: DocSection[] = [
         title: "Smart Contracts",
         description: "ZKVoting contract API, events, and on-chain verification.",
       },
+      {
+        slug: "resources",
+        title: "Resources",
+        description: "All links, addresses, npm packages, and API endpoints in one place.",
+      },
     ],
   },
 ];

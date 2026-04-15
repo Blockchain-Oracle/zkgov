@@ -53,7 +53,7 @@ export default function RootLayout({
               </div>
               <div className="flex items-center gap-8">
                 {[
-                  { label: "GITHUB", href: "https://github.com/zkgov" },
+                  { label: "GITHUB", href: "https://github.com/Blockchain-Oracle/zkgov" },
                   { label: "TELEGRAM", href: "https://t.me/zkgov" },
                   { label: "X", href: "https://x.com/zkgov" },
                 ].map((social) => (

@@ -1,6 +1,6 @@
 {
   "name": "@zkgov/mcp",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "ZKGov MCP server — anonymous ZK governance on HashKey Chain via Model Context Protocol",
   "type": "module",
   "license": "MIT",
@@ -18,7 +18,7 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1",
-    "@zkgov/cli": "workspace:*"
+    "@zkgov/cli": "^0.0.3"
   },
   "devDependencies": {
     "typescript": "^5.5",
